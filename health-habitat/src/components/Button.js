@@ -8,10 +8,10 @@ export default function Button({ mode, style, ...props }) {
     <PaperButton
       style={[
         styles.button,
-        mode === 'outlined' && { backgroundColor: theme.colors.surface },
+        mode === 'outlined' && { backgroundColor: 'transparent' },
         style
       ]}
-      labelStyle={styles.text}
+      labelStyle={[styles.text, mode === 'outlined' && { color: theme.colors.primary }]}
       mode={mode}
       {...props}
     />
@@ -20,12 +20,15 @@ export default function Button({ mode, style, ...props }) {
 
 const styles = StyleSheet.create({
       button: {
-        borderRadius: 5,
+        backgroundColor: theme.colors.primary,
+        borderColor: theme.colors.primary,
+        borderRadius: 7.5,
         marginVertical: 10,
         paddingVertical: 2,
         width: '100%'
       },
       text: {
+        color: 'white',
         fontWeight: 'bold',
         fontSize: 15,
         lineHeight: 26

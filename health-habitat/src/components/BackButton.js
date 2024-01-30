@@ -15,10 +15,10 @@ const styles = StyleSheet.create({
     container: {
         position: 'absolute',
         top: 10 + getStatusBarHeight(),
-        left: 4
+        left: 25
     },
     image: {
-        width: 24,
-        height: 24
+        width: 28,
+        height: 28
     }
 })
