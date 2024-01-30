@@ -36,7 +36,7 @@ export default function LoginScreen({ navigation }) {
         <Background>
             <BackButton goBack={() => navigation.goBack()} />
 
-            <Header props="Welcome back." />
+            <Header props="Welcome back" />
 
             <TextInput
                 label="Email"
