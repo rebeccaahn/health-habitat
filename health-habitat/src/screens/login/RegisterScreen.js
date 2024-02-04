@@ -12,6 +12,7 @@ import { theme } from '../../core/theme'
 import { emailValidator } from '../../utils/emailValidator'
 import { passwordValidator } from '../../utils/passwordValidator'
 import { nameValidator } from '../../utils/nameValidator'
+import { signUpUser } from '../../api/auth-api'
 
 export default function RegisterScreen({ navigation }) {
     const [name, setName] = useState({ value: '', error: '' })
@@ -34,14 +35,14 @@ export default function RegisterScreen({ navigation }) {
         }
 
         setLoading(true)
-        // const response = await signUpUser({
-        //     name: name.value,
-        //     email: email.value,
-        //     password: password.value
-        // })
-        // if (response.error){
-        //     setError(response.error)
-        // }
+        const response = await signUpUser({
+            name: name.value,
+            email: email.value,
+            password: password.value
+        })
+        if (response.error){
+            setError(response.error)
+        }
         setLoading(false)
     }
 

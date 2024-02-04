@@ -10,6 +10,7 @@ import Toast from '../../components/Toast'
 import { theme } from '../../core/theme'
 import { emailValidator } from '../../utils/emailValidator'
 import { passwordValidator } from '../../utils/passwordValidator'
+import { loginUser } from '../../api/auth-api'
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState({ value: '', error: '' })
@@ -29,7 +30,15 @@ export default function LoginScreen({ navigation }) {
         }
 
         setLoading(true)
-
+        const response = await loginUser({
+            email: email.value,
+            password: password.value,
+          })
+        console.log("response: " + response)
+        if (response.error) {
+        setError(response.error)
+        }
+        setLoading(false)
     }
 
     return (

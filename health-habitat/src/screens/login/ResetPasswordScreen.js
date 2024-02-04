@@ -6,6 +6,7 @@ import Header from '../../components/Header'
 import TextInput from '../../components/TextInput'
 import Toast from '../../components/Toast'
 import { emailValidator } from '../../utils/emailValidator'
+import { sendEmailWithPassword } from '../../api/auth-api'
 
 export default function ResetPasswordScreen({ navigation }) {
     const [email, setEmail] = useState({ value: '', error: '' })
@@ -21,14 +22,14 @@ export default function ResetPasswordScreen({ navigation }) {
 
         setLoading(true)
         const response = await sendEmailWithPassword(email.value)
-        // if (response.error) {
-        //     setToast({ type: 'error', message: response.error })
-        // } else {
-        //     setToast({
-        //         type: 'success',
-        //         message: 'Email with password has been sent.',
-        //     })
-        // }
+        if (response.error) {
+            setToast({ type: 'error', message: response.error })
+        } else {
+            setToast({
+                type: 'success',
+                message: 'Email with password has been sent.',
+            })
+        }
         setLoading(false)
     }
 
