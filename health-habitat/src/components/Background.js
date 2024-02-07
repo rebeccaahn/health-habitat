@@ -3,15 +3,21 @@ import { StyleSheet, KeyboardAvoidingView } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { theme } from '../core/theme'
 
-export default function Background({ children }) {
+export default function Background({ color, children }) {
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
-      {children}
-    </KeyboardAvoidingView>
+        <KeyboardAvoidingView style={styles.background}>
+          <LinearGradient colors={color} style={styles.container} behavior="padding">
+            {children}
+          </LinearGradient>
+        </KeyboardAvoidingView>
   )
 }
 
 const styles = StyleSheet.create({
+      background: {
+        height: '100%',
+        width: '100%',
+      },
       container: {
         alignItems: 'center',
         alignSelf: 'center',

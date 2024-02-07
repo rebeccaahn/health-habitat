@@ -5,10 +5,11 @@ import Header from '../../components/Header'
 import Paragraph from '../../components/Paragraph'
 import Button from '../../components/Button'
 import { logoutUser } from '../../api/auth-api'
+import { theme } from '../../core/theme'
 
 export default function Dashboard() {
   return (
-    <Background>
+    <Background color={theme.colors.darkGreenGradient}>
       {/* <Logo /> */}
       <Header>Let’s start</Header>
       <Paragraph>
