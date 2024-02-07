@@ -42,7 +42,7 @@ export default function LoginScreen({ navigation }) {
     }
 
     return (
-        <Background>
+        <Background color={theme.colors.darkGreenGradient}>
             <BackButton goBack={() => navigation.goBack()} />
 
             <Header props="Welcome back" />

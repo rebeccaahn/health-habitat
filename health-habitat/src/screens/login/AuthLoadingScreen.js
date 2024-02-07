@@ -23,7 +23,7 @@ export default function AuthLoadingScreen({ navigation }) {
   })
 
   return (
-    <Background>
+    <Background color={theme.colors.darkGreenGradient}>
       <ActivityIndicator size="large" color={theme.colors.primary} />
     </Background>
   )

@@ -47,7 +47,7 @@ export default function RegisterScreen({ navigation }) {
     }
 
     return (
-        <Background>
+        <Background color={theme.colors.darkGreenGradient}>
             <BackButton goBack={() => navigation.goBack()} />
 
             <Header props="Create Account" />

@@ -8,6 +8,7 @@ import Button from '../../components/Button'
 import TerrariumImage from '../../components/TerrariumImage'
 import ProgressBar from '../../components/ProgressBar'
 import { logoutUser } from '../../api/auth-api'
+import { theme } from '../../core/theme'
 
 const headings = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"];
 const terrariumStates = ["Critical", "Warning", "Thriving", "Best"];
@@ -50,7 +51,7 @@ export default function TerrariumScreen() {
         }
     }, []);
     return (
-        <Background>
+        <Background color={theme.colors.darkGreenGradient}>
             {/* <Logo /> */}
             <Header props={timeOfDay} />
             <Text style={{textAlign: 'center'}}>{terrariumDescriptions[terrariumState]}</Text>

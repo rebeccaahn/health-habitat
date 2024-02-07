@@ -7,6 +7,7 @@ import TextInput from '../../components/TextInput'
 import Toast from '../../components/Toast'
 import { emailValidator } from '../../utils/emailValidator'
 import { sendEmailWithPassword } from '../../api/auth-api'
+import { theme } from '../../core/theme'
 
 export default function ResetPasswordScreen({ navigation }) {
     const [email, setEmail] = useState({ value: '', error: '' })
@@ -34,7 +35,7 @@ export default function ResetPasswordScreen({ navigation }) {
     }
 
     return (
-        <Background>
+        <Background color={theme.colors.darkGreenGradient}>
             <BackButton goBack={() => navigation.goBack()} />
 
             <Header props="Reset Password" />
