@@ -10,6 +10,7 @@ import {
   ResetPasswordScreen,
   Dashboard,
 } from './src/screens/login'
+import { TerarriumScreen } from './src/screens/dashboard'
 import  { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import { firebaseConfig } from './src/core/config'
@@ -34,6 +35,7 @@ export default function App() {
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
         <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
         <Stack.Screen name="Dashboard" component={Dashboard} />
+        <Stack.Screen name="TerrariumScreen" component={TerarriumScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
