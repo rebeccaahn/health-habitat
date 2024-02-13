@@ -25,6 +25,7 @@ export default function TerrariumScreen() {
     const [terrariumState, setTerrariumState] = useState('');
     const [timeOfDay, setTimeOfDay] = useState('');
     const [backgroundColor, setBackgroundColor] = useState([]);
+    const [buttonColor, setButtonColor] = useState('');
 
     useEffect(() => {
         // Set the time of day
@@ -33,15 +34,19 @@ export default function TerrariumScreen() {
         if (hours < 12) {
             setTimeOfDay(headings[0]);
             setBackgroundColor(theme.colors.brownGradient);
+            setButtonColor(theme.colors.darkBrown)
         } else if (hours >= 12 && hours < 17) {
             setTimeOfDay(headings[1]);
             setBackgroundColor(theme.colors.tealGradient);
+            setButtonColor(theme.colors.darkTeal)
         } else if (hours >= 17 && hours < 20) {
             setTimeOfDay(headings[2]);
             setBackgroundColor(theme.colors.blueGradient);
+            setButtonColor(theme.colors.darkBlue)
         } else {
             setTimeOfDay(headings[3]);
             setBackgroundColor(theme.colors.darkBlueGradient);
+            setButtonColor(theme.colors.darkestBlue)
         }
 
         // Set the terrarium state based on the score
@@ -66,7 +71,8 @@ export default function TerrariumScreen() {
             <IconButton
                 icon="plus"
                 iconColor="white"
-                mode="outlined"
+                containerColor={ buttonColor }
+                mode="contained"
                 size={45}
                 onPress={() => console.log('Pressed')}
                 style={[ theme.shadow, { position: 'absolute', bottom: 50, elevation: 2} ]}
@@ -74,7 +80,8 @@ export default function TerrariumScreen() {
             <IconButton
                 icon="cog"
                 iconColor="white"
-                mode="outlined"
+                containerColor={ buttonColor }
+                mode="contained"
                 size={25}
                 onPress={() => console.log('Pressed')}
                 style={[ theme.shadow, { position: 'absolute', right: 20, bottom: 50, elevation: 2} ]}
