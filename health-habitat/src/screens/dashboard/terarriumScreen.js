@@ -8,7 +8,7 @@ import Button from '../../components/Button'
 import TerrariumImage from '../../components/TerrariumImage'
 import ProgressBar from '../../components/ProgressBar'
 import PlainText from '../../components/PlainText'
-import { logoutUser } from '../../api/auth-api'
+import { IconButton } from 'react-native-paper';
 import { theme } from '../../core/theme'
 
 const headings = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"];
@@ -24,13 +24,12 @@ export default function TerrariumScreen() {
     const score = 25;
     const [terrariumState, setTerrariumState] = useState('');
     const [timeOfDay, setTimeOfDay] = useState('');
-    const [backgroundColor, setBackgroundColor] = useState('');
+    const [backgroundColor, setBackgroundColor] = useState([]);
 
     useEffect(() => {
         // Set the time of day
         const date = new Date();
         const hours = date.getHours();
-        var timeOfDay = "";
         if (hours < 12) {
             setTimeOfDay(headings[0]);
             setBackgroundColor(theme.colors.brownGradient);
@@ -64,9 +63,22 @@ export default function TerrariumScreen() {
             <TerrariumImage state={terrariumState} />
             {/* <ProgressBar terrariumScore={score} /> */}
             <ProgressBar step={50} numberOfSteps={100} />
-            <Button mode="outlined" onPress={logoutUser}>
-                Logout
-            </Button>
+            <IconButton
+                icon="plus"
+                iconColor="white"
+                mode="outlined"
+                size={45}
+                onPress={() => console.log('Pressed')}
+                style={[ theme.shadow, { position: 'absolute', bottom: 50, elevation: 2} ]}
+            />
+            <IconButton
+                icon="cog"
+                iconColor="white"
+                mode="outlined"
+                size={25}
+                onPress={() => console.log('Pressed')}
+                style={[ theme.shadow, { position: 'absolute', right: 20, bottom: 50, elevation: 2} ]}
+            />
         </Background>
     )
 }
