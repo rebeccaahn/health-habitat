@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
         height: 20,
+        marginBottom: 20,
         width: '100%',
     },
     progress: {

@@ -8,6 +8,7 @@ import Header from '../../components/Header'
 // import Logo from '../../components/Logo'
 import TextInput from '../../components/TextInput'
 import Toast from '../../components/Toast'
+import PlainText from '../../components/PlainText'
 import { theme } from '../../core/theme'
 import { emailValidator } from '../../utils/emailValidator'
 import { passwordValidator } from '../../utils/passwordValidator'
@@ -50,7 +51,7 @@ export default function RegisterScreen({ navigation }) {
         <Background color={theme.colors.darkGreenGradient}>
             <BackButton goBack={() => navigation.goBack()} />
 
-            <Header props="Create Account" />
+            <Header style={{ marginBottom: 65 }} props="Create Account" />
 
             <TextInput
                 label="Name"
@@ -93,9 +94,9 @@ export default function RegisterScreen({ navigation }) {
                 SIGN UP
             </Button>
             <View style={styles.row}>
-                <Text style={styles.label}>Already have an account? </Text>
+                <PlainText style={styles.label} props="Already have an account? " />
                 <TouchableOpacity onPress={() => navigation.replace('LoginScreen')}>
-                    <Text style={styles.link}>Login</Text>
+                    <Text style={[theme.smText, styles.link]}>Login</Text>
                 </TouchableOpacity>
             </View>
             <Toast message={error} onDismiss={() => setError('')} />

@@ -3,10 +3,11 @@ import { View, Text, StyleSheet } from 'react-native'
 import Background from '../../components/Background'
 // import Logo from '../../components/Logo'
 import Header from '../../components/Header'
-import Paragraph from '../../components/Paragraph'
+import Paragraph from '../../components/PlainText'
 import Button from '../../components/Button'
 import TerrariumImage from '../../components/TerrariumImage'
 import ProgressBar from '../../components/ProgressBar'
+import PlainText from '../../components/PlainText'
 import { logoutUser } from '../../api/auth-api'
 import { theme } from '../../core/theme'
 
@@ -23,21 +24,26 @@ export default function TerrariumScreen() {
     const score = 25;
     const [terrariumState, setTerrariumState] = useState('');
     const [timeOfDay, setTimeOfDay] = useState('');
+    const [backgroundColor, setBackgroundColor] = useState('');
+
     useEffect(() => {
         // Set the time of day
         const date = new Date();
         const hours = date.getHours();
         var timeOfDay = "";
         if (hours < 12) {
-            timeOfDay = headings[0];
+            setTimeOfDay(headings[0]);
+            setBackgroundColor(theme.colors.brownGradient);
         } else if (hours >= 12 && hours < 17) {
-            timeOfDay = headings[1];
+            setTimeOfDay(headings[1]);
+            setBackgroundColor(theme.colors.tealGradient);
         } else if (hours >= 17 && hours < 20) {
-            timeOfDay = headings[2];
+            setTimeOfDay(headings[2]);
+            setBackgroundColor(theme.colors.blueGradient);
         } else {
-            timeOfDay = headings[3];
+            setTimeOfDay(headings[3]);
+            setBackgroundColor(theme.colors.darkBlueGradient);
         }
-        setTimeOfDay(timeOfDay);
 
         // Set the terrarium state based on the score
         if (score < 25) {
@@ -51,10 +57,10 @@ export default function TerrariumScreen() {
         }
     }, []);
     return (
-        <Background color={theme.colors.darkGreenGradient}>
+        <Background color={backgroundColor}>
             {/* <Logo /> */}
             <Header props={timeOfDay} />
-            <Text style={{textAlign: 'center'}}>{terrariumDescriptions[terrariumState]}</Text>
+            <Text style={[theme.lgText, { textAlign: 'center' }]}>{terrariumDescriptions[terrariumState]}</Text>
             <TerrariumImage state={terrariumState} />
             {/* <ProgressBar terrariumScore={score} /> */}
             <ProgressBar step={50} numberOfSteps={100} />
