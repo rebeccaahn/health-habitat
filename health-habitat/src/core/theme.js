@@ -11,6 +11,10 @@ export const theme = {
         tealGradient: ['#020d15', '#0a1f2e'],
         brownGradient: ['#41210A', '#6F5949'],
         darkGreenGradient: ['#091609', '#455945'],
+        darkBlue: '#133745',
+        darkTeal: '#020d15',
+        darkBrown: '#41210A',
+        darkestBlue: '#14011d',
         blue: '#5d8b9f',
         darkGreen: '#243424',
         darkestGreen: '#091609'
