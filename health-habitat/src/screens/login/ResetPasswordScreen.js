@@ -5,6 +5,7 @@ import BackButton from '../../components/BackButton'
 import Header from '../../components/Header'
 import TextInput from '../../components/TextInput'
 import Toast from '../../components/Toast'
+import PlainText from '../../components/PlainText'
 import { emailValidator } from '../../utils/emailValidator'
 import { sendEmailWithPassword } from '../../api/auth-api'
 import { theme } from '../../core/theme'
@@ -38,7 +39,7 @@ export default function ResetPasswordScreen({ navigation }) {
         <Background color={theme.colors.darkGreenGradient}>
             <BackButton goBack={() => navigation.goBack()} />
 
-            <Header props="Reset Password" />
+            <Header style={{ marginBottom: 65 }} props="Reset Password" />
 
             <TextInput
                 label="E-mail address"
@@ -51,7 +52,7 @@ export default function ResetPasswordScreen({ navigation }) {
                 autoCompleteType="email"
                 textContentType="emailAddress"
                 keyboardType="email-address"
-                description="You will receive email with password reset link."
+                description={<PlainText props="You will receive email with password reset link." />}
             />
 
             <Button

@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.surface,
         flex: 1,
         justifyContent: 'center',
-        padding: 30,
+        padding: 35,
         width: '100%'
       }
 })

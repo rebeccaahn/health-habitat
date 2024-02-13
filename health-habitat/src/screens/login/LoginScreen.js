@@ -7,6 +7,7 @@ import BackButton from '../../components/BackButton'
 import Header from '../../components/Header'
 import TextInput from '../../components/TextInput'
 import Toast from '../../components/Toast'
+import PlainText from '../../components/PlainText'
 import { theme } from '../../core/theme'
 import { emailValidator } from '../../utils/emailValidator'
 import { passwordValidator } from '../../utils/passwordValidator'
@@ -45,7 +46,7 @@ export default function LoginScreen({ navigation }) {
         <Background color={theme.colors.darkGreenGradient}>
             <BackButton goBack={() => navigation.goBack()} />
 
-            <Header props="Welcome back" />
+            <Header style={{ marginBottom: 65 }} props="Welcome Back" />
 
             <TextInput
                 label="Email"
@@ -74,7 +75,7 @@ export default function LoginScreen({ navigation }) {
                 <TouchableOpacity
                     onPress={() => navigation.navigate('ResetPasswordScreen')}
                 >
-                    <Text style={styles.forgot}>Forgot your password?</Text>
+                    <PlainText style={styles.forgot} props="Forgot your password?" />
                 </TouchableOpacity>
             </View>
 
@@ -87,9 +88,9 @@ export default function LoginScreen({ navigation }) {
       </Button>
 
             <View style={styles.row}>
-                <Text style={styles.label}>Don’t have an account? </Text>
+                <PlainText props="Don't have an account? " />
                 <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
-                    <Text style={styles.link}>Sign up</Text>
+                    <Text style={[theme.smText, styles.link]}>Sign Up</Text>
                 </TouchableOpacity>
             </View>
             <Toast message={error} onDismiss={() => setError('')} />
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
         marginTop: 4
     },
     forgot: {
-        color: theme.colors.secondary,
+        color: theme.colors.primary,
         fontSize: 13
     },
     link: {
