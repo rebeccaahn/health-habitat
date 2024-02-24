@@ -10,6 +10,7 @@ import ProgressBar from '../../components/ProgressBar'
 import PlainText from '../../components/PlainText'
 import { IconButton } from 'react-native-paper';
 import { theme } from '../../core/theme'
+import CategoriesPage from "../category/CategoriesPage";
 
 const headings = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"];
 const terrariumStates = ["Critical", "Warning", "Thriving", "Best"];
@@ -20,7 +21,7 @@ const terrariumDescriptions = {
     "Thriving": "Your terrarium is at its best.\nKeep up the good work."
 }
 
-export default function TerrariumScreen() {
+export default function TerrariumScreen({navigation}) {
     const score = 25;
     const [terrariumState, setTerrariumState] = useState('');
     const [timeOfDay, setTimeOfDay] = useState('');
@@ -74,7 +75,7 @@ export default function TerrariumScreen() {
                 containerColor={ buttonColor }
                 mode="contained"
                 size={45}
-                onPress={() => console.log('Pressed')}
+                onPress={() => navigation.navigate(CategoriesPage)}
                 style={[ theme.shadow, { position: 'absolute', bottom: 50, elevation: 2} ]}
             />
             <IconButton
