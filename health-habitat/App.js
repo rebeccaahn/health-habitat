@@ -14,6 +14,10 @@ import { TerarriumScreen } from './src/screens/dashboard'
 import  { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import { firebaseConfig } from './src/core/config'
+import DietPage from "./src/screens/category/DietPage";
+import ExercisePage from "./src/screens/category/ExercisePage";
+import MeditationPage from "./src/screens/category/MeditationPage";
+import CategoriesPage from "./src/screens/category/CategoriesPage";
 
 const Stack = createNativeStackNavigator();
 const app = initializeApp(firebaseConfig);
@@ -36,6 +40,11 @@ export default function App() {
         <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
         <Stack.Screen name="Dashboard" component={Dashboard} />
         <Stack.Screen name="TerrariumScreen" component={TerarriumScreen} />
+
+        <Stack.Screen name="CategoriesPage" component={CategoriesPage} />
+        <Stack.Screen name="DietPage" component={DietPage} />
+        <Stack.Screen name="ExercisePage" component={ExercisePage} />
+        <Stack.Screen name="MeditationPage" component={MeditationPage} />
       </Stack.Navigator>
     </NavigationContainer>
   );
