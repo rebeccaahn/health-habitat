@@ -13,7 +13,7 @@ export default function ExercisePage({navigation}) {
 
 
     // TODO : update user database and remove onclick functionality
-    const handleExerciseCompletion = async (recipeId) => {
+    const handleExerciseCompletion = async (exerciseId) => {
         setWelcomeMessage(wMessages[0])
     }
 
@@ -50,6 +50,7 @@ export default function ExercisePage({navigation}) {
         <Background color={theme.colors.tealGradient}>
             <BackButton goBack={() => navigation.goBack()}/>
             <Header props={welcomeMessage}/>
+            <Header props={'Your exercise details:'}/>
             <View style={styles.categoryOverview}>
                 {/*<Image*/}
                 {/*    style={styles.categoryIcon}*/}
@@ -60,20 +61,20 @@ export default function ExercisePage({navigation}) {
                 {/*/>*/}
                 <ProgressBar step={exerciseScore} numberOfSteps={100}/>
             </View>
-            <FlatList
+            <FlatList style={{width: '100%'}}
                 data={exerciseData}
-                renderItem={({exerciseItem}) => (
+                renderItem={({item}) => (
                     <View style={styles.listItem}>
-                        <View>
-                            <Text>{exerciseItem.name}</Text>
-                            <Text>{exerciseItem.description}</Text>
+                        <View styles={styles.itemText}>
+                            <Text style={styles.itemName}>{item.name}</Text>
+                            <Text style={styles.itemDescription}>{item.description}</Text>
                         </View>
-                        <TouchableOpacity onPress={() => handleExerciseCompletion(exerciseItem.id)}>
+                        <TouchableOpacity styles={{width: '25%'}} onPress={() => handleExerciseCompletion(item.id)}>
                             <Text style={styles.completedButton}>{"completed!"}</Text>
                         </TouchableOpacity>
                     </View>
                 )}
-                keyExtractor={exerciseItem => exerciseItem.id}
+                keyExtractor={item => item.id}
             />
         </Background>
     );
@@ -81,28 +82,47 @@ export default function ExercisePage({navigation}) {
 
 const styles = StyleSheet.create({
     categoryOverview: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        width: '75%'
     },
     categoryIcon: {
         width: '50',
         height: '50'
     },
     listItem: {
-        fontSize: 12,
-        padding: 10,
-        marginVertical: 10,
-        marginHorizontal: 10,
-        flexDirection: 'row'
+        alignSelf: 'center',
+        borderColor: theme.colors.blue,
+        borderRadius: 10,
+        borderWidth: 2,
+        height: '100%',
+        marginBottom: 20,
+        width: '100%',
+        flexDirection: 'row',
+    },
+    itemText: {
+        flexDirection: 'column',
+        width: '100%'
+    },
+    itemName: {
+        color: 'white',
+        fontSize: 25,
+        textAlign: 'center',
+        width: '100%'
     },
     itemDescription: {
-        fontSize : 12,
+        color: "white",
+        fontSize : 20,
         padding: 10,
         marginVertical: 10,
         marginHorizontal: 10,
-        flexDirection: 'column'
+        // flexDirection: 'column',
+        width: '100%'
     },
     completedButton: {
-        fontSize : 12,
-        textAlign: 'center'
+        color: "white",
+        fontSize : 20,
+        alignItems: 'flex-end',
+        textAlign: 'center',
+        width: '100%',
     }
 });

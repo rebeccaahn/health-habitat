@@ -58,10 +58,9 @@ export default function CategoriesPage({navigation}) {
         <Background color={theme.colors.darkGreenGradient}>
             <BackButton goBack={() => navigation.goBack()}/>
             <Header props={welcomeMessage} />
+            <Header props={"Your health overview:"}/>
 
-
-            <TouchableOpacity onPress={() => navigation.navigate('DietPage')}>
-                <View style={styles.categoryOverview}>
+            <TouchableOpacity style={styles.categoryOverview} onPress={() => navigation.navigate('DietPage')}>
                     <View style={styles.categoryLeft}>
                         <View style={styles.categoryOverview}>
                             {/*<Image*/}
@@ -71,20 +70,18 @@ export default function CategoriesPage({navigation}) {
                             {/*        uri : ''*/}
                             {/*    }}*/}
                             {/*/>*/}
-                            <Text>Diet</Text>
+                            <Text style={styles.catText}>Diet</Text>
                         </View>
                         <ProgressBar step={dietScore} numberOfSteps={100} />
                     </View>
-                    <View style={styles.categoryLeft}>
-                        <Text>suggestions</Text>
-                        <Text>{numDietTasks}</Text>
+                    <View style={styles.categoryRight}>
+                        <Text style={styles.catText}>suggestions</Text>
+                        <Text style={styles.catText}>{numDietTasks}</Text>
                     </View>
-                </View>
             </TouchableOpacity>
 
 
-            <TouchableOpacity onPress={() => navigation.navigate('MeditationPage')}>
-                <View style={styles.categoryOverview}>
+            <TouchableOpacity style={styles.categoryOverview} onPress={() => navigation.navigate('MeditationPage')}>
                     <View style={styles.categoryLeft}>
                         <View style={styles.categoryOverview}>
                             {/*<Image*/}
@@ -94,20 +91,18 @@ export default function CategoriesPage({navigation}) {
                             {/*        uri : ''*/}
                             {/*    }}*/}
                             {/*/>*/}
-                            <Text>Meditation</Text>
+                            <Text style={styles.catText}>Meditation</Text>
                         </View>
                         <ProgressBar step={meditationScore} numberOfSteps={100} />
                     </View>
-                    <View style={styles.categoryLeft}>
-                        <Text>suggestions</Text>
-                        <Text>{numMeditationTasks}</Text>
+                    <View style={styles.categoryRight}>
+                        <Text style={styles.catText}>suggestions</Text>
+                        <Text style={styles.catText}>{numMeditationTasks}</Text>
                     </View>
-                </View>
             </TouchableOpacity>
 
 
-            <TouchableOpacity onPress={() => navigation.navigate('ExercisePage')}>
-                <View style={styles.categoryOverview}>
+            <TouchableOpacity style={styles.categoryOverview} onPress={() => navigation.navigate('ExercisePage')}>
                     <View style={styles.categoryLeft}>
                         <View style={styles.categoryOverview}>
                             {/*<Image*/}
@@ -117,15 +112,14 @@ export default function CategoriesPage({navigation}) {
                             {/*        uri : ''*/}
                             {/*    }}*/}
                             {/*/>*/}
-                            <Text>Exercise</Text>
+                            <Text style={styles.catText}>Exercise</Text>
                         </View>
                         <ProgressBar step={exerciseScore} numberOfSteps={100} />
                     </View>
-                    <View style={styles.categoryLeft}>
-                        <Text>suggestions</Text>
-                        <Text>{numExerciseTasks}</Text>
+                    <View style={styles.categoryRight}>
+                        <Text style={styles.catText}>suggestions</Text>
+                        <Text style={styles.catText}>{numExerciseTasks}</Text>
                     </View>
-                </View>
             </TouchableOpacity>
 
         </Background>
@@ -137,13 +131,24 @@ const styles = StyleSheet.create({
     categoryOverview: {
         flexDirection: 'row',
         width: '100%',
-        height: '100%'
+        height: '25%'
     },
     categoryLeft: {
-        flexDirection: 'column'
+        flexDirection: 'column',
+        width: '25%',
+    },
+    categoryRight: {
+        flexDirection: 'column',
+        width: '100%',
     },
     categoryIcon: {
         width: '50',
         height: '50'
+    },
+    catText: {
+        width: '100%',
+        color: 'white',
+        fontSize: 20,
+        textAlign: 'center'
     }
 });
