@@ -13,7 +13,7 @@ export default function MeditationPage({navigation}) {
 
 
     // TODO : update user database and remove onclick functionality
-    const handleMeditationCompletion = async (recipeId) => {
+    const handleMeditationCompletion = async (meditationId) => {
         setWelcomeMessage(wMessages[0])
     }
 
@@ -22,9 +22,8 @@ export default function MeditationPage({navigation}) {
 
     // TODO : query data
     const meditationData = [
-        {id: 0, name: 'meditation1', description: 'do smth'},
-        {id: 1, name: 'meditation2', description: 'eat eat'},
-        {id: 2, anme: 'meditation3', description: 'listen to this!'}
+        {id: 0, name: 'meditation1', description: 'listen to smth'},
+        {id: 1, name: 'exercise2', description: 'do more listening'},
     ]
 
 
@@ -48,62 +47,82 @@ export default function MeditationPage({navigation}) {
     }, []);
 
     return (
-        <Background color={theme.colors.brownGradient}>
+        <Background color={theme.colors.tealGradient}>
             <BackButton goBack={() => navigation.goBack()}/>
-            <Header props={welcomeMessage} />
+            <Header props={welcomeMessage}/>
+            <Header props={'Your meditation details:'}/>
             <View style={styles.categoryOverview}>
                 {/*<Image*/}
                 {/*    style={styles.categoryIcon}*/}
                 {/*    source={{*/}
                 {/*        // TODO : find such image*/}
-                {/*        uri : ''*/}
+                {/*        uri: ''*/}
                 {/*    }}*/}
                 {/*/>*/}
-                <ProgressBar step={meditationScore} numberOfSteps={100} />
+                <ProgressBar step={meditationScore} numberOfSteps={100}/>
             </View>
-            <FlatList
-                data={meditationData}
-                renderItem={({meditationItem}) => (
-                    <View style={styles.listItem}>
-                        <View>
-                            <Text>{meditationItem.name}</Text>
-                            <Text>{meditationItem.description}</Text>
-                        </View>
-                        <TouchableOpacity onPress={() => handleMeditationCompletion(recipeItem.id)}>
-                            <Text style={styles.completedButton}>{"completed!"}</Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
-                keyExtractor={meditationItem => meditationItem.id}
+            <FlatList style={{width: '100%'}}
+                      data={meditationData}
+                      renderItem={({item}) => (
+                          <View style={styles.listItem}>
+                              <View styles={styles.itemText}>
+                                  <Text style={styles.itemName}>{item.name}</Text>
+                                  <Text style={styles.itemDescription}>{item.description}</Text>
+                              </View>
+                              <TouchableOpacity styles={{width: '25%'}} onPress={() => handleMeditationCompletion(item.id)}>
+                                  <Text style={styles.completedButton}>{"completed!"}</Text>
+                              </TouchableOpacity>
+                          </View>
+                      )}
+                      keyExtractor={item => item.id}
             />
         </Background>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     categoryOverview: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        width: '75%'
     },
     categoryIcon: {
         width: '50',
         height: '50'
     },
     listItem: {
-        fontSize: 12,
-        padding: 10,
-        marginVertical: 10,
-        marginHorizontal: 10,
-        flexDirection: 'row'
+        alignSelf: 'center',
+        borderColor: theme.colors.blue,
+        borderRadius: 10,
+        borderWidth: 2,
+        height: '100%',
+        marginBottom: 20,
+        width: '100%',
+        flexDirection: 'row',
+    },
+    itemText: {
+        flexDirection: 'column',
+        width: '100%'
+    },
+    itemName: {
+        color: 'white',
+        fontSize: 25,
+        textAlign: 'center',
+        width: '100%'
     },
     itemDescription: {
-        fontSize : 12,
+        color: "white",
+        fontSize : 20,
         padding: 10,
         marginVertical: 10,
         marginHorizontal: 10,
-        flexDirection: 'column'
+        // flexDirection: 'column',
+        width: '100%'
     },
     completedButton: {
-        fontSize : 12,
-        textAlign: 'center'
+        color: "white",
+        fontSize : 20,
+        alignItems: 'flex-end',
+        textAlign: 'center',
+        width: '100%',
     }
 });

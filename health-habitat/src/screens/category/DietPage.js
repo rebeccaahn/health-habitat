@@ -13,7 +13,7 @@ export default function DietPage({navigation}) {
 
 
     // TODO : update user database and remove onclick functionality
-    const handleRecipeCompletion = async (recipeId) => {
+    const handleDietCompletion = async (dietId) => {
         setWelcomeMessage(wMessages[0])
     }
 
@@ -22,8 +22,8 @@ export default function DietPage({navigation}) {
 
     // TODO : query data
     const dietData = [
-        {id: 0, name: 'smth', description: 'do smth'},
-        {id: 1, name: 'yeee', description: 'eat smth'},
+        {id: 0, name: 'diet1', description: 'eat smth'},
+        {id: 1, name: 'diet2', description: 'eat more smth'},
     ]
 
 
@@ -46,68 +46,83 @@ export default function DietPage({navigation}) {
         }
     }, []);
 
-
     return (
         <Background color={theme.colors.blueGradient}>
             <BackButton goBack={() => navigation.goBack()}/>
-            <Header props={welcomeMessage} />
+            <Header props={welcomeMessage}/>
+            <Header props={'Your diet details:'}/>
             <View style={styles.categoryOverview}>
                 {/*<Image*/}
                 {/*    style={styles.categoryIcon}*/}
                 {/*    source={{*/}
                 {/*        // TODO : find such image*/}
-                {/*        uri : ''*/}
+                {/*        uri: ''*/}
                 {/*    }}*/}
                 {/*/>*/}
-                <ProgressBar step={dietScore} numberOfSteps={100} />
+                <ProgressBar step={dietScore} numberOfSteps={100}/>
             </View>
-            <FlatList
-                data={dietData}
-                renderItem={({recipeItem}) => (
-                    <View style={styles.listItem}>
-                        <View>
-                            <Text>{recipeItem.name}</Text>
-                            <Text>{recipeItem.description}</Text>
-                        </View>
-                        <TouchableOpacity onPress={() => handleRecipeCompletion(recipeItem.id)}>
-                            <Text style={styles.completedButton}>{"completed!"}</Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
-                keyExtractor={recipeItem => recipeItem.id}
+            <FlatList style={{width: '100%'}}
+                      data={dietData}
+                      renderItem={({item}) => (
+                          <View style={styles.listItem}>
+                              <View styles={styles.itemText}>
+                                  <Text style={styles.itemName}>{item.name}</Text>
+                                  <Text style={styles.itemDescription}>{item.description}</Text>
+                              </View>
+                              <TouchableOpacity styles={{width: '25%'}} onPress={() => handleDietCompletion(item.id)}>
+                                  <Text style={styles.completedButton}>{"completed!"}</Text>
+                              </TouchableOpacity>
+                          </View>
+                      )}
+                      keyExtractor={item => item.id}
             />
-
         </Background>
-    )
-
+    );
 }
 
 const styles = StyleSheet.create({
     categoryOverview: {
         flexDirection: 'row',
-        width: '100%',
-        height: '100%'
+        width: '75%'
     },
     categoryIcon: {
         width: '50',
         height: '50'
     },
     listItem: {
-        fontSize: 12,
-        padding: 10,
-        marginVertical: 10,
-        marginHorizontal: 10,
-        flexDirection: 'row'
+        alignSelf: 'center',
+        borderColor: theme.colors.blue,
+        borderRadius: 10,
+        borderWidth: 2,
+        height: '100%',
+        marginBottom: 20,
+        width: '100%',
+        flexDirection: 'row',
+    },
+    itemText: {
+        flexDirection: 'column',
+        width: '100%'
+    },
+    itemName: {
+        color: 'white',
+        fontSize: 25,
+        textAlign: 'center',
+        width: '100%'
     },
     itemDescription: {
-        fontSize : 12,
+        color: "white",
+        fontSize : 20,
         padding: 10,
         marginVertical: 10,
         marginHorizontal: 10,
-        flexDirection: 'column'
+        // flexDirection: 'column',
+        width: '100%'
     },
     completedButton: {
-        fontSize : 12,
-        textAlign: 'center'
+        color: "white",
+        fontSize : 20,
+        alignItems: 'flex-end',
+        textAlign: 'center',
+        width: '100%',
     }
 });
