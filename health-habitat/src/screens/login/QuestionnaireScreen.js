@@ -2,18 +2,18 @@ import React, { useState } from 'react';
 import { StyleSheet, ScrollView, Text, TextInput, View } from 'react-native';
 import Background from '../../components/Background';
 import SmallButton from '../../components/SmallButton';
+import { ProgressBar } from 'react-native-paper'
 import { Button as PaperButton } from 'react-native-paper';
 import { theme } from '../../core/theme';
 import { SimpleSurvey } from 'react-native-simple-survey';
 import { survey } from './questionnaireQuestions';
 
-const GREEN = 'rgba(141,196,63,1)';
-const PURPLE = 'rgba(108,48,237,1)';
+const surveyLength = survey.length;
 
 export default function RegisterScreen({ navigation }) {
     const [answers, setAnswers] = useState([])
+    const [currentQuestion, setCurrentQuestion] = useState(0)
 
-    
     /**
      *  After each answer is submitted this function is called. Here you can take additional steps in response to the 
      *  user's answers. From updating a 'correct answers' counter to exiting out of an onboarding flow if the user is 
@@ -36,7 +36,7 @@ export default function RegisterScreen({ navigation }) {
         return (
             <SmallButton
                 mode="contained"
-                onPress={onPress}
+                onPress={() => {onPress(); setCurrentQuestion(currentQuestion - 1)}}
                 style={{ padding: '2.5px', marginTop: 15, width: '35%' }}
             >
                 PREV
@@ -48,7 +48,7 @@ export default function RegisterScreen({ navigation }) {
         return (
             <SmallButton
                 mode="contained"
-                onPress={onPress}
+                onPress={() => {onPress(); setCurrentQuestion(currentQuestion + 1)}}
                 style={{ padding: '2.5px', marginTop: 15, width: '35%' }}
             >
                 NEXT
@@ -108,21 +108,23 @@ export default function RegisterScreen({ navigation }) {
         />);
     }
 
-    const SelectionGroupContainer = (title, renderChildren) => {
+    const QuestionProgressBar = () => {
         return (
-            <ScrollView contentContainerStyle={styles.selectionGroupContainer}>
-                <Text style={styles.text}>{title}</Text>
-                {renderChildren()}
-            </ScrollView>
+            <View>
+                <Text style={styles.questionText}>Question {currentQuestion} / {surveyLength}</Text>
+                <ProgressBar
+                    progress={currentQuestion / surveyLength}
+                    color={theme.colors.primary}
+                    style={styles.progressBar}/>
+            </View>
         );
     }
-
 
     return (
         <Background color={theme.colors.darkGreenGradient}>
             <View style={styles.container}>
+                { (currentQuestion !== 0) && <QuestionProgressBar />}
                 <SimpleSurvey
-                    // ref={(s) => { this.surveyRef = s; }}
                     survey={survey}
                     renderSelector={SelectionButton}
                     containerStyle={styles.surveyContainer}
@@ -222,11 +224,9 @@ export default function RegisterScreen({ navigation }) {
 
 
 const styles = StyleSheet.create({
-    container: {
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        borderRadius: 10
+    answers: {
+        alignSelf: 'center',
+        marginBottom: 10,
     },
     answersContainer: {
         width: '90%',
@@ -238,6 +238,46 @@ const styles = StyleSheet.create({
         elevation: 20,
         borderRadius: 10
     },
+    container: {
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        borderRadius: 10
+    },
+    navButtonText: {
+        margin: 10,
+        fontSize: 20,
+        color: 'white',
+        width: 'auto'
+    },
+    numericInput: {
+        borderWidth: 1,
+        borderColor: 'rgba(204,204,204,1)',
+        borderRadius: 10,
+        padding: 10,
+        textAlignVertical: 'top',
+        marginLeft: 10,
+        marginRight: 10,
+        color: 'white'
+    },
+    progressBar: {
+        borderRadius: 5,
+        marginBottom: 15
+    },
+    questionText: {
+        fontSize: theme.smText.fontSize,
+        color: 'white',
+        letterSpacing: theme.smText.letterSpacing,
+        marginBottom: 7.5
+    },
+    selectionButton: {
+        backgroundColor: theme.colors.darkGreen,
+        borderColor: theme.colors.primary,
+        borderRadius: 5,
+        borderWidth: 2,
+        marginVertical: 5,
+        paddingVertical: 2,
+    },
     surveyContainer: {
         alignSelf: 'center',
         alignContent: 'center',
@@ -248,25 +288,12 @@ const styles = StyleSheet.create({
         flexGrow: 0,
         elevation: 20
     },
-    navButtonText: {
-        margin: 10,
-        fontSize: 20,
+    text: {
+        fontSize: theme.lgText.fontSize,
         color: 'white',
-        width: 'auto'
-    },
-    answers: {
-        alignSelf: 'center',
-        marginBottom: 10,
-    },
-    navigationButton: {
-
-        minHeight: 40,
-        backgroundColor: GREEN,
-        padding: 0,
-        borderRadius: 100,
-        marginTop: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
+        letterSpacing: theme.lgText.letterSpacing,
+        marginBottom: 35,
+        textAlign: 'center'
     },
     textBox: {
         borderWidth: 1,
@@ -275,32 +302,7 @@ const styles = StyleSheet.create({
         padding: 10,
         textAlignVertical: 'top',
         marginLeft: 10,
-        marginRight: 1
+        marginRight: 1,
+        color: 'white'
     },
-    numericInput: {
-        borderWidth: 1,
-        borderColor: 'rgba(204,204,204,1)',
-        borderRadius: 10,
-        padding: 10,
-        textAlignVertical: 'top',
-        marginLeft: 10,
-        marginRight: 10
-    },
-    text: {
-        fontSize: theme.lgText.fontSize,
-        color: 'white',
-        letterSpacing: theme.lgText.letterSpacing,
-        marginBottom: 35,
-        textAlign: 'center'
-    },
-    selectionButton: {
-        backgroundColor: theme.colors.darkGreen,
-        borderColor: theme.colors.primary,
-        borderRadius: 5,
-        borderWidth: 2,
-        marginVertical: 5,
-        paddingVertical: 2,
-
-
-    }
 });
