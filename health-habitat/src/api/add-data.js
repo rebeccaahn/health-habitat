@@ -1,36 +1,83 @@
 import { db } from '../../App'
+import { doc, setDoc } from "firebase/firestore"; 
 
-// User personal info & tasks
-// Create "User_Info" collection
+// Adding document to collection ExerciseTasks
+async function addExerciseTask(id, title, desc, type, muscle, equip, completed) {
+    const exerciseTaskData = {
+        name: title,
+        description: desc,
+        category: type,
+        muscleEn: muscle,
+        equipment: equip,
+        isCompleted: completed
+    };
 
-// Function: In "User_Info" collection, create "user" document with initially empty Diet_, Exercise_, and Meditation_Tasks collections
+    await setDoc(doc(db, "ExerciseTasks", id), exerciseTaskData);
+}
 
-// Function: In "Diet_Tasks" collection, create "task" document
+// Adding document to collection MeditationTasks
+async function addMeditationTask(id, title, desc, time, name, genres, completed) {
+    const meditationTaskData = {
+        track: title,
+        url: desc,
+        duration: time,
+        artist: name,
+        tags: genres,
+        isCompleted: completed
+    };
+    
+    await setDoc(doc(db, "MeditationTasks", id), meditationTaskData);
+}
 
-// Function: In "Exercise_Tasks" collection, create "task" document
+// Adding document to collection UserInfo
+async function addUser(id, time, weather, time) {
+    const userData = {
+        preferredTime: time,
+        preferredWeather: weather
+    };
+    
+    await setDoc(doc(db, "UserInfo", id), userData);
+}
 
-// Function: In "Meditation_Tasks" collection, create "task" document
+// Adding document to subcollection DietPreferences
+async function addDietPreferences(userID, id, allergiesArray, price, minutes) {
+    const dietPreferencesData = {
+        allergies: allergiesArray,
+        priceLimit: price,
+        duration: minutes
+    };
+    
+    await setDoc(doc(db, "UserInfo", userID, "DietPreferences", id ), dietPreferencesData);
+}
 
-// Function: Update "user" document in "User_Info" collection
+// Adding document to subcollection ExercisePreferences
+async function addExercisePreferences(userID, id, exerciseType, muscle, equip) {
+    const exercisePreferencesData = {
+        category: exerciseType,
+        muscleEn: muscleType,
+        equipment: equip
+    };
+    
+    await setDoc(doc(db, "UserInfo", userID, "ExercisePreferences", id), exercisePreferencesData);
+}
 
-// Function: Update "is_completed" field of "task" document in "*_Tasks" collection
+// Adding document to subcollection MeditationPreferences
+async function addMeditationPreferences(userID, id, genres, muscleType, milliseconds) {
+    const meditationPreferencesData = {
+        tags: genres,
+        duration: milliseconds
+    };
+    
+    await setDoc(doc(db, "UserInfo", userID, "MeditationPreferences", id), meditationPreferencesData);
+}
 
 
-// User category-based preferences
-// Create "Diet_Preferences" collection
+// Function: Update "isCompleted" field of document in "*Tasks" collection
 
-// Create "Exercise_Preferences" collection
+// Function: Update document in "UserInfo" collection
 
-// Create "Meditation_Preferences" collection
+// Function: Update document in "DietPreferences" collection
 
-// Function: In "Diet_Preferences" collection, create "user_preference" document
+// Function: Update document in "ExercisePreferences" collection
 
-// Function: Update "user_preference" document in "Diet_Preferences" collection
-
-// Function: In "Exercise_Preferences" collection, create "user_preference" document
-
-// Function: Update "user_preference" document in "Exercise_Preferences" collection
-
-// Function: In "Meditation_Preferences" collection, create "user_preference" document
-
-// Function: Update "user_preference" document in "Meditation_Preferences" collection
+// Function: Update document in "MeditationPreferences" collection
