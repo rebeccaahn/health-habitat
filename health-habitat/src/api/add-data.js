@@ -1,8 +1,8 @@
 import { db } from '../../App'
-import { doc, setDoc } from "firebase/firestore"; 
+import { doc, addDoc } from "firebase/firestore"; 
 
 // Adding document to collection ExerciseTasks
-async function addExerciseTask(id, title, desc, type, muscle, equip, completed) {
+async function addExerciseTask(title, desc, type, muscle, equip, completed) {
     const exerciseTaskData = {
         name: title,
         description: desc,
@@ -12,11 +12,11 @@ async function addExerciseTask(id, title, desc, type, muscle, equip, completed) 
         isCompleted: completed
     };
 
-    await setDoc(doc(db, "ExerciseTasks", id), exerciseTaskData);
+    await addDoc(collection(db, "ExerciseTasks"), exerciseTaskData);
 }
 
 // Adding document to collection MeditationTasks
-async function addMeditationTask(id, title, desc, time, name, genres, completed) {
+async function addMeditationTask(title, desc, time, name, genres, completed) {
     const meditationTaskData = {
         track: title,
         url: desc,
@@ -26,50 +26,60 @@ async function addMeditationTask(id, title, desc, time, name, genres, completed)
         isCompleted: completed
     };
     
-    await setDoc(doc(db, "MeditationTasks", id), meditationTaskData);
+    await addDoc(collection(db, "MeditationTasks"), meditationTaskData);
 }
 
 // Adding document to collection UserInfo
-async function addUser(id, time, weather, time) {
+async function addUser(id, time, weather, time, allergies, priceLimit, time, exerciseType, muscle, equipment, genres, muscleType) {
     const userData = {
+        userID: id,
         preferredTime: time,
-        preferredWeather: weather
+        preferredWeather: weather,
+        dietAllergies: allergies,
+        dietPriceLimit: priceLimit,
+        exerciseCategory: exerciseType,
+        exerciseMuscle: muscle,
+        exerciseEquipment: equipment,
+        meditationTag: genre,   // if user prefers multiple tags: meditationTags: genres
+        duration: time
     };
     
-    await setDoc(doc(db, "UserInfo", id), userData);
+    await addDoc(collection(db, "UserInfo"), userData);
 }
 
-// Adding document to subcollection DietPreferences
-async function addDietPreferences(userID, id, allergiesArray, price, minutes) {
-    const dietPreferencesData = {
-        allergies: allergiesArray,
-        priceLimit: price,
-        duration: minutes
-    };
-    
-    await setDoc(doc(db, "UserInfo", userID, "DietPreferences", id ), dietPreferencesData);
-}
 
-// Adding document to subcollection ExercisePreferences
-async function addExercisePreferences(userID, id, exerciseType, muscle, equip) {
-    const exercisePreferencesData = {
-        category: exerciseType,
-        muscleEn: muscleType,
-        equipment: equip
-    };
+// UNNECESSARY TO SEPARATE OUT PREFERENCES IN SUBCOLLECTIONS?
+// // Adding document to subcollection DietPreferences
+// async function addDietPreferences(userID, allergiesArray, price, minutes) {
+//     const dietPreferencesData = {
+//         allergies: allergiesArray,
+//         priceLimit: price,
+//         duration: minutes
+//     };
     
-    await setDoc(doc(db, "UserInfo", userID, "ExercisePreferences", id), exercisePreferencesData);
-}
+//     await addDoc(collection(db, "UserInfo", userID, "DietPreferences"), dietPreferencesData);
+// }
 
-// Adding document to subcollection MeditationPreferences
-async function addMeditationPreferences(userID, id, genres, muscleType, milliseconds) {
-    const meditationPreferencesData = {
-        tags: genres,
-        duration: milliseconds
-    };
+// // Adding document to subcollection ExercisePreferences
+// async function addExercisePreferences(userID, exerciseType, muscleType, equip) {
+//     const exercisePreferencesData = {
+//         category: exerciseType,
+//         muscleEn: muscleType,
+//         equipment: equip
+//     };
     
-    await setDoc(doc(db, "UserInfo", userID, "MeditationPreferences", id), meditationPreferencesData);
-}
+//     await addDoc(collection((db, "UserInfo", userID, "ExercisePreferences"), exercisePreferencesData);
+// }
+
+// // Adding document to subcollection MeditationPreferences
+// async function addMeditationPreferences(userID, genre, milliseconds) {
+//     const meditationPreferencesData = {
+//         tag: genre,
+//         duration: milliseconds
+//     };
+    
+//     await addDoc(collection((db, "UserInfo", userID, "MeditationPreferences"), meditationPreferencesData);
+// }
 
 
 // Function: Update "isCompleted" field of document in "*Tasks" collection
