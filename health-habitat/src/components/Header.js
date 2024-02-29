@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: 'bold',
     letterSpacing: theme.lgText.letterSpacing,
-    paddingVertical: 12
+    paddingVertical: 12,
+    textAlign: 'center'
   }
 })
