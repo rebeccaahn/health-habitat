@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, ScrollView, Text, TextInput, View } from 'react-native';
 import Background from '../../components/Background';
 import SmallButton from '../../components/SmallButton';
+import Button from '../../components/Button';
 import { ProgressBar } from 'react-native-paper'
 import { Button as PaperButton } from 'react-native-paper';
 import { theme } from '../../core/theme';
@@ -24,6 +25,42 @@ export default function RegisterScreen({ navigation }) {
         // this.setState({ answersSoFar: JSON.stringify(this.surveyRef.getAnswers(), 2) });
     }
 
+    const onSurveyFinished = (currAnswers) => {
+        /** 
+         *  By using the spread operator, array entries with no values, such as info questions, are removed.
+         *  This is also where a final cleanup of values, making them ready to insert into your DB or pass along
+         *  to the rest of your code, can be done.
+         * 
+         *  Answers are returned in an array, of the form 
+         *  [
+         *  {questionId: string, value: any},
+         *  {questionId: string, value: any},
+         *  ...
+         *  ]
+         *  Questions of type selection group are more flexible, the entirity of the 'options' object is returned
+         *  to you.
+         *  
+         *  As an example
+         *  { 
+         *      questionId: "favoritePet", 
+         *      value: { 
+         *          optionText: "Dogs",
+         *          value: "dog"
+         *      }
+         *  }
+         *  This flexibility makes SelectionGroup an incredibly powerful component on its own. If needed it is a 
+         *  separate NPM package, react-native-selection-group, which has additional features such as multi-selection.
+         */
+
+        const infoQuestionsRemoved = [...currAnswers];
+
+        // Convert from an array to a proper object. This won't work if you have duplicate questionIds
+        const answersAsObj = {};
+        for (const elem of infoQuestionsRemoved) { answersAsObj[elem.questionId] = elem.value; }
+
+        // this.props.navigation.navigate('SurveyCompleted', { surveyAnswers: answersAsObj });
+    }
+
     const QuestionText = (questionText) => {
         return (
             <View style={{ marginLeft: 10, marginRight: 10 }}>
@@ -37,7 +74,7 @@ export default function RegisterScreen({ navigation }) {
             <SmallButton
                 mode="contained"
                 onPress={() => {onPress(); setCurrentQuestion(currentQuestion - 1)}}
-                style={{ padding: '2.5px', marginTop: 15, width: '35%' }}
+                style={styles.navButton}
             >
                 PREV
             </SmallButton>
@@ -49,7 +86,7 @@ export default function RegisterScreen({ navigation }) {
             <SmallButton
                 mode="contained"
                 onPress={() => {onPress(); setCurrentQuestion(currentQuestion + 1)}}
-                style={{ padding: '2.5px', marginTop: 15, width: '35%' }}
+                style={styles.navButton}
             >
                 NEXT
             </SmallButton>
@@ -108,6 +145,18 @@ export default function RegisterScreen({ navigation }) {
         />);
     }
 
+    const renderFinishedButton = (onPress, enabled) => {
+        return (
+                <SmallButton
+                mode="contained"
+                onPress={onPress}
+                style={styles.navButton}
+                >
+                    FINISH
+                </SmallButton>
+        );
+    }
+
     const QuestionProgressBar = () => {
         return (
             <View>
@@ -132,9 +181,9 @@ export default function RegisterScreen({ navigation }) {
                     navButtonContainerStyle={{ flexDirection: 'row', justifyContent: 'space-around' }}
                     renderPrevious={PreviousButton}
                     renderNext={NextButton}
-                    // renderFinished={this.renderFinishedButton.bind(this)}
+                    renderFinished={renderFinishedButton}
                     renderQuestionText={QuestionText}
-                    // onSurveyFinished={(answers) => this.onSurveyFinished(answers)}
+                    onSurveyFinished={(answers) => onSurveyFinished(answers)}
                     onAnswerSubmitted={(answer) => onAnswerSubmitted(answer)}
                     renderTextInput={TextBox}
                     renderNumericInput={NumericInput}
@@ -143,85 +192,13 @@ export default function RegisterScreen({ navigation }) {
 
             </View>
 
-            {/* <ScrollView style={styles.answersContainer}>
+            <ScrollView style={styles.answersContainer}>
                 <Text style={{ textAlign: 'center' }}>JSON output</Text>
                 <Text>{JSON.stringify(answers)}</Text>
-            </ScrollView> */}
+            </ScrollView>
         </Background>
     )
 }
-
-// export default class QuestionnaireScreen extends Component {
-//     static navigationOptions = () => {
-//         return {
-//             headerStyle: {
-//                 backgroundColor: GREEN,
-//                 height: 40,
-//                 elevation: 5,
-//             },
-//             headerTintColor: '#fff',
-//             headerTitle: 'Sample Survey',
-//             headerTitleStyle: {
-//                 flex: 1,
-//             }
-//         };
-//     }
-
-//     constructor(props) {
-//         super(props);
-//         this.state = { backgroundColor: PURPLE, answersSoFar: '' };
-//     }
-
-//     onSurveyFinished(answers) {
-//         /** 
-//          *  By using the spread operator, array entries with no values, such as info questions, are removed.
-//          *  This is also where a final cleanup of values, making them ready to insert into your DB or pass along
-//          *  to the rest of your code, can be done.
-//          * 
-//          *  Answers are returned in an array, of the form 
-//          *  [
-//          *  {questionId: string, value: any},
-//          *  {questionId: string, value: any},
-//          *  ...
-//          *  ]
-//          *  Questions of type selection group are more flexible, the entirity of the 'options' object is returned
-//          *  to you.
-//          *  
-//          *  As an example
-//          *  { 
-//          *      questionId: "favoritePet", 
-//          *      value: { 
-//          *          optionText: "Dogs",
-//          *          value: "dog"
-//          *      }
-//          *  }
-//          *  This flexibility makes SelectionGroup an incredibly powerful component on its own. If needed it is a 
-//          *  separate NPM package, react-native-selection-group, which has additional features such as multi-selection.
-//          */
-
-//         const infoQuestionsRemoved = [...answers];
-
-//         // Convert from an array to a proper object. This won't work if you have duplicate questionIds
-//         const answersAsObj = {};
-//         for (const elem of infoQuestionsRemoved) { answersAsObj[elem.questionId] = elem.value; }
-
-//         this.props.navigation.navigate('SurveyCompleted', { surveyAnswers: answersAsObj });
-//     }
-
-
-//     renderFinishedButton(onPress, enabled) {
-//         return (
-//             <View style={{ flexGrow: 1, maxWidth: 100, marginTop: 10, marginBottom: 10 }}>
-//                 <Button
-//                     title={'Finished'}
-//                     onPress={onPress}
-//                     disabled={!enabled}
-//                     color={GREEN}
-//                 />
-//             </View>
-//         );
-//     }
-
 
 const styles = StyleSheet.create({
     answers: {
@@ -230,7 +207,7 @@ const styles = StyleSheet.create({
     },
     answersContainer: {
         width: '90%',
-        Height: '20%',
+        Height: '100px',
         paddingHorizontal: 20,
         paddingVertical: 10,
         marginBottom: 20,
@@ -243,6 +220,11 @@ const styles = StyleSheet.create({
         height: '100%',
         justifyContent: 'center',
         borderRadius: 10
+    },
+    navButton: { 
+        padding: '2.5px', 
+        marginTop: 15, 
+        width: '35%' 
     },
     navButtonText: {
         margin: 10,
