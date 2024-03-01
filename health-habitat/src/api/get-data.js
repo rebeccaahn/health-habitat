@@ -60,9 +60,9 @@ function getPriceLimit(userDoc) {
     return userDoc.get("dietPriceLimit");
 }
 
-// Getting user's preferred exercise categories
-function getCategories(userDoc) {
-    return userDoc.get("exerciseCategories");
+// Getting user's preferred exercise category
+function getCategory(userDoc) {
+    return userDoc.get("exerciseCategory");
 }
 
 // Getting user's exercise equipments
@@ -70,9 +70,9 @@ function getEquipments(userDoc) {
     return userDoc.get("exerciseEquipments");
 }
 
-// Getting user's preferred meditation tags
-function getTags(userDoc) {
-    return userDoc.get("meditationTags");
+// Getting user's preferred meditation tag
+function getTag(userDoc) {
+    return userDoc.get("meditationTag");
 }
 
 // Getting user's preferred meditation duration
