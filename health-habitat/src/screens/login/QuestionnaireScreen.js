@@ -8,6 +8,7 @@ import { Button as PaperButton } from 'react-native-paper';
 import { theme } from '../../core/theme';
 import { SimpleSurvey } from 'react-native-simple-survey';
 import { survey } from './questionnaireQuestions';
+import addUser from '../../api/add-user-data';
 
 const surveyLength = survey.length;
 
@@ -59,6 +60,9 @@ export default function RegisterScreen({ navigation }) {
         for (const elem of infoQuestionsRemoved) { answersAsObj[elem.questionId] = elem.value; }
 
         // this.props.navigation.navigate('SurveyCompleted', { surveyAnswers: answersAsObj });
+
+        // TODO: like answersAsObj[dietRestrictions] for each parameter
+        addUser();
     }
 
     const QuestionText = (questionText) => {
