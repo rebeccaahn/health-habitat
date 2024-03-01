@@ -1,4 +1,5 @@
-// ALREADY RAN SO DO NOT RUN AGAIN!!
+// ALREADY RAN (by running `node add-task-data.js`, make sure to first upload api-data folder with all json files) 
+// DO NOT RUN AGAIN!!
 
 import  { initializeApp } from 'firebase/app'
 import { getFirestore } from "firebase/firestore";
