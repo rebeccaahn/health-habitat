@@ -4,58 +4,6 @@ export const survey = [
         questionText: 'Welcome to Health Habitat! Please take a moment to fill out this questionnaire to help us better understand your health needs.',
     },
     {
-        questionType: 'SelectionGroup',
-        questionText:
-            'How many tasks would you want to achieve in a day?',
-        questionId: 'numTasksPerDay',
-        options: [
-            {
-                optionText: '1',
-                value: 1
-            },
-            {
-                optionText: '2',
-                value: 2
-            },
-            {
-                optionText: '3',
-                value: 3
-            },
-            {
-                optionText: '4',
-                value: 4
-            }
-        ]
-    },
-    {
-        questionType: 'SelectionGroup',
-        questionText:
-            'When would you like to receive task reminders?',
-        questionId: 'favoritePet',
-        options: [
-            {
-                optionText: 'Morning',
-                value: 9
-            },
-            {
-                optionText: 'Noon',
-                value: 12
-            },
-            {
-                optionText: 'Afternoon',
-                value: 15
-            },
-            {
-                optionText: 'Evening',
-                value: 18
-            },
-            {
-                optionText: 'Night',
-                value: 21
-            }
-        ]
-    },
-    {
         questionType: 'NumericInput',
         questionText: 'How many calories would you like to consume in a day?',
         questionId: 'targetCalories',
