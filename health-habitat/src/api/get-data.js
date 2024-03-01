@@ -65,11 +65,6 @@ function getCategory(userDoc) {
     return userDoc.get("exerciseCategory");
 }
 
-// Getting user's exercise equipments
-function getEquipments(userDoc) {
-    return userDoc.get("exerciseEquipments");
-}
-
 // Getting user's preferred meditation tag
 function getTag(userDoc) {
     return userDoc.get("meditationTag");
