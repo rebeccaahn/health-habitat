@@ -2,8 +2,7 @@ import { db } from '../../App'
 import { collection, addDoc } from "firebase/firestore"; 
 
 // Adding document to collection UserInfo
-// TODO: add parameters here
-export default async function addUser(email, weather, calories, cuisines, restrictions, allergies, priceLimit, dietDuration, location, exerciseDuration, exerciseType, intensity, genres, meditationDuration) {
+export default async function addUser(email, weather, calories, cuisines, restrictions, allergies, priceLimit, dietDuration, location, exerciseDuration, exerciseTypes, equipments, intensity, genres, meditationDuration) {
     const userData = {
         userID: email,
         preferredWeather: weather,
@@ -13,9 +12,10 @@ export default async function addUser(email, weather, calories, cuisines, restri
         dietAllergies: allergies,
         dietPriceLimit: priceLimit,
         dietTime: dietDuration,
-        locationType: location,
+        exerciseLocation: location,
         exerciseTime: exerciseDuration,
-        exerciseCategory: exerciseType,
+        exerciseCategories: exerciseTypes,
+        exerciseEquipments: equipments,
         exerciseIntensity: intensity,
         meditationTags: genres,
         meditationTime: meditationDuration

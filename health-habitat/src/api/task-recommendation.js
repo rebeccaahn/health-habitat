@@ -1,39 +1,59 @@
-import { db } from '../../App'
+import { db, auth } from '../../App'
 import { collection, query, where, getDocs } from "firebase/firestore";
 
 function recommendDietTask() {
-    // TODO: Call recipe API endpoint
+    userDoc = getUserDocument(auth.currentUser.email);
+
+    // Query parameters to put in endpoint call
+    // TODO: Call search recipe API endpoint
+    output = `?maxCalories=${getCalories(userDoc)}&cuisine=${getCuisines(userDoc)}&diet=${getRestrictions(userDoc)}&intolerances=${getAllergies(userDoc)}&type=${_.sample(getMealType())}`
+
+    recipeID = _.sample(output["results"])["id"]
+
+    // TODO: Call recipe card API endpoint
     return;
 }
 
 // TODO: Incorporate live data into recommendation factors as well
-// Combining queries of ExerciseTasks to get personalized task(s) 
-// because AND queries only work on 1 field at a time
-async function recommendExerciseTask(category, equipment) {
-    const categoryQ = query(collection(db, "ExerciseTasks"), where("category", "==", category));
-    // const equipmentQ = query(collection(db, "ExerciseTasks"), where("equipment", "==", equipment));
-    
-    const categorySnapshot = await getDocs(categoryQ);
-    // const equipmentSnapshot = await getDocs(equipmentQ);
+// Combining queries of ExerciseTasks to get personalized task(s) because AND queries only work on 1 field at a time
+async function recommendExerciseTask() {
+    // Get current user data
+    userDoc = getUserDocument(auth.currentUser.email);
+
+    // Make queries
+    const categoriesQ = query(collection(db, "ExerciseTasks"), where("category", "in", getCategories(userDoc)));
+    const equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "in", getEquipments(userDoc)));
+
+    // Retrieve queried documents
+    const categoriesSnapshot = await getDocs(categoriesQ);
+    const equipmentsSnapshot = await getDocs(equipmentsQ);
+
     // Uniquely union multiple arrays
-    let exerciseUnion = _.union(categorySnapshot.docs);
+    let exerciseUnion = _.union(categoriesSnapshot.docs, equipmentsSnapshot.docs);
     
+    // Return recommended task
     let randomExercise = _.sample(exerciseUnion);
-    return randomExercise.get("name");
+    return [randomExercise.get("name"), randomExercise.get("description")];
 }
 
-// Combining queries of MeditationTasks to get personalized task(s) 
-// because AND queries only work on 1 field at a time
-async function recommendMeditationTask(tag, duration) {
-    const tagQ = query(collection(db, "MeditationTasks"), where("meditationTags", "array-contains", tag));
-    // const tagsQ = query(collection(db, "MeditationTasks"), where("tags", "in", tags));  // if user prefers multiple tags
-    // const durationQ = query(collection(db, "MeditationTasks"), where("duration", "<=", duration));
+// TODO: Incorporate live data into recommendation factors as well
+// Combining queries of MeditationTasks to get personalized task(s) because AND queries only work on 1 field at a time
+async function recommendMeditationTask() {
+    // Get current user data
+    userDoc = getUserDocument(auth.currentUser.email);
+
+    // Make queries
+    const tagQ = query(collection(db, "MeditationTasks"), where("tag", "in", getTags(userDoc)));
+    const timeQ = query(collection(db, "MeditationTasks"), where("time", "in", getMeditationTime(userDoc)));
     
+    // Retrieve queried documents
     const tagSnapshot = await getDocs(tagQ);
-    // const durationSnapshot = await getDocs(durationQ);
+    const timeSnapshot = await getDocs(timeQ);
+
     // Uniquely union multiple arrays
-    let meditationUnion = _.union(tagSnapshot.docs);
+    let meditationUnion = _.union(tagSnapshot.docs, timeSnapshot.docs);
     
+    // Return recommended task
     let randomMeditation = _.sample(meditationUnion);
     return randomMeditation.get("url");
 }
