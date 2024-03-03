@@ -4,6 +4,35 @@ export const survey = [
         questionText: 'Welcome to Health Habitat! Please take a moment to fill out this questionnaire to help us better understand your health needs.',
     },
     {
+        questionType: 'MultipleSelectionGroup',
+        questionText:
+            'What type of weather do you prefer?',
+        questionId: 'weather',
+        questionSettings: {
+            minMultiSelect: 0,
+            maxMultiSelect: 4,
+            autoAdvance: true,
+        },
+        options: [
+            {
+                optionText: 'Rain',
+                value: 'rain'
+            },
+            {
+                optionText: 'Drizzle',
+                value: 'drizzle'
+            },
+            {
+                optionText: 'Cloudy',
+                value: 'clouds'
+            },
+            {
+                optionText: 'Clear',
+                value: 'clear'
+            }
+        ]
+    },
+    {
         questionType: 'NumericInput',
         questionText: 'How many calories would you like to consume in a day?',
         questionId: 'targetCalories',
@@ -12,14 +41,59 @@ export const survey = [
     {
         questionType: 'MultipleSelectionGroup',
         questionText:
+            'What type of cuisine(s) do you enjoy?',
+        questionId: 'cuisines',
+        questionSettings: {
+            minMultiSelect: 0,
+            maxMultiSelect: 7,
+            autoAdvance: true,
+        },
+        options: [
+            {
+                optionText: 'American',
+                value: 'american'
+            },
+            {
+                optionText: 'Asian',
+                value: 'asian'
+            },
+            {
+                optionText: 'French',
+                value: 'french'
+            },
+            {
+                optionText: 'Indian',
+                value: 'indian'
+            },
+            {
+                optionText: 'Italian',
+                value: 'italian'
+            },
+            {
+                optionText: 'Mediterranean',
+                value: 'mediterranean'
+            },
+            {
+                optionText: 'Mexican',
+                value: 'mexican'
+            }
+        ]
+    },
+    {
+        questionType: 'MultipleSelectionGroup',
+        questionText:
             'Do you have any dietary restrictions?',
         questionId: 'dietRestrictions',
         questionSettings: {
             minMultiSelect: 0,
-            maxMultiSelect: 8,
+            maxMultiSelect: 6,
             autoAdvance: true,
         },
         options: [
+            {
+                optionText: 'Gluten Free',
+                value: 'gluten free'
+            },
             {
                 optionText: 'Vegetarian',
                 value: 'vegetarian'
@@ -33,26 +107,71 @@ export const survey = [
                 value: 'pescatarian'
             },
             {
-                optionText: 'Lactose Intolerance',
-                value: 'lactose'
-            },
-            {
-                optionText: 'Gluten Intolerance',
-                value: 'gluten'
-            },
-            {
-                optionText: 'Kosher',
-                value: 'kosher'
-            },
-            {
-                optionText: 'Nut Allergy',
-                value: 'nut'
+                optionText: 'Paleo',
+                value: 'paleo'
             },
             {
                 optionText: 'N/A',
                 value: 'n/a'
-            },
+            }
         ]
+    },
+    {
+        questionType: 'MultipleSelectionGroup',
+        questionText:
+            'Do you have any food allergies or intolerances?',
+        questionId: 'dietIntolerances',
+        questionSettings: {
+            minMultiSelect: 0,
+            maxMultiSelect: 6,
+            autoAdvance: true,
+        },
+        options: [
+            {
+                optionText: 'Dairy',
+                value: 'dairy'
+            },
+            {
+                optionText: 'Gluten',
+                value: 'gluten'
+            },
+            {
+                optionText: 'Grain',
+                value: 'grain'
+            },
+            {
+                optionText: 'Peanut',
+                value: 'peanut'
+            },
+            {
+                optionText: 'Seafood',
+                value: 'seafood'
+            },
+            {
+                optionText: 'Soy',
+                value: 'soy'
+            },
+            {
+                optionText: 'Wheat',
+                value: 'wheat'
+            },
+            {
+                optionText: 'N/A',
+                value: 'n/a'
+            }
+        ]
+    },
+    {
+        questionType: 'NumericInput',
+        questionText: 'What is your price limit for making a meal? (in USD)',
+        questionId: 'priceLimit',
+        placeholderText: '20',
+    },
+    {
+        questionType: 'NumericInput',
+        questionText: 'How much time would you like to spend cooking for one meal? (in minutes)',
+        questionId: 'timeLimit',
+        placeholderText: '20',
     },
     {
         questionType: 'SelectionGroup',
@@ -125,12 +244,6 @@ export const survey = [
         ]
     },
     {
-        questionType: 'NumericInput',
-        questionText: 'How much time would you like to spend meditating in a day? (in minutes)',
-        questionId: 'meditationTime',
-        placeholderText: '15',
-    },
-    {
         questionType: 'MultipleSelectionGroup',
         questionText:
             'What genre(s) of music do you enjoy?',
@@ -174,6 +287,12 @@ export const survey = [
                 value: 'electronic'
             }
         ]
+    },
+    {
+        questionType: 'NumericInput',
+        questionText: 'How much time would you like to spend meditating in a day? (in minutes)',
+        questionId: 'meditationTime',
+        placeholderText: '15',
     },
     {
         questionType: 'Info',
