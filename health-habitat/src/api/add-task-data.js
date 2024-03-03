@@ -17,6 +17,34 @@ import piano from "../../../api-data/piano_songs_results.json" assert { type: 'j
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// Adding document to collection ExerciseTasks
+async function addExerciseTask(id, title, desc, type, equip, completed=false) {
+    const exerciseTaskData = {
+        task_id: id,
+        name: title,
+        description: desc,
+        category: type,
+        equipment: equip,
+        isCompleted: completed
+    };
+
+    await addDoc(collection(db, "ExerciseTasks"), exerciseTaskData);
+}
+
+// Adding document to collection MeditationTasks
+async function addMeditationTask(title, desc, name, genre, duration, completed=false) {
+    const meditationTaskData = {
+        track: title,
+        url: desc,
+        artist: name,
+        tag: genre,
+        time: duration,
+        isCompleted: completed
+    };
+    
+    await addDoc(collection(db, "MeditationTasks"), meditationTaskData);
+}
+
 // Convert exercise category ID to its name
 function exerciseCategoryIdToString(number) {
     if (number == 10) {
@@ -47,64 +75,36 @@ function exerciseCategoryIdToString(number) {
 
 // Convert exercise equipment ID to its name
 function exerciseEquipmentIdToString(number) {
-  if (number == 1) {
-      return "Barbell";
-  }
-  else if (number == 8) {
-      return "Bench";
-  }
-  else if (number == 3) {
-      return "Dumbbell";
-  }
-  else if (number == 4) {
-      return "Gym mat";
-  }
-  else if (number == 9) {
-      return "Incline bench";
-  }
-  else if (number == 10) {
-      return "Kettlebell";
-  }
-  else if (number == 6) {
-      return "Pull-up bar";
-  }
-  else if (number == 2) {
-      return "SZ-Bar";
-  }
-  else if (number == 5) {
-    return "Swiss Ball";
-  }
-  else if (number == 7) {
-    return "none (bodyweight exercise)";
-  }
-}
-
-// Adding document to collection ExerciseTasks
-async function addExerciseTask(id, title, desc, type, equip, completed=false) {
-    const exerciseTaskData = {
-        task_id: id,
-        name: title,
-        description: desc,
-        category: type,
-        equipment: equip,
-        isCompleted: completed
-    };
-
-    await addDoc(collection(db, "ExerciseTasks"), exerciseTaskData);
-}
-
-// Adding document to collection MeditationTasks
-async function addMeditationTask(title, desc, name, genre, duration, completed=false) {
-    const meditationTaskData = {
-        track: title,
-        url: desc,
-        artist: name,
-        tag: genre,
-        time: duration,
-        isCompleted: completed
-    };
-    
-    await addDoc(collection(db, "MeditationTasks"), meditationTaskData);
+    if (number == 1) {
+        return "Barbell";
+    }
+    else if (number == 8) {
+        return "Bench";
+    }
+    else if (number == 3) {
+        return "Dumbbell";
+    }
+    else if (number == 4) {
+        return "Gym mat";
+    }
+    else if (number == 9) {
+        return "Incline bench";
+    }
+    else if (number == 10) {
+        return "Kettlebell";
+    }
+    else if (number == 6) {
+        return "Pull-up bar";
+    }
+    else if (number == 2) {
+        return "SZ-Bar";
+    }
+    else if (number == 5) {
+        return "Swiss Ball";
+    }
+    else if (number == 7) {
+        return "none (bodyweight exercise)";
+    }
 }
 
 // Adding all tasks from json files
