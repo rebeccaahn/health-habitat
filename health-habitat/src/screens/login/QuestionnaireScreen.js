@@ -63,7 +63,7 @@ export default function RegisterScreen({ navigation }) {
         // this.props.navigation.navigate('SurveyCompleted', { surveyAnswers: answersAsObj });
 
         // Add questionnaire answers into Firestore
-        addUser(auth.currentUser.email, answersAsObj[weather], answersAsObj[targetCalories], answersAsObj[cuisines], answersAsObj[dietRestrictions], answersAsObj[dietIntolerances], answersAsObj[priceLimit], answersAsObj[timeLimit], answersAsObj[outdoor], answersAsObj[exerciseTime], answersAsObj[exerciseType], answersAsObj[exerciseIntensity], answersAsObj[musicGenre], answersAsObj[meditationTime]);
+        addUser(auth.currentUser.email, answersAsObj["weather"], answersAsObj["targetCalories"], answersAsObj["cuisines"], answersAsObj["dietRestrictions"], answersAsObj["dietIntolerances"], answersAsObj["priceLimit"], answersAsObj["timeLimit"], answersAsObj["outdoor"], answersAsObj["exerciseTime"], answersAsObj["exerciseTypes"], answersAsObj["exerciseEquipments"], answersAsObj["exerciseIntensity"], answersAsObj["musicGenres"], answersAsObj["meditationTime"]);
     }
 
     const QuestionText = (questionText) => {

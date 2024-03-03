@@ -196,26 +196,74 @@ export const survey = [
         placeholderText: '30',
     },
     {
-        questionType: 'SelectionGroup',
+        questionType: 'MultipleSelectionGroup',
         questionText:
-            'What type of exercise do you prefer?',
-        questionId: 'exerciseType',
+            'What types of exercise do you prefer?',
+        questionId: 'exerciseTypes',
         options: [
+            {
+                optionText: 'Abs',
+                value: 'abs'
+            },
+            {
+                optionText: 'Arms',
+                value: 'arms'
+            },
+            {
+                optionText: 'Back',
+                value: 'back'
+            },
+            {
+                optionText: 'Calves',
+                value: 'calves'
+            },
             {
                 optionText: 'Cardio',
                 value: 'cardio'
             },
             {
-                optionText: 'Strength Training',
-                value: 'strength'
+                optionText: 'Chest',
+                value: 'chest'
             },
             {
-                optionText: 'Flexibility',
-                value: 'flexibility'
+                optionText: 'Legs',
+                value: 'legs'
             },
             {
-                optionText: 'Balance',
-                value: 'balance'
+                optionText: 'Shoulders',
+                value: 'shoulders'
+            }
+        ]
+    },
+    {
+        questionType: 'MultipleSelectionGroup',
+        questionText:
+            'What exercise equipment do you have?',
+        questionId: 'exerciseEquipments',
+        options: [
+            {
+                optionText: 'Barbell',
+                value: 'barbell'
+            },
+            {
+                optionText: 'Dumbbell',
+                value: 'dumbbell'
+            },
+            {
+                optionText: 'Gym Mat',
+                value: 'gym mat'
+            },
+            {
+                optionText: 'Kettlebell',
+                value: 'kettlebell'
+            },
+            {
+                optionText: 'Pull-up Bar',
+                value: 'pull-up bar'
+            },
+            {
+                optionText: 'Swiss Ball',
+                value: 'swiss ball'
             },
             {
                 optionText: 'N/A',
@@ -247,7 +295,7 @@ export const survey = [
         questionType: 'MultipleSelectionGroup',
         questionText:
             'What genre(s) of music do you enjoy?',
-        questionId: 'musicGenre',
+        questionId: 'musicGenres',
         questionSettings: {
             minMultiSelect: 1,
             maxMultiSelect: 8,
@@ -255,36 +303,32 @@ export const survey = [
         },
         options: [
             {
-                optionText: 'Classical',
-                value: 'classical'
+                optionText: 'Blues',
+                value: 'blues'
             },
             {
-                optionText: 'Jazz',
-                value: 'jazz'
+                optionText: 'Chill',
+                value: 'chill'
             },
             {
-                optionText: 'Pop',
-                value: 'pop'
+                optionText: 'Classic',
+                value: 'classic'
             },
             {
-                optionText: 'Rock',
-                value: 'rock'
+                optionText: 'Dark Ambient',
+                value: 'dark ambient'
             },
             {
-                optionText: 'Hip Hop',
-                value: 'hip hop'
+                optionText: 'Easy Listening',
+                value: 'easy listening'
             },
             {
-                optionText: 'R&B',
-                value: 'r&b'
+                optionText: 'Lo-Fi',
+                value: 'lo-fi'
             },
             {
-                optionText: 'Country',
-                value: 'country'
-            },
-            {
-                optionText: 'Electronic',
-                value: 'electronic'
+                optionText: 'Piano',
+                value: 'piano'
             }
         ]
     },
@@ -292,7 +336,7 @@ export const survey = [
         questionType: 'NumericInput',
         questionText: 'How much time would you like to spend meditating in a day? (in minutes)',
         questionId: 'meditationTime',
-        placeholderText: '15',
+        placeholderText: '5',
     },
     {
         questionType: 'Info',
