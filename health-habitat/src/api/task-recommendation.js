@@ -44,7 +44,7 @@ async function recommendMeditationTask() {
 
     // Make queries
     const tagQ = query(collection(db, "MeditationTasks"), where("tag", "in", getTags(userDoc)));
-    const timeQ = query(collection(db, "MeditationTasks"), where("time", "in", getMeditationTime(userDoc)));
+    const timeQ = query(collection(db, "MeditationTasks"), where("time", "<=", getMeditationTime(userDoc)));
     
     // Retrieve queried documents
     const tagSnapshot = await getDocs(tagQ);

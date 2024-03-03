@@ -100,9 +100,10 @@ function getTags(userDoc) {
     return userDoc.get("meditationTags");
 }
 
-// Getting user's preferred meditation duration
+// Getting user's preferred meditation duration in milliseconds
 function getMeditationTime(userDoc) {
-    return userDoc.get("meditationTime");
+    time = userDoc.get("meditationTime")
+    return time*60000;
 }
 
 // TODO: Getting user's current data
