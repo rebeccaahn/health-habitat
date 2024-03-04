@@ -1,7 +1,3 @@
-import AppleHealthKit, {
-    HealthValue,
-    HealthKitPermissions,
-} from 'react-native-health';
 import appleHealthKit from 'react-native-health';
 
 
