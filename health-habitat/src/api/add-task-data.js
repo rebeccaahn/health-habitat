@@ -1,5 +1,5 @@
+// DO NOT RUN!!
 // ALREADY RAN (by running `node add-task-data.js`, make sure to first upload api-data folder with all json files) 
-// RUN ONE MORE TIME WITH UPDATED PARAMETERS BUT DO NOT RUN AGAIN AFTERWARDS!!
 
 import  { initializeApp } from 'firebase/app'
 import { getFirestore } from "firebase/firestore";
@@ -18,28 +18,26 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // Adding document to collection ExerciseTasks
-async function addExerciseTask(id, title, desc, type, equip, completed=false) {
+async function addExerciseTask(id, title, desc, type, equip) {
     const exerciseTaskData = {
         task_id: id,
         name: title,
         description: desc,
         category: type,
-        equipment: equip,
-        isCompleted: completed
+        equipment: equip
     };
 
     await addDoc(collection(db, "ExerciseTasks"), exerciseTaskData);
 }
 
 // Adding document to collection MeditationTasks
-async function addMeditationTask(title, desc, name, genre, duration, completed=false) {
+async function addMeditationTask(title, desc, name, genre, duration) {
     const meditationTaskData = {
         track: title,
         url: desc,
         artist: name,
         tag: genre,
-        time: duration,
-        isCompleted: completed
+        time: duration
     };
     
     await addDoc(collection(db, "MeditationTasks"), meditationTaskData);
@@ -70,6 +68,9 @@ function exerciseCategoryIdToString(number) {
     }
     else if (number == 13) {
         return "Shoulders";
+    }
+    else {
+        return "";
     }
 }
 
@@ -105,42 +106,43 @@ function exerciseEquipmentIdToString(number) {
     else if (number == 7) {
         return "none (bodyweight exercise)";
     }
+    else {
+        return "";
+    }
 }
 
 // Adding all tasks from json files
 // Exercise
-// TODO: replace # with position of equipment
 Object.entries(exerciseData).forEach(([key, value]) => {
-    addExerciseTask(key, value[1], value[2], exerciseCategoryIdToString(value[0]), exerciseEquipmentIdToString(value[#]));
+    addExerciseTask(key, value[1], value[2], exerciseCategoryIdToString(value[0]), exerciseEquipmentIdToString(value[3]));
 });
 
 
 // Meditation
-// TODO: replace # with position of time and copy&paste to rest of calls
 Object.entries(blues).forEach(([key, value]) => {
-  addMeditationTask(value[0], key, value[1], "blues", value[#]);
+  addMeditationTask(value[0], key, value[1], "blues", value[2]);
 });
 
 Object.entries(chill).forEach(([key, value]) => {
-  addMeditationTask(value[0], key, value[1], "chill");
+  addMeditationTask(value[0], key, value[1], "chill", value[2]);
 });
 
 Object.entries(classic).forEach(([key, value]) => {
-  addMeditationTask(value[0], key, value[1], "classic");
+  addMeditationTask(value[0], key, value[1], "classic", value[2]);
 });
 
 Object.entries(ambient).forEach(([key, value]) => {
-  addMeditationTask(value[0], key, value[1], "dark ambient");
+  addMeditationTask(value[0], key, value[1], "dark ambient", value[2]);
 });
 
 Object.entries(listening).forEach(([key, value]) => {
-  addMeditationTask(value[0], key, value[1], "easy listening");
+  addMeditationTask(value[0], key, value[1], "easy listening", value[2]);
 });
 
 Object.entries(fi).forEach(([key, value]) => {
-  addMeditationTask(value[0], key, value[1], "lo-fi");
+  addMeditationTask(value[0], key, value[1], "lo-fi", value[2]);
 });
 
 Object.entries(piano).forEach(([key, value]) => {
-  addMeditationTask(value[0], key, value[1], "piano");
+  addMeditationTask(value[0], key, value[1], "piano", value[2]);
 });
