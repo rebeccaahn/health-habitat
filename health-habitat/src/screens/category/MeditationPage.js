@@ -1,7 +1,8 @@
 
 import React, {useEffect, useState} from 'react'
-import {StyleSheet, View, TouchableOpacity, FlatList} from 'react-native'
+import {StyleSheet, View, TouchableOpacity} from 'react-native'
 import { Text } from 'react-native-paper'
+import Button from '../../components/Button'
 import Background from '../../components/Background'
 import BackButton from '../../components/BackButton'
 import Header from '../../components/Header'
@@ -13,20 +14,14 @@ export default function MeditationPage({navigation}) {
 
 
     // TODO : update user database and remove onclick functionality
-    const handleMeditationCompletion = async (meditationId) => {
-        setWelcomeMessage(wMessages[0])
+    const handleMeditationCompletion = () => {
+
     }
 
     // TODO : query data
-    const meditationScore = 75
+    const meditationScore = 50
 
-    // TODO : query data
-    const meditationData = [
-        {id: 0, name: 'meditation1', description: 'listen to smth'},
-        {id: 1, name: 'exercise2', description: 'do more listening'},
-    ]
-
-
+    // TODO : call getMeditationTask()
 
     //
 
@@ -52,30 +47,32 @@ export default function MeditationPage({navigation}) {
             <Header props={welcomeMessage}/>
             <Header props={'Your meditation details:'}/>
             <View style={styles.categoryOverview}>
-                {/*<Image*/}
-                {/*    style={styles.categoryIcon}*/}
-                {/*    source={{*/}
-                {/*        // TODO : find such image*/}
-                {/*        uri: ''*/}
-                {/*    }}*/}
-                {/*/>*/}
                 <ProgressBar step={meditationScore} numberOfSteps={100}/>
             </View>
-            <FlatList style={{width: '100%'}}
-                      data={meditationData}
-                      renderItem={({item}) => (
-                          <View style={styles.listItem}>
-                              <View styles={styles.itemText}>
-                                  <Text style={styles.itemName}>{item.name}</Text>
-                                  <Text style={styles.itemDescription}>{item.description}</Text>
-                              </View>
-                              <TouchableOpacity styles={{width: '25%'}} onPress={() => handleMeditationCompletion(item.id)}>
-                                  <Text style={styles.completedButton}>{"completed!"}</Text>
-                              </TouchableOpacity>
-                          </View>
-                      )}
-                      keyExtractor={item => item.id}
-            />
+
+            <Button
+                mode="contained"
+                onPress={handleMeditationCompletion()}
+                style={{ marginTop: 24 }}
+            >
+                completed!
+            </Button>
+
+            {/*<FlatList style={{width: '100%'}}*/}
+            {/*          data={meditationData}*/}
+            {/*          renderItem={({item}) => (*/}
+            {/*              <View style={styles.listItem}>*/}
+            {/*                  <View styles={styles.itemText}>*/}
+            {/*                      <Text style={styles.itemName}>{item.name}</Text>*/}
+            {/*                      <Text style={styles.itemDescription}>{item.description}</Text>*/}
+            {/*                  </View>*/}
+            {/*                  <TouchableOpacity styles={{width: '25%'}} onPress={() => handleMeditationCompletion(item.id)}>*/}
+            {/*                      <Text style={styles.completedButton}>{"completed!"}</Text>*/}
+            {/*                  </TouchableOpacity>*/}
+            {/*              </View>*/}
+            {/*          )}*/}
+            {/*          keyExtractor={item => item.id}*/}
+            {/*/>*/}
         </Background>
     );
 }
