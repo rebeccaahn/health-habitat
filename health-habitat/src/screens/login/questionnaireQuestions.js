@@ -4,35 +4,6 @@ export const survey = [
         questionText: 'Welcome to Health Habitat! Please take a moment to fill out this questionnaire to help us better understand your health needs.',
     },
     {
-        questionType: 'MultipleSelectionGroup',
-        questionText:
-            'What type of weather do you prefer?',
-        questionId: 'weather',
-        questionSettings: {
-            minMultiSelect: 0,
-            maxMultiSelect: 4,
-            autoAdvance: true,
-        },
-        options: [
-            {
-                optionText: 'Rain',
-                value: 'rain'
-            },
-            {
-                optionText: 'Drizzle',
-                value: 'drizzle'
-            },
-            {
-                optionText: 'Cloudy',
-                value: 'clouds'
-            },
-            {
-                optionText: 'Clear',
-                value: 'clear'
-            }
-        ]
-    },
-    {
         questionType: 'NumericInput',
         questionText: 'How many calories would you like to consume in a day?',
         questionId: 'targetCalories',
@@ -174,22 +145,6 @@ export const survey = [
         placeholderText: '20',
     },
     {
-        questionType: 'SelectionGroup',
-        questionText:
-            'Do you prefer indoor or outdoor activities?',
-        questionId: 'outdoor',
-        options: [
-            {
-                optionText: 'Indoor',
-                value: false
-            },
-            {
-                optionText: 'Outdoor',
-                value: true
-            },
-        ]
-    },
-    {
         questionType: 'NumericInput',
         questionText: 'How much time would you like to spend exercising in a day? (in minutes)',
         questionId: 'exerciseTime',
@@ -289,47 +244,6 @@ export const survey = [
                 optionText: 'High',
                 value: 3
             },
-        ]
-    },
-    {
-        questionType: 'MultipleSelectionGroup',
-        questionText:
-            'What genre(s) of music do you enjoy?',
-        questionId: 'musicGenres',
-        questionSettings: {
-            minMultiSelect: 1,
-            maxMultiSelect: 8,
-            autoAdvance: true,
-        },
-        options: [
-            {
-                optionText: 'Blues',
-                value: 'blues'
-            },
-            {
-                optionText: 'Chill',
-                value: 'chill'
-            },
-            {
-                optionText: 'Classic',
-                value: 'classic'
-            },
-            {
-                optionText: 'Dark Ambient',
-                value: 'dark ambient'
-            },
-            {
-                optionText: 'Easy Listening',
-                value: 'easy listening'
-            },
-            {
-                optionText: 'Lo-Fi',
-                value: 'lo-fi'
-            },
-            {
-                optionText: 'Piano',
-                value: 'piano'
-            }
         ]
     },
     {
