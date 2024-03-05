@@ -1,36 +1,100 @@
-import { db } from '../../App'
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { auth } from '../../App'
+import { updateDoc, increment } from "firebase/firestore";
+import * as getUserData from "/get-user-data";
+import * as recommend from "/task-recommendation";
 
-// Getting score of DietTasks
-function getDietScore() {
-    return 100;
+// TODO: put this code in dashboard page load
+// Check if task has become outdated
+var day = 1000*60*60*24;    // milliseconds to day
+// Get current user data
+const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+// Get assigned timestamp of current task
+const timestamp = getUserData.get_Task(userDoc)[1]
+if (new Date().getDay() != assignedDate.getDay()) {
+    recommend.recommend_Task();
 }
 
-// Getting score of ExerciseTasks
-function getExerciseScore() {
-    return 100;
+// When task is completed
+// Incrementing score of Diet category
+export async function incrementDietScore() {
+    // Get current user data
+    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+
+    // Recommend new task
+    recommend.recommendDietTask();
+
+    // Increment score
+    await updateDoc(userDoc.ref, {
+        dietScore: increment(10)
+    });
 }
 
-// Getting score of MeditationTasks
-function getMeditationScore() {
-    return 100;
+// Incrementing score of Exercise category
+export async function incrementExerciseScore() {
+    // Get current user data
+    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+
+    // Recommend new task
+    recommend.recommendExerciseTask();
+
+    // Increment score
+    await updateDoc(userDoc.ref, {
+        exerciseScore: increment(10)
+    });
 }
 
-// Setting score of DietTasks
-async function setDietScore() {
-    return getDietScore();
+// Incrementing score of Meditation category
+export async function incrementMeditationScore() {
+    // Get current user data
+    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+
+    // Recommend new task
+    recommend.recommendMeditationTask();
+
+    // Increment score
+    await updateDoc(userDoc.ref, {
+        meditationScore: increment(10)
+    });
 }
 
-// Setting score of ExerciseTasks
-async function setExerciseScore() {
-    const exerciseScoreQ = query(collection(db, "ExerciseTasks"), where("isCompleted", "==", false));
-    const exerciseScoreSnapshot = await getDocs(exerciseScoreQ);
-    return getExerciseScore() - exerciseScoreSnapshot.size;
+// Decrementing score of Diet category
+export async function decrementDietScore() {
+    // Get current user data
+    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+
+    // Get assigned timestamp of current task
+    const timestamp = getUserData.getDietTask(userDoc)[1]
+
+    // Decrement score by how much time passed by
+    await updateDoc(userDoc.ref, {
+        dietScore: increment(-0.01 * (new Date().getHours() - assignedDate.getHours()))
+    });
 }
 
-// Setting score of MeditationTasks
-async function setMeditationScore() {
-    const meditationScoreQ = query(collection(db, "MeditationTasks"), where("isCompleted", "==", false));
-    const meditationScoreSnapshot = await getDocs(meditationScoreQ);
-    return getMeditationScore() - meditationScoreSnapshot.size;;
+// Decrementing score of Exercise category
+export async function decrementExerciseScore(number) {
+    // Get current user data
+    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+
+    // Get assigned timestamp of current task
+    const timestamp = getUserData.getExerciseTask(userDoc)[1]
+
+    // Decrement score by how much time passed by
+    await updateDoc(userDoc.ref, {
+        exerciseScore: increment(-0.01 * (new Date().getHours() - assignedDate.getHours()))
+    });
+}
+
+// Decrementing score of Meditation category
+export async function decrementMeditationScore(number) {
+    // Get current user data
+    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+
+    // Get assigned timestamp of current task
+    const timestamp = getUserData.getMeditationTask(userDoc)[1]
+
+    // Decrement score by how much time passed by
+    await updateDoc(userDoc.ref, {
+        meditationScore: increment(-0.01 * (new Date().getHours() - assignedDate.getHours()))
+    });
 }

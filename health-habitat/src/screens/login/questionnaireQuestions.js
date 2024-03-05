@@ -4,54 +4,31 @@ export const survey = [
         questionText: 'Welcome to Health Habitat! Please take a moment to fill out this questionnaire to help us better understand your health needs.',
     },
     {
-        questionType: 'SelectionGroup',
+        questionType: 'MultipleSelectionGroup',
         questionText:
-            'How many tasks would you want to achieve in a day?',
-        questionId: 'numTasksPerDay',
+            'What type of weather do you prefer?',
+        questionId: 'weather',
+        questionSettings: {
+            minMultiSelect: 0,
+            maxMultiSelect: 4,
+            autoAdvance: true,
+        },
         options: [
             {
-                optionText: '1',
-                value: 1
+                optionText: 'Rain',
+                value: 'rain'
             },
             {
-                optionText: '2',
-                value: 2
+                optionText: 'Drizzle',
+                value: 'drizzle'
             },
             {
-                optionText: '3',
-                value: 3
+                optionText: 'Cloudy',
+                value: 'clouds'
             },
             {
-                optionText: '4',
-                value: 4
-            }
-        ]
-    },
-    {
-        questionType: 'SelectionGroup',
-        questionText:
-            'When would you like to receive task reminders?',
-        questionId: 'favoritePet',
-        options: [
-            {
-                optionText: 'Morning',
-                value: 9
-            },
-            {
-                optionText: 'Noon',
-                value: 12
-            },
-            {
-                optionText: 'Afternoon',
-                value: 15
-            },
-            {
-                optionText: 'Evening',
-                value: 18
-            },
-            {
-                optionText: 'Night',
-                value: 21
+                optionText: 'Clear',
+                value: 'clear'
             }
         ]
     },
@@ -64,14 +41,59 @@ export const survey = [
     {
         questionType: 'MultipleSelectionGroup',
         questionText:
+            'What type of cuisine(s) do you enjoy?',
+        questionId: 'cuisines',
+        questionSettings: {
+            minMultiSelect: 0,
+            maxMultiSelect: 7,
+            autoAdvance: true,
+        },
+        options: [
+            {
+                optionText: 'American',
+                value: 'american'
+            },
+            {
+                optionText: 'Asian',
+                value: 'asian'
+            },
+            {
+                optionText: 'French',
+                value: 'french'
+            },
+            {
+                optionText: 'Indian',
+                value: 'indian'
+            },
+            {
+                optionText: 'Italian',
+                value: 'italian'
+            },
+            {
+                optionText: 'Mediterranean',
+                value: 'mediterranean'
+            },
+            {
+                optionText: 'Mexican',
+                value: 'mexican'
+            }
+        ]
+    },
+    {
+        questionType: 'MultipleSelectionGroup',
+        questionText:
             'Do you have any dietary restrictions?',
         questionId: 'dietRestrictions',
         questionSettings: {
             minMultiSelect: 0,
-            maxMultiSelect: 8,
+            maxMultiSelect: 6,
             autoAdvance: true,
         },
         options: [
+            {
+                optionText: 'Gluten Free',
+                value: 'gluten free'
+            },
             {
                 optionText: 'Vegetarian',
                 value: 'vegetarian'
@@ -85,26 +107,71 @@ export const survey = [
                 value: 'pescatarian'
             },
             {
-                optionText: 'Lactose Intolerance',
-                value: 'lactose'
-            },
-            {
-                optionText: 'Gluten Intolerance',
-                value: 'gluten'
-            },
-            {
-                optionText: 'Kosher',
-                value: 'kosher'
-            },
-            {
-                optionText: 'Nut Allergy',
-                value: 'nut'
+                optionText: 'Paleo',
+                value: 'paleo'
             },
             {
                 optionText: 'N/A',
                 value: 'n/a'
-            },
+            }
         ]
+    },
+    {
+        questionType: 'MultipleSelectionGroup',
+        questionText:
+            'Do you have any food allergies or intolerances?',
+        questionId: 'dietIntolerances',
+        questionSettings: {
+            minMultiSelect: 0,
+            maxMultiSelect: 6,
+            autoAdvance: true,
+        },
+        options: [
+            {
+                optionText: 'Dairy',
+                value: 'dairy'
+            },
+            {
+                optionText: 'Gluten',
+                value: 'gluten'
+            },
+            {
+                optionText: 'Grain',
+                value: 'grain'
+            },
+            {
+                optionText: 'Peanut',
+                value: 'peanut'
+            },
+            {
+                optionText: 'Seafood',
+                value: 'seafood'
+            },
+            {
+                optionText: 'Soy',
+                value: 'soy'
+            },
+            {
+                optionText: 'Wheat',
+                value: 'wheat'
+            },
+            {
+                optionText: 'N/A',
+                value: 'n/a'
+            }
+        ]
+    },
+    {
+        questionType: 'NumericInput',
+        questionText: 'What is your price limit for making a meal? (in USD)',
+        questionId: 'priceLimit',
+        placeholderText: '20',
+    },
+    {
+        questionType: 'NumericInput',
+        questionText: 'How much time would you like to spend cooking for one meal? (in minutes)',
+        questionId: 'timeLimit',
+        placeholderText: '20',
     },
     {
         questionType: 'SelectionGroup',
@@ -129,26 +196,74 @@ export const survey = [
         placeholderText: '30',
     },
     {
-        questionType: 'SelectionGroup',
+        questionType: 'MultipleSelectionGroup',
         questionText:
-            'What type of exercise do you prefer?',
-        questionId: 'exerciseType',
+            'What types of exercise do you prefer?',
+        questionId: 'exerciseTypes',
         options: [
+            {
+                optionText: 'Abs',
+                value: 'abs'
+            },
+            {
+                optionText: 'Arms',
+                value: 'arms'
+            },
+            {
+                optionText: 'Back',
+                value: 'back'
+            },
+            {
+                optionText: 'Calves',
+                value: 'calves'
+            },
             {
                 optionText: 'Cardio',
                 value: 'cardio'
             },
             {
-                optionText: 'Strength Training',
-                value: 'strength'
+                optionText: 'Chest',
+                value: 'chest'
             },
             {
-                optionText: 'Flexibility',
-                value: 'flexibility'
+                optionText: 'Legs',
+                value: 'legs'
             },
             {
-                optionText: 'Balance',
-                value: 'balance'
+                optionText: 'Shoulders',
+                value: 'shoulders'
+            }
+        ]
+    },
+    {
+        questionType: 'MultipleSelectionGroup',
+        questionText:
+            'What exercise equipment do you have?',
+        questionId: 'exerciseEquipments',
+        options: [
+            {
+                optionText: 'Barbell',
+                value: 'barbell'
+            },
+            {
+                optionText: 'Dumbbell',
+                value: 'dumbbell'
+            },
+            {
+                optionText: 'Gym Mat',
+                value: 'gym mat'
+            },
+            {
+                optionText: 'Kettlebell',
+                value: 'kettlebell'
+            },
+            {
+                optionText: 'Pull-up Bar',
+                value: 'pull-up bar'
+            },
+            {
+                optionText: 'Swiss Ball',
+                value: 'swiss ball'
             },
             {
                 optionText: 'N/A',
@@ -177,16 +292,10 @@ export const survey = [
         ]
     },
     {
-        questionType: 'NumericInput',
-        questionText: 'How much time would you like to spend meditating in a day? (in minutes)',
-        questionId: 'meditationTime',
-        placeholderText: '15',
-    },
-    {
         questionType: 'MultipleSelectionGroup',
         questionText:
             'What genre(s) of music do you enjoy?',
-        questionId: 'musicGenre',
+        questionId: 'musicGenres',
         questionSettings: {
             minMultiSelect: 1,
             maxMultiSelect: 8,
@@ -194,38 +303,40 @@ export const survey = [
         },
         options: [
             {
-                optionText: 'Classical',
-                value: 'classical'
+                optionText: 'Blues',
+                value: 'blues'
             },
             {
-                optionText: 'Jazz',
-                value: 'jazz'
+                optionText: 'Chill',
+                value: 'chill'
             },
             {
-                optionText: 'Pop',
-                value: 'pop'
+                optionText: 'Classic',
+                value: 'classic'
             },
             {
-                optionText: 'Rock',
-                value: 'rock'
+                optionText: 'Dark Ambient',
+                value: 'dark ambient'
             },
             {
-                optionText: 'Hip Hop',
-                value: 'hip hop'
+                optionText: 'Easy Listening',
+                value: 'easy listening'
             },
             {
-                optionText: 'R&B',
-                value: 'r&b'
+                optionText: 'Lo-Fi',
+                value: 'lo-fi'
             },
             {
-                optionText: 'Country',
-                value: 'country'
-            },
-            {
-                optionText: 'Electronic',
-                value: 'electronic'
+                optionText: 'Piano',
+                value: 'piano'
             }
         ]
+    },
+    {
+        questionType: 'NumericInput',
+        questionText: 'How much time would you like to spend meditating in a day? (in minutes)',
+        questionId: 'meditationTime',
+        placeholderText: '5',
     },
     {
         questionType: 'Info',
