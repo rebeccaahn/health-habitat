@@ -1,7 +1,8 @@
 
 import React, {useEffect, useState} from 'react'
-import {StyleSheet, View, TouchableOpacity, FlatList} from 'react-native'
+import {StyleSheet, View, TouchableOpacity} from 'react-native'
 import { Text } from 'react-native-paper'
+import Button from '../../components/Button'
 import Background from '../../components/Background'
 import BackButton from '../../components/BackButton'
 import Header from '../../components/Header'
@@ -9,26 +10,24 @@ import ProgressBar from '../../components/ProgressBar'
 import {theme} from "../../core/theme";
 
 
+// TODO : import getDietScore(), updateDietScore(), getDietTask(), markDietTaskComplete()
+// from ../../api/score-categories.js
+
+// TODO : make environmental variable for recipe API key
+
 export default function DietPage({navigation}) {
 
 
-    // TODO : update user database and remove onclick functionality
-    const handleDietCompletion = async (dietId) => {
-        setWelcomeMessage(wMessages[0])
+    // TODO : update database category score + dietTask, reload page
+    const handleDietCompletion = () => {
+
     }
 
-    // TODO : query data
-    const dietScore = 75
+    // TODO : getDietScore()
+    const dietScore = 25
 
-    // TODO : query data
-    const dietData = [
-        {id: 0, name: 'diet1', description: 'eat smth'},
-        {id: 1, name: 'diet2', description: 'eat more smth'},
-    ]
+    // TODO : call recipe API to retrieve recipe card using query from getDietTask()
 
-
-
-    //
 
     const wMessages = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"]
     const [welcomeMessage, setWelcomeMessage] = useState('')
@@ -52,30 +51,34 @@ export default function DietPage({navigation}) {
             <Header props={welcomeMessage}/>
             <Header props={'Your diet details:'}/>
             <View style={styles.categoryOverview}>
-                {/*<Image*/}
-                {/*    style={styles.categoryIcon}*/}
-                {/*    source={{*/}
-                {/*        // TODO : find such image*/}
-                {/*        uri: ''*/}
-                {/*    }}*/}
-                {/*/>*/}
                 <ProgressBar step={dietScore} numberOfSteps={100}/>
             </View>
-            <FlatList style={{width: '100%'}}
-                      data={dietData}
-                      renderItem={({item}) => (
-                          <View style={styles.listItem}>
-                              <View styles={styles.itemText}>
-                                  <Text style={styles.itemName}>{item.name}</Text>
-                                  <Text style={styles.itemDescription}>{item.description}</Text>
-                              </View>
-                              <TouchableOpacity styles={{width: '25%'}} onPress={() => handleDietCompletion(item.id)}>
-                                  <Text style={styles.completedButton}>{"completed!"}</Text>
-                              </TouchableOpacity>
-                          </View>
-                      )}
-                      keyExtractor={item => item.id}
-            />
+
+
+
+            <Button
+                mode="contained"
+                onPress={handleDietCompletion()}
+                style={{ marginTop: 24 }}
+            >
+                completed!
+            </Button>
+
+            {/*<FlatList style={{width: '100%'}}*/}
+            {/*          data={dietData}*/}
+            {/*          renderItem={({item}) => (*/}
+            {/*              <View style={styles.listItem}>*/}
+            {/*                  <View styles={styles.itemText}>*/}
+            {/*                      <Text style={styles.itemName}>{item.name}</Text>*/}
+            {/*                      <Text style={styles.itemDescription}>{item.description}</Text>*/}
+            {/*                  </View>*/}
+            {/*                  <TouchableOpacity styles={{width: '25%'}} onPress={() => handleDietCompletion(item.id)}>*/}
+            {/*                      <Text style={styles.completedButton}>{"completed!"}</Text>*/}
+            {/*                  </TouchableOpacity>*/}
+            {/*              </View>*/}
+            {/*          )}*/}
+            {/*          keyExtractor={item => item.id}*/}
+            {/*/>*/}
         </Background>
     );
 }

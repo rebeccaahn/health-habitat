@@ -1,25 +1,10 @@
 
-// TODO
-
-// modify imports
-// make MinimizeButton
-
-// how to make category scores automatically decrease by a certain amount each day
-// how to generate different colors for each list item
-// how to not have View elements nested five layers T_T
-
-
 import React, {useEffect, useState} from 'react'
 import { StyleSheet, View, TouchableOpacity } from 'react-native'
-import { Text } from 'react-native-paper'
+import {IconButton, Text} from 'react-native-paper'
 import Background from '../../components/Background'
-// import Button from '../../components/Button'
 import BackButton from '../../components/BackButton'
 import Header from '../../components/Header'
-// import TextInput from '../../components/TextInput'
-// import Toast from '../../components/Toast'
-// import PlainText from '../../components/PlainText'
-// import { theme } from '../../core/theme'
 import ProgressBar from '../../components/ProgressBar'
 import {theme} from "../../core/theme";
 
@@ -30,13 +15,6 @@ export default function CategoriesPage({navigation}) {
     const dietScore = 25
     const meditationScore = 50
     const exerciseScore = 75
-    const numDietTasks = 1
-    const numMeditationTasks = 2
-    const numExerciseTasks = 3
-
-
-
-    //
 
     const wMessages = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"]
     const [welcomeMessage, setWelcomeMessage] = useState('')
@@ -55,72 +33,72 @@ export default function CategoriesPage({navigation}) {
     }, []);
 
     return (
-        <Background color={theme.colors.darkGreenGradient}>
+        <Background color={theme.colors.darkBlueGradient}>
             <BackButton goBack={() => navigation.goBack()}/>
             <Header props={welcomeMessage} />
             <Header props={"Your health overview:"}/>
 
-            <TouchableOpacity style={styles.categoryOverview} onPress={() => navigation.navigate('DietPage')}>
-                    <View style={styles.categoryLeft}>
-                        <View style={styles.categoryOverview}>
-                            {/*<Image*/}
-                            {/*    style={styles.categoryIcon}*/}
-                            {/*    source={{*/}
-                            {/*        // TODO : find such image*/}
-                            {/*        uri : ''*/}
-                            {/*    }}*/}
-                            {/*/>*/}
-                            <Text style={styles.catText}>Diet</Text>
-                        </View>
+            <View style={styles.dietCategory}>
+                <View style={styles.categoryLeft}>
+                    <Text style={styles.catText}>Diet</Text>
+                    <View style={styles.progressView}>
                         <ProgressBar step={dietScore} numberOfSteps={100} />
                     </View>
-                    <View style={styles.categoryRight}>
-                        <Text style={styles.catText}>suggestions</Text>
-                        <Text style={styles.catText}>{numDietTasks}</Text>
-                    </View>
-            </TouchableOpacity>
+                </View>
+                <View style={styles.categoryRight}>
+                    <IconButton
+                        icon="plus"
+                        iconColor="white"
+                        containerColor={ theme.colors.darkestGreen }
+                        mode="contained"
+                        size={45}
+                        onPress={() => navigation.navigate('DietPage')}
+                        style={[ theme.shadow, { position: 'absolute', bottom: 50, elevation: 2} ]}
+                    />
+                </View>
+            </View>
 
 
-            <TouchableOpacity style={styles.categoryOverview} onPress={() => navigation.navigate('MeditationPage')}>
-                    <View style={styles.categoryLeft}>
-                        <View style={styles.categoryOverview}>
-                            {/*<Image*/}
-                            {/*    style={styles.categoryIcon}*/}
-                            {/*    source={{*/}
-                            {/*        // TODO : find such image*/}
-                            {/*        uri : ''*/}
-                            {/*    }}*/}
-                            {/*/>*/}
-                            <Text style={styles.catText}>Meditation</Text>
-                        </View>
+            <View style={styles.meditationCategory}>
+                <View style={styles.categoryLeft}>
+                    <Text style={styles.catText}>Meditation</Text>
+                    <View style={styles.progressView}>
                         <ProgressBar step={meditationScore} numberOfSteps={100} />
                     </View>
-                    <View style={styles.categoryRight}>
-                        <Text style={styles.catText}>suggestions</Text>
-                        <Text style={styles.catText}>{numMeditationTasks}</Text>
-                    </View>
-            </TouchableOpacity>
+                </View>
+                <View style={styles.categoryRight}>
+                    <IconButton
+                        icon="plus"
+                        iconColor="white"
+                        containerColor={ theme.colors.darkestBlue }
+                        mode="contained"
+                        size={45}
+                        onPress={() => navigation.navigate('MeditationPage')}
+                        style={[ theme.shadow, { position: 'absolute', bottom: 50, elevation: 2} ]}
+                    />
+                </View>
+            </View>
 
 
-            <TouchableOpacity style={styles.categoryOverview} onPress={() => navigation.navigate('ExercisePage')}>
-                    <View style={styles.categoryLeft}>
-                        <View style={styles.categoryOverview}>
-                            {/*<Image*/}
-                            {/*    style={styles.categoryIcon}*/}
-                            {/*    source={{*/}
-                            {/*        // TODO : find such image*/}
-                            {/*        uri : ''*/}
-                            {/*    }}*/}
-                            {/*/>*/}
-                            <Text style={styles.catText}>Exercise</Text>
-                        </View>
+            <View style={styles.exerciseCategory}>
+                <View style={styles.categoryLeft}>
+                    <Text style={styles.catText}>Exercise</Text>
+                    <View style={styles.progressView}>
                         <ProgressBar step={exerciseScore} numberOfSteps={100} />
                     </View>
-                    <View style={styles.categoryRight}>
-                        <Text style={styles.catText}>suggestions</Text>
-                        <Text style={styles.catText}>{numExerciseTasks}</Text>
-                    </View>
-            </TouchableOpacity>
+                </View>
+                <View style={styles.categoryRight}>
+                    <IconButton
+                        icon="plus"
+                        iconColor="white"
+                        containerColor={ theme.colors.darkTeal }
+                        mode="contained"
+                        size={45}
+                        onPress={() => navigation.navigate('ExercisePage')}
+                        style={[ theme.shadow, { position: 'absolute', bottom: 50, elevation: 2} ]}
+                    />
+                </View>
+            </View>
 
         </Background>
     )
@@ -128,22 +106,46 @@ export default function CategoriesPage({navigation}) {
 }
 
 const styles = StyleSheet.create({
-    categoryOverview: {
+    dietCategory: {
+        backgroundColor: theme.colors.darkGreen,
         flexDirection: 'row',
         width: '100%',
         height: '25%'
     },
+    meditationCategory: {
+        backgroundColor: theme.colors.darkBlue,
+        flexDirection: 'row',
+        width: '100%',
+        height: '25%'
+    },
+    exerciseCategory: {
+        backgroundColor: theme.colors.darkBrown,
+        flexDirection: 'row',
+        width: '100%',
+        height: '25%'
+    },
+    categoryOverview: {
+        flexDirection: 'row',
+        width: '100%',
+        height: '100%'
+    },
     categoryLeft: {
         flexDirection: 'column',
-        width: '25%',
+        width: '75%',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    progressView: {
+        flexDirection: 'column',
+        width: '90%',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     categoryRight: {
         flexDirection: 'column',
-        width: '100%',
-    },
-    categoryIcon: {
-        width: '50',
-        height: '50'
+        width: '25%',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     catText: {
         width: '100%',
