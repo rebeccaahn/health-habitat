@@ -1,39 +1,72 @@
-import { db } from '../../App'
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { db, auth } from '../../App'
+import { collection, query, where, getDocs, updateDoc } from "firebase/firestore";
+import * as getUserData from "/get-user-data";
 
-function recommendDietTask() {
-    // TODO: Call recipe API endpoint
-    return;
+export async function recommendDietTask() {
+    // Get current user data
+    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+
+    // Query parameters to put in endpoint call
+    // TODO: Call search recipe API endpoint
+    let output = `?maxCalories=${getUserData.getCalories(userDoc)}&cuisine=${getUserData.getCuisines(userDoc)}&diet=${getUserData.getRestrictions(userDoc)}&intolerances=${getUserData.getAllergies(userDoc)}&type=${_.sample(getUserData.getMealType())}`
+
+    // Add recommended task to current user into Firestore
+    let recipeID = _.sample(output["results"])["id"]
+    let task = [recipeID, new Date()]
+    
+    await updateDoc(userDoc.ref, {
+        dietTask: task
+    });
 }
 
 // TODO: Incorporate live data into recommendation factors as well
-// Combining queries of ExerciseTasks to get personalized task(s) 
-// because AND queries only work on 1 field at a time
-async function recommendExerciseTask(category, equipment) {
-    const categoryQ = query(collection(db, "ExerciseTasks"), where("category", "==", category));
-    // const equipmentQ = query(collection(db, "ExerciseTasks"), where("equipment", "==", equipment));
-    
-    const categorySnapshot = await getDocs(categoryQ);
-    // const equipmentSnapshot = await getDocs(equipmentQ);
+// Combining queries of ExerciseTasks to get personalized task(s) because AND queries only work on 1 field at a time
+export async function recommendExerciseTask() {
+    // Get current user data
+    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+
+    // Make queries
+    const categoriesQ = query(collection(db, "ExerciseTasks"), where("category", "in", getUserData.getCategories(userDoc)));
+    const equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "in", getUserData.getEquipments(userDoc)));
+
+    // Retrieve queried documents
+    const categoriesSnapshot = await getDocs(categoriesQ);
+    const equipmentsSnapshot = await getDocs(equipmentsQ);
+
     // Uniquely union multiple arrays
-    let exerciseUnion = _.union(categorySnapshot.docs);
+    let exerciseUnion = _.union(categoriesSnapshot.docs, equipmentsSnapshot.docs);
     
+    // Add recommended task to current user into Firestore
     let randomExercise = _.sample(exerciseUnion);
-    return randomExercise.get("name");
+    let task = [randomExercise.get("task_id"), new Date()];
+
+    await updateDoc(userDoc.ref, {
+        exerciseTask: task
+    });
 }
 
-// Combining queries of MeditationTasks to get personalized task(s) 
-// because AND queries only work on 1 field at a time
-async function recommendMeditationTask(tag, duration) {
-    const tagQ = query(collection(db, "MeditationTasks"), where("meditationTags", "array-contains", tag));
-    // const tagsQ = query(collection(db, "MeditationTasks"), where("tags", "in", tags));  // if user prefers multiple tags
-    // const durationQ = query(collection(db, "MeditationTasks"), where("duration", "<=", duration));
+// TODO: Incorporate live data into recommendation factors as well
+// Combining queries of MeditationTasks to get personalized task(s) because AND queries only work on 1 field at a time
+export async function recommendMeditationTask() {
+    // Get current user data
+    const userDoc = getUserDocument(auth.currentUser.email);
+
+    // Make queries
+    const tagQ = query(collection(db, "MeditationTasks"), where("tag", "in", getUserData.getTags(userDoc)));
+    const timeQ = query(collection(db, "MeditationTasks"), where("time", "<=", getUserData.getMeditationTime(userDoc)));
     
+    // Retrieve queried documents
     const tagSnapshot = await getDocs(tagQ);
-    // const durationSnapshot = await getDocs(durationQ);
+    const timeSnapshot = await getDocs(timeQ);
+
     // Uniquely union multiple arrays
-    let meditationUnion = _.union(tagSnapshot.docs);
+    let meditationUnion = _.union(tagSnapshot.docs, timeSnapshot.docs);
     
+    // Add recommended task to current user into Firestore
     let randomMeditation = _.sample(meditationUnion);
-    return randomMeditation.get("url");
+    let task = [randomMeditation.get("url"), new Date()];
+    
+    await updateDoc(userDoc.ref, {
+        meditationTask: task
+    });
 }
