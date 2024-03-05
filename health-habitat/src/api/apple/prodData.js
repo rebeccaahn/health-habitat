@@ -1,4 +1,6 @@
 import appleHealthKit from 'react-native-health';
+import { useEffect, useState } from 'react';
+import * as Location from 'expo-location';
 
 
 // Permissions
@@ -216,7 +218,25 @@ function saveAppleCarbs(carbsVal) {
 };
 
 
+const getAppleLocation = async () => {
+  const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.error('Permission to access location was denied');
+        return;
+      }
+
+      const currentLocation = await Location.getCurrentPositionAsync({});
+      setLocation(currentLocation);
+    })();
+  }, []);
+
+  return location.coords;
+}
 
 export { initializeHealthKit, getAppleHeight, getAppleAge, getAppleWeight, getAppleSex,
          getAppleHeartRateCurrent, getAppleHeartRateResting, getAppleHeartRateWalking,
-         getAppleSteps, getAppleCarbs, saveAppleCarbs }
+         getAppleSteps, getAppleCarbs, saveAppleCarbs, getAppleLocation }

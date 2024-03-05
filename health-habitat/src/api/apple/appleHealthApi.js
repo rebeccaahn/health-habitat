@@ -156,4 +156,4 @@ const saveCarbs = async (carbsVal) => {
 
 export { initHealthApi, getHeight, getAge, getWeight, getSex, 
          getHeartRateCurrent, getHeartRateResting, getHeartRateWalking,
-         getSteps, getCarbs, saveCarbs };
+         getSteps, getCarbs, saveCarbs, isProd };
