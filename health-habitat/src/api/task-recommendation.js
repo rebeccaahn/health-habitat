@@ -64,7 +64,7 @@ export async function recommendMeditationTask() {
     
     // Add recommended task to current user into Firestore
     let randomMeditation = _.sample(meditationUnion);
-    let task = [randomExercise.get("url"), new Date()];
+    let task = [randomMeditation.get("url"), new Date()];
     
     await updateDoc(userDoc.ref, {
         meditationTask: task
