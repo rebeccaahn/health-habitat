@@ -2,24 +2,27 @@ import { db } from '../../App'
 import { collection, addDoc } from "firebase/firestore"; 
 
 // Adding document to collection UserInfo
-async function addUser(id, time, weather, cuisines, diets, allergies, priceLimit, time, exerciseType, genres, time) {
+export default async function addUser(email, calories, cuisines, restrictions, allergies, priceLimit, dietDuration, exerciseDuration, exerciseTypes, equipments, intensity, meditationDuration, dScore=100, eScore=100, mScore=100) {
     const userData = {
-        userID: id,
-        preferredWeather: weather,
+        userID: email,
+        dietCalories: calories,
         dietCuisines: cuisines,
-        dietDiets: diets,
+        dietRestrictions: restrictions,
         dietAllergies: allergies,
         dietPriceLimit: priceLimit,
-        exerciseCategory: exerciseType,
-        // exerciseEquipments: equipments,
-        meditationTags: genres,
-        dietDuration: time
+        dietTime: dietDuration,
+        exerciseTime: exerciseDuration,
+        exerciseCategories: exerciseTypes,
+        exerciseEquipments: equipments,
+        exerciseIntensity: intensity,
+        meditationTime: meditationDuration,
+        dietScore: dScore,
+        exerciseScore: eScore,
+        meditationScore: mScore,
+        dietTask: null,
+        exerciseTask: null,
+        meditationTask: null
     };
     
     await addDoc(collection(db, "UserInfo"), userData);
 }
-
-// TODO?
-// Function: Update "isCompleted" field of document in "*Tasks" collection
-
-// Function: Update document in "UserInfo" collection
