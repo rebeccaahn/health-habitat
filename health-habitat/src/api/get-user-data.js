@@ -35,11 +35,6 @@ export async function getUserDocument(email) {
     return userSnapshot.docs[0];    // there should only be 1 document in the snapshot as the email is unique
 }
 
-// Getting user's preferred weather
-export function getWeather(userDoc) {
-    return userDoc.get("preferredWeather");
-}
-
 // Getting user's preferred diet calories
 export function getCalories(userDoc) {
     return userDoc.get("dietCalories");
@@ -69,12 +64,6 @@ export function getPriceLimit(userDoc) {
 export function getDietTime(userDoc) {
     return userDoc.get("dietTime");
 }
-
-// Getting user's exercise location type
-export function getLocationType(userDoc) {
-    return userDoc.get("exerciseLocation");
-}
-
 // Getting user's exercise time
 export function getExerciseTime(userDoc) {
     return userDoc.get("exerciseTime");
@@ -93,11 +82,6 @@ export function getEquipments(userDoc) {
 // Getting user's preferred exercise intensity
 export function getIntensity(userDoc) {
     return userDoc.get("exerciseIntensity");
-}
-
-// Getting user's preferred meditation tags
-export function getTags(userDoc) {
-    return userDoc.get("meditationTags");
 }
 
 // Getting user's preferred meditation duration in seconds
@@ -129,9 +113,4 @@ export function getExerciseTask(userDoc) {
 
 export function getMeditationTask(userDoc) {
     return userDoc.get("meditationTask");
-}
-
-// TODO: Getting user's current data
-export function get() {
-    return;
 }

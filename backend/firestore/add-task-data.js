@@ -3,7 +3,7 @@
 
 import  { initializeApp } from 'firebase/app'
 import { getFirestore } from "firebase/firestore";
-import { firebaseConfig } from '../core/config.js'
+import { firebaseConfig } from '../../health-habitat/src/core/config.js'
 import { collection, addDoc } from "firebase/firestore"; 
 import exerciseData from "../../../api-data/fitness_results.json" assert { type: 'json' };
 import blues from "../../../api-data/blues_songs_results.json" assert { type: 'json' };
