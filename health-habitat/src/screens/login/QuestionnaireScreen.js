@@ -8,6 +8,8 @@ import { Button as PaperButton } from 'react-native-paper';
 import { theme } from '../../core/theme';
 import { SimpleSurvey } from 'react-native-simple-survey';
 import { survey } from './questionnaireQuestions';
+import addUser from '../../api/add-user-data';
+import { auth } from '../../../App'
 
 const surveyLength = survey.length;
 
@@ -59,6 +61,9 @@ export default function RegisterScreen({ navigation }) {
         for (const elem of infoQuestionsRemoved) { answersAsObj[elem.questionId] = elem.value; }
 
         // this.props.navigation.navigate('SurveyCompleted', { surveyAnswers: answersAsObj });
+
+        // Add questionnaire answers into Firestore
+        addUser(auth.currentUser.email, answersAsObj["weather"], answersAsObj["targetCalories"], answersAsObj["cuisines"], answersAsObj["dietRestrictions"], answersAsObj["dietIntolerances"], answersAsObj["priceLimit"], answersAsObj["timeLimit"], answersAsObj["outdoor"], answersAsObj["exerciseTime"], answersAsObj["exerciseTypes"], answersAsObj["exerciseEquipments"], answersAsObj["exerciseIntensity"], answersAsObj["musicGenres"], answersAsObj["meditationTime"]);
     }
 
     const QuestionText = (questionText) => {
