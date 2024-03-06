@@ -1,17 +1,54 @@
 import { auth } from '../../App'
 import { updateDoc, increment } from "firebase/firestore";
-import * as getUserData from "/get-user-data";
-import * as recommend from "/task-recommendation";
+import * as getUserData from "./get-user-data";
+import * as recommend from "./task-recommendation";
 
-// TODO: put this code in dashboard page load
+// TODO: put this code in each category page load
 // Check if task has become outdated
-var day = 1000*60*60*24;    // milliseconds to day
-// Get current user data
-const userDoc = getUserData.getUserDocument(auth.currentUser.email);
-// Get assigned timestamp of current task
-const timestamp = getUserData.get_Task(userDoc)[1]
-if (new Date().getDay() != assignedDate.getDay()) {
-    recommend.recommend_Task();
+function checkIfDietTaskIsOutdated() {
+    // Convert milliseconds to day
+    const day = 1000*60*60*24;
+
+    // Get current user data
+    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+
+    // Get assigned date of current task
+    const assignedDate = getUserData.getDietTask(userDoc)[1]
+
+    // Check if day has passed by
+    if (new Date().getDay() != assignedDate.getDay()) {
+        recommend.recommendDietTask();
+    }
+}
+function checkIfExerciseTaskIsOutdated() {
+    // Convert milliseconds to day
+    const day = 1000*60*60*24;
+
+    // Get current user data
+    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+
+    // Get assigned date of current task
+    const assignedDate = getUserData.getExerciseTask(userDoc)[1]
+
+    // Check if day has passed by
+    if (new Date().getDay() != assignedDate.getDay()) {
+        recommend.recommendExerciseTask();
+    }
+}
+function checkIfMeditationTaskIsOutdated() {
+    // Convert milliseconds to day
+    const day = 1000*60*60*24;
+
+    // Get current user data
+    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+
+    // Get assigned date of current task
+    const assignedDate = getUserData.getMeditationTask(userDoc)[1]
+
+    // Check if day has passed by
+    if (new Date().getDay() != assignedDate.getDay()) {
+        recommend.recommendMeditationTask();
+    }
 }
 
 // When task is completed
@@ -62,8 +99,8 @@ export async function decrementDietScore() {
     // Get current user data
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
 
-    // Get assigned timestamp of current task
-    const timestamp = getUserData.getDietTask(userDoc)[1]
+    // Get assigned date of current task
+    const assignedDate = getUserData.getDietTask(userDoc)[1]
 
     // Decrement score by how much time passed by
     await updateDoc(userDoc.ref, {
@@ -76,8 +113,8 @@ export async function decrementExerciseScore(number) {
     // Get current user data
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
 
-    // Get assigned timestamp of current task
-    const timestamp = getUserData.getExerciseTask(userDoc)[1]
+    // Get assigned date of current task
+    const assignedDate = getUserData.getExerciseTask(userDoc)[1]
 
     // Decrement score by how much time passed by
     await updateDoc(userDoc.ref, {
@@ -90,11 +127,19 @@ export async function decrementMeditationScore(number) {
     // Get current user data
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
 
-    // Get assigned timestamp of current task
-    const timestamp = getUserData.getMeditationTask(userDoc)[1]
+    // Get assigned date of current task
+    const assignedDate = getUserData.getMeditationTask(userDoc)[1]
 
     // Decrement score by how much time passed by
     await updateDoc(userDoc.ref, {
         meditationScore: increment(-0.01 * (new Date().getHours() - assignedDate.getHours()))
     });
+}
+
+// Calculate the terrarium score for dashboard
+export function calculateOverallScore() {
+    // Get current user data
+    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+
+    return (getDietScore(userDoc) + getExerciseScore(userDoc) + getMeditationScore(userDoc))/3;
 }
