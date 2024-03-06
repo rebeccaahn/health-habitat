@@ -1,5 +1,10 @@
-import { db } from '../../App'
 import { collection, addDoc } from "firebase/firestore"; 
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from "firebase/firestore";
+import { firebaseConfig } from '../core/config';
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // Adding document to collection UserInfo
 export default async function addUser(email, calories, cuisines, restrictions, allergies, priceLimit, dietDuration, exerciseDuration, exerciseTypes, equipments, intensity, meditationDuration, dScore=100, eScore=100, mScore=100) {
