@@ -9,13 +9,10 @@ import { theme } from '../../core/theme';
 import { SimpleSurvey } from 'react-native-simple-survey';
 import { survey } from './questionnaireQuestions';
 import addUser from '../../api/add-user-data';
-import { initializeApp } from 'firebase/app';
+import { app } from '../../core/config';
 import { getAuth } from 'firebase/auth';
-import { firebaseConfig } from '../../core/config';
 
-const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-
 const surveyLength = survey.length;
 
 export default function RegisterScreen({ navigation }) {

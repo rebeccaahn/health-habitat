@@ -12,20 +12,12 @@ import {
   QuestionnaireScreen
 } from './src/screens/login'
 import { TerarriumScreen } from './src/screens/dashboard'
-import  { initializeApp } from 'firebase/app'
-import { getFirestore } from "firebase/firestore";
-import { getAuth } from 'firebase/auth'
-import { firebaseConfig } from './src/core/config'
 import DietPage from "./src/screens/category/DietPage";
 import ExercisePage from "./src/screens/category/ExercisePage";
 import MeditationPage from "./src/screens/category/MeditationPage";
 import CategoriesPage from "./src/screens/category/CategoriesPage";
 
 const Stack = createNativeStackNavigator();
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
-export const auth = getAuth(app);
-
 export default function App() {
   return (
     <NavigationContainer>
