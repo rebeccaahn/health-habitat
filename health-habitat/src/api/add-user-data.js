@@ -1,9 +1,8 @@
 import { collection, addDoc } from "firebase/firestore"; 
-import { initializeApp } from 'firebase/app';
+import { app } from '../core/config';
 import { getFirestore } from "firebase/firestore";
-import { firebaseConfig } from '../core/config';
 
-const app = initializeApp(firebaseConfig);
+
 const db = getFirestore(app);
 
 // Adding document to collection UserInfo
