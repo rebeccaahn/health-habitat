@@ -10,7 +10,7 @@ import {
 } from "./dummyData";
 
 
-const isProd = false;
+const isProd = true;
 
 const initHealthApi = () => {
     if (isProd) {

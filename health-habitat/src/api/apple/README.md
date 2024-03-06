@@ -6,3 +6,7 @@ The functions in `dummyData.js` return predefined dummy data to allow for testin
 To switch between the "dummy" and "production" data, switch the prop `isProd` in `appleHealthApi.js` between `true` and `false`.<br/>
 
 To use location you must ru `npx expo install expo-location`
+
+Notes:
+
+Please make sure to `await` all functions in the appleLocationApi and appleHealthApi
