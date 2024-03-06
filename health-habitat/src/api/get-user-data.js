@@ -90,27 +90,33 @@ export function getMeditationTime(userDoc) {
     return time*60;
 }
 
+// Getting user's diet score
 export function getDietScore(userDoc) {
     return userDoc.get("dietScore");
 }
 
+// Getting user's exercise score
 export function getExerciseScore(userDoc) {
     return userDoc.get("exerciseScore");
 }
 
+// Getting user's meditation score
 export function getMeditationScore(userDoc) {
     return userDoc.get("meditationScore");
 }
 
-// [id, timestamp]
+// [id, date]
+// Getting user's current diet task
 export function getDietTask(userDoc) {
     return userDoc.get("dietTask");
 }
 
+// Getting user's current exercise task
 export function getExerciseTask(userDoc) {
     return userDoc.get("exerciseTask");
 }
 
+// Getting user's current meditation task
 export function getMeditationTask(userDoc) {
     return userDoc.get("meditationTask");
 }

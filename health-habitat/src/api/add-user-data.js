@@ -19,7 +19,7 @@ export default async function addUser(email, calories, cuisines, restrictions, a
         dietScore: dScore,
         exerciseScore: eScore,
         meditationScore: mScore,
-        dietTask: null,
+        dietTask: null, // TODO: remove this line and getDietTask() since I should not store any data including id?
         exerciseTask: null,
         meditationTask: null
     };
