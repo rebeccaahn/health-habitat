@@ -70,6 +70,11 @@ export async function recommendExerciseTask() {
     await updateDoc(userDoc.ref, {
         exerciseTask: task
     });
+
+    // Push current exercise category to pastWorkoutCategories
+    await updateDoc(userDoc.ref, {
+        pastWorkoutCategories: arrayUnion(randomExercise.get("category"))
+    });
 }
 
 // TODO: Incorporate live data into recommendation factors as well
