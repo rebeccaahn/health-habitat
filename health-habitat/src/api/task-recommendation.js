@@ -23,13 +23,14 @@ export async function recommendDietTask() {
 
     // Query parameters to put in endpoint call
     let response = null;
-    if ((getUserData.getRestrictions(userDoc) == "N/A") && (getUserData.getAllergies(userDoc) == "N/A")) {
+    // Account for n/a options and call endpoint accordingly
+    if ((getUserData.getRestrictions(userDoc) == "n/a") && (getUserData.getAllergies(userDoc) == "n/a")) {
         response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&minCarbs=${getUserData.getCalories(userDoc)}&cuisine=${getUserData.getCuisines(userDoc)}&type=${_.sample(getUserData.getMealType())}`);
     }
-    else if (getUserData.getRestrictions(userDoc) == "N/A") {
+    else if (getUserData.getRestrictions(userDoc) == "n/a") {
         response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&minCarbs=${getUserData.getCalories(userDoc)}&cuisine=${getUserData.getCuisines(userDoc)}&intolerances=${getUserData.getAllergies(userDoc)}&type=${_.sample(getUserData.getMealType())}`);
     }
-    else if (getUserData.getAllergies(userDoc) == "N/A") {
+    else if (getUserData.getAllergies(userDoc) == "n/a") {
         response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&minCarbs=${getUserData.getCalories(userDoc)}&cuisine=${getUserData.getCuisines(userDoc)}&diet=${getUserData.getRestrictions(userDoc)}&type=${_.sample(getUserData.getMealType())}`);
     }
     else {
@@ -54,7 +55,14 @@ export async function recommendExerciseTask() {
 
     // Make queries
     const categoriesQ = query(collection(db, "ExerciseTasks"), where("category", "in", getUserData.getCategories(userDoc)));
-    const equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "in", getUserData.getEquipments(userDoc)));
+    // Account for n/a option and query accordingly
+    const equipmentsQ = null;
+    if (getUserData.getEquipments(userDoc) == "n/a") {
+        equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "==", "none (bodyweight exercise)"));
+    }
+    else {
+        equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "in", getUserData.getEquipments(userDoc)));
+    }
 
     // Retrieve queried documents
     const categoriesSnapshot = await getDocs(categoriesQ);
