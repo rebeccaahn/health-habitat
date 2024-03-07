@@ -1,8 +1,7 @@
 import { db, auth } from '../../App'
 import { collection, query, where, getDocs, updateDoc } from "firebase/firestore";
 import * as getUserData from "./get-user-data";
-
-var diet_API_key = "";
+import env from "./env.json" assert { type: 'json' };
 
 // TODO: put in diet page
 // To get recipe card
@@ -11,7 +10,7 @@ async function getRecipeCard() {
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
 
     // Query parameters to put in endpoint call    
-    let response = await fetch(`https://api.spoonacular.com/recipes/${getUserData.getDietTask(userDoc)[0]}/card`)
+    let response = await fetch(`https://api.spoonacular.com/recipes/${getUserData.getDietTask(userDoc)[0]}/card?apiKey=${env.diet_API_key}`)
     let jsonResp = await response.json();
     
     return jsonResp["url"];
@@ -23,7 +22,7 @@ export async function recommendDietTask() {
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
 
     // Query parameters to put in endpoint call    
-    let response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${diet_API_key}&maxCarbs=${getUserData.getCalories(userDoc)}&cuisine=${getUserData.getCuisines(userDoc)}&diet=${getUserData.getRestrictions(userDoc)}&intolerances=${getUserData.getAllergies(userDoc)}&type=${_.sample(getUserData.getMealType())}`)
+    let response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&maxCarbs=${getUserData.getCalories(userDoc)}&cuisine=${getUserData.getCuisines(userDoc)}&diet=${getUserData.getRestrictions(userDoc)}&intolerances=${getUserData.getAllergies(userDoc)}&type=${_.sample(getUserData.getMealType())}`)
     let jsonResp = await response.json();
 
     // Add recommended task to current user into Firestore
