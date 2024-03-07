@@ -1,33 +1,7 @@
 import { db } from '../../App'
 import { collection, query, where, getDocs } from "firebase/firestore";
 
-// Getting ideal meal type based on current time
-export function getMealType()
-{
-    const currentHour = Date.now(); // need to find correct function that gives correct hour
-
-    // breakfast
-    if (currentHour >= 8 && currentHour < 11) {
-        return ["breakfast", "salad", "bread", "soup", "beverage", "sauce", "marinade", "fingerfood", "drink"]
-    }
-    // lunch
-    else if (currentHour >= 11 && currentHour < 16) {
-        return ["main course", "side dish", "appetizer", "salad", "bread", "soup", "beverage", "sauce", "marinade", "fingerfood", "drink"]
-    }
-    // dinner
-    else if (currentHour >= 16 && currentHour < 21) {
-        return ["main course", "side dish", "appetizer", "salad", "bread", "soup", "beverage", "sauce", "marinade", "fingerfood", "drink"]
-    }
-    // late night snack
-    else if (currentHour >= 21 && currentHour < 24) {
-        return ["dessert", "snack"]
-    }
-    // sleeping time
-    else {
-        return []
-    }
-}
-
+// Call this function before any function call that accepts userDoc parameter
 // Finding user's document
 export async function getUserDocument(email) {
     const userQ = query(collection(db, "UserInfo"), where("userID", "==", email));
@@ -131,5 +105,60 @@ export function getPastWorkoutCategories(userDoc) {
     }
     else {
         return workoutArray.slice(length-7);
+    }
+}
+
+export async function getExerciseByCategory(category) {
+    // Make query
+    const categoryQ = query(collection(db, "ExerciseTasks"), where("category", "==", category));
+
+    // Retrieve queried documents
+    const categorySnapshot = await getDocs(categoriesQ);
+
+    // Return the documents
+    return categorySnapshot.docs;
+
+    // Copy this after calling getExerciseByCategory(category)
+    // let randomExerciseId = _.sample(getExerciseByCategory(category)).get("task_id");
+}
+
+export async function getMeditationByTag(tag) {
+    // Make query
+    const tagQ = query(collection(db, "MeditationTasks"), where("tag", "==", tag));
+
+    // Retrieve queried documents
+    const tagSnapshot = await getDocs(tagQ);
+
+    // Return the documents
+    return tagSnapshot.docs;
+
+    // Copy this after calling getMeditationByTag(tag)
+    // let randomSongTag = _.sample(getMeditationByTag(tag)).get("url");
+}
+
+// Getting ideal meal type based on current time
+export function getMealType()
+{
+    const currentHour = Date.now(); // need to find correct function that gives correct hour
+
+    // breakfast
+    if (currentHour >= 8 && currentHour < 11) {
+        return ["breakfast", "salad", "bread", "soup", "beverage", "sauce", "marinade", "fingerfood", "drink"]
+    }
+    // lunch
+    else if (currentHour >= 11 && currentHour < 16) {
+        return ["main course", "side dish", "appetizer", "salad", "bread", "soup", "beverage", "sauce", "marinade", "fingerfood", "drink"]
+    }
+    // dinner
+    else if (currentHour >= 16 && currentHour < 21) {
+        return ["main course", "side dish", "appetizer", "salad", "bread", "soup", "beverage", "sauce", "marinade", "fingerfood", "drink"]
+    }
+    // late night snack
+    else if (currentHour >= 21 && currentHour < 24) {
+        return ["dessert", "snack"]
+    }
+    // sleeping time
+    else {
+        return []
     }
 }
