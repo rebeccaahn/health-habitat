@@ -10,7 +10,7 @@ async function getRecipeCard() {
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
 
     // Query parameters to put in endpoint call    
-    let response = await fetch(`https://api.spoonacular.com/recipes/${getUserData.getDietTask(userDoc)[0]}/card?apiKey=${env.diet_API_key}`)
+    let response = await fetch(`https://api.spoonacular.com/recipes/${getUserData.getDietTask(userDoc)[0]}/card?apiKey=${env.diet_API_key}`);
     let jsonResp = await response.json();
     
     return jsonResp["url"];
@@ -21,8 +21,20 @@ export async function recommendDietTask() {
     // Get current user data
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
 
-    // Query parameters to put in endpoint call    
-    let response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&maxCarbs=${getUserData.getCalories(userDoc)}&cuisine=${getUserData.getCuisines(userDoc)}&diet=${getUserData.getRestrictions(userDoc)}&intolerances=${getUserData.getAllergies(userDoc)}&type=${_.sample(getUserData.getMealType())}`)
+    // Query parameters to put in endpoint call
+    let response = null;
+    if ((getUserData.getRestrictions(userDoc) == "N/A") && (getUserData.getAllergies(userDoc) == "N/A")) {
+        response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&minCarbs=${getUserData.getCalories(userDoc)}&cuisine=${getUserData.getCuisines(userDoc)}&type=${_.sample(getUserData.getMealType())}`);
+    }
+    else if (getUserData.getRestrictions(userDoc) == "N/A") {
+        response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&minCarbs=${getUserData.getCalories(userDoc)}&cuisine=${getUserData.getCuisines(userDoc)}&intolerances=${getUserData.getAllergies(userDoc)}&type=${_.sample(getUserData.getMealType())}`);
+    }
+    else if (getUserData.getAllergies(userDoc) == "N/A") {
+        response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&minCarbs=${getUserData.getCalories(userDoc)}&cuisine=${getUserData.getCuisines(userDoc)}&diet=${getUserData.getRestrictions(userDoc)}&type=${_.sample(getUserData.getMealType())}`);
+    }
+    else {
+        response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&minCarbs=${getUserData.getCalories(userDoc)}&cuisine=${getUserData.getCuisines(userDoc)}&diet=${getUserData.getRestrictions(userDoc)}&intolerances=${getUserData.getAllergies(userDoc)}&type=${_.sample(getUserData.getMealType())}`);
+    }
     let jsonResp = await response.json();
 
     // Add recommended task to current user into Firestore
