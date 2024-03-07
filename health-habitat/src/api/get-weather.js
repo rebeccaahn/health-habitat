@@ -3,9 +3,9 @@ import env from "./env.json" assert { type: 'json' };
 
 // Getting current weather data
 async function getWeather() {
-    let response = await fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${getLocation()["latitude"]}&lon=${getLocation()["longitude"]}&appid=${env.weather_API_key}`);
+    let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${getLocation()["latitude"]}&lon=${getLocation()["longitude"]}&appid=${env.weather_API_key}`);
     let jsonResp = await response.json();
-    return jsonResp["current"]["weather"][0];
+    return jsonResp["weather"][0];
 }
 
 // Getting current weather category
