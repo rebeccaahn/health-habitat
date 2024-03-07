@@ -120,3 +120,16 @@ export function getExerciseTask(userDoc) {
 export function getMeditationTask(userDoc) {
     return userDoc.get("meditationTask");
 }
+
+// [least recent ... most recent]
+// Getting user's 7 most recent past workout categories (most recent is last of the array)
+export function getPastWorkoutCategories(userDoc) {
+    const workoutArray = userDoc.get("pastWorkoutCategories");
+    const length = workoutArray.length;
+    if (length < 7) {
+        return workoutArray;
+    }
+    else {
+        return workoutArray.slice(length-7);
+    }
+}

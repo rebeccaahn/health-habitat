@@ -19,9 +19,10 @@ export default async function addUser(email, calories, cuisines, restrictions, a
         dietScore: dScore,
         exerciseScore: eScore,
         meditationScore: mScore,
-        dietTask: null, // TODO: remove this line and getDietTask() since I should not store any data including id?
+        dietTask: null,
         exerciseTask: null,
-        meditationTask: null
+        meditationTask: null,
+        pastWorkoutCategories: []
     };
     
     await addDoc(collection(db, "UserInfo"), userData);

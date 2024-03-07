@@ -7,6 +7,7 @@
 - Javascript imports: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import
 - Javascript date: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
 - Calling API endpoint in Javascript: https://stackoverflow.com/a/51417209
+- Javascript sliciing; https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
 
 ## Angeline
 - 
