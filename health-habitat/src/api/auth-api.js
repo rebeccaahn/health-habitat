@@ -1,8 +1,10 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from 'firebase/auth'
 import { auth } from '../core/config'
 
 export const logoutUser = () => {
-  auth.signOut()
+  signOut(auth)
+  console.log("LOGGED OUT");
+  console.log(auth.currentUser.email);
 }
 
 export const signUpUser = async ({ name, email, password }) => {
