@@ -1,6 +1,6 @@
 
 import React, {useEffect, useState} from 'react'
-import {StyleSheet, View, TouchableOpacity} from 'react-native'
+import {StyleSheet, View, TouchableOpacity, Image} from 'react-native'
 import { Text } from 'react-native-paper'
 import Button from '../../components/Button'
 import Background from '../../components/Background'
@@ -9,25 +9,41 @@ import Header from '../../components/Header'
 import ProgressBar from '../../components/ProgressBar'
 import {theme} from "../../core/theme";
 
+import {getDietScore, getDietTask, getExerciseScore, getMeditationScore} from "../../api/get-user-data";
+import {auth} from "../../../App";
+import * as getUserData from "../../api/get-user-data";
+// import env from "../../api/env.json" assert { type: 'json' };
+import env from "../../api/env.json";
+import * as recommend from "../../api/task-recommendation";
+import {incrementDietScore} from "../../api/score-categories";
 
-// TODO : import getDietScore(), updateDietScore(), getDietTask(), markDietTaskComplete()
-// from ../../api/score-categories.js
-
-// TODO : make environmental variable for recipe API key
 
 export default function DietPage({navigation}) {
 
+    const [recipeUrl, setRecipeUrl] = useState('')
+    const [dietScore, setDietScore] = useState(0)
 
-    // TODO : update database category score + dietTask, reload page
     const handleDietCompletion = () => {
-
+        console.log('Diet Task Completed')
+        // incrementDietScore()
+        const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+        userDoc.then(
+            function(value) {
+                setDietScore(getDietScore(value))
+                // let recipeId = getDietTask(value)
+                // fetch(`https://api.spoonacular.com/recipes/${recipeId}/card?apiKey=${env.diet_API_key}`)
+                //     .then((response) => response.json())
+                //     .then((responseJson) => {
+                //         setRecipeUrl(responseJson["url"]);
+                //     })
+                fetch(`https://api.spoonacular.com/recipes/4632/card?apiKey=${env.diet_API_key}`)
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+                        setRecipeUrl(responseJson["url"]);
+                    })
+            }
+        );
     }
-
-    // TODO : getDietScore()
-    const dietScore = 25
-
-    // TODO : call recipe API to retrieve recipe card using query from getDietTask()
-
 
     const wMessages = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"]
     const [welcomeMessage, setWelcomeMessage] = useState('')
@@ -43,6 +59,24 @@ export default function DietPage({navigation}) {
         } else {
             setWelcomeMessage(wMessages[3])
         }
+
+        const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+        userDoc.then(
+            function(value) {
+                setDietScore(getDietScore(value))
+                // let recipeId = getDietTask(value)
+                // fetch(`https://api.spoonacular.com/recipes/${recipeId}/card?apiKey=${env.diet_API_key}`)
+                //     .then((response) => response.json())
+                //     .then((responseJson) => {
+                //         setRecipeUrl(responseJson["url"]);
+                //     })
+                fetch(`https://api.spoonacular.com/recipes/4632/card?apiKey=${env.diet_API_key}`)
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+                        setRecipeUrl(responseJson["url"]);
+                    })
+            }
+        );
     }, []);
 
     return (
@@ -54,33 +88,21 @@ export default function DietPage({navigation}) {
                 <ProgressBar step={dietScore} numberOfSteps={100}/>
             </View>
 
-
+            <Image
+                style={styles.recipeCard}
+                source={{uri: recipeUrl}}
+            />
 
             <Button
                 mode="contained"
-                onPress={handleDietCompletion()}
+                onPress={handleDietCompletion}
                 style={{ marginTop: 24 }}
             >
                 completed!
             </Button>
-
-            {/*<FlatList style={{width: '100%'}}*/}
-            {/*          data={dietData}*/}
-            {/*          renderItem={({item}) => (*/}
-            {/*              <View style={styles.listItem}>*/}
-            {/*                  <View styles={styles.itemText}>*/}
-            {/*                      <Text style={styles.itemName}>{item.name}</Text>*/}
-            {/*                      <Text style={styles.itemDescription}>{item.description}</Text>*/}
-            {/*                  </View>*/}
-            {/*                  <TouchableOpacity styles={{width: '25%'}} onPress={() => handleDietCompletion(item.id)}>*/}
-            {/*                      <Text style={styles.completedButton}>{"completed!"}</Text>*/}
-            {/*                  </TouchableOpacity>*/}
-            {/*              </View>*/}
-            {/*          )}*/}
-            {/*          keyExtractor={item => item.id}*/}
-            {/*/>*/}
         </Background>
-    );
+    )
+
 }
 
 const styles = StyleSheet.create({
@@ -123,9 +145,13 @@ const styles = StyleSheet.create({
     },
     completedButton: {
         color: "white",
-        fontSize : 20,
+        fontSize: 20,
         alignItems: 'flex-end',
         textAlign: 'center',
-        width: '100%',
+        width: '100%'
+    },
+    recipeCard: {
+        width: '60%',
+        height: '60%'
     }
 });

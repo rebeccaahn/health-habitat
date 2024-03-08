@@ -8,22 +8,28 @@ import BackButton from '../../components/BackButton'
 import Header from '../../components/Header'
 import ProgressBar from '../../components/ProgressBar'
 import {theme} from "../../core/theme";
+import * as getUserData from "../../api/get-user-data";
+import {auth} from "../../../App";
+import {getMeditationScore, getMeditationTask} from "../../api/get-user-data";
+import {incrementMeditationScore} from "../../api/score-categories";
 
 
 export default function MeditationPage({navigation}) {
 
+    const [meditationScore, setMeditationScore] = useState(0)
+    const [currentMeditation, setCurrentMeditation] = useState('')
 
-    // TODO : update user database and remove onclick functionality
     const handleMeditationCompletion = () => {
-
+        console.log('Meditation Task Completed')
+        // incrementMeditationScore()
+        const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+        userDoc.then(
+            function (value){
+                setMeditationScore(getMeditationScore(value))
+                // setCurrentMeditation(getMeditationTask(value))
+            }
+        );
     }
-
-    // TODO : query data
-    const meditationScore = 50
-
-    // TODO : call getMeditationTask()
-
-    //
 
     const wMessages = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"]
     const [welcomeMessage, setWelcomeMessage] = useState('')
@@ -39,6 +45,14 @@ export default function MeditationPage({navigation}) {
         } else {
             setWelcomeMessage(wMessages[3])
         }
+
+        const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+        userDoc.then(
+            function (value){
+                setMeditationScore(getMeditationScore(value))
+                // setCurrentMeditation(getMeditationTask(value))
+            }
+        );
     }, []);
 
     return (
@@ -50,29 +64,15 @@ export default function MeditationPage({navigation}) {
                 <ProgressBar step={meditationScore} numberOfSteps={100}/>
             </View>
 
+            <Text>{currentMeditation}</Text>
+
             <Button
                 mode="contained"
-                onPress={handleMeditationCompletion()}
+                onPress={handleMeditationCompletion}
                 style={{ marginTop: 24 }}
             >
                 completed!
             </Button>
-
-            {/*<FlatList style={{width: '100%'}}*/}
-            {/*          data={meditationData}*/}
-            {/*          renderItem={({item}) => (*/}
-            {/*              <View style={styles.listItem}>*/}
-            {/*                  <View styles={styles.itemText}>*/}
-            {/*                      <Text style={styles.itemName}>{item.name}</Text>*/}
-            {/*                      <Text style={styles.itemDescription}>{item.description}</Text>*/}
-            {/*                  </View>*/}
-            {/*                  <TouchableOpacity styles={{width: '25%'}} onPress={() => handleMeditationCompletion(item.id)}>*/}
-            {/*                      <Text style={styles.completedButton}>{"completed!"}</Text>*/}
-            {/*                  </TouchableOpacity>*/}
-            {/*              </View>*/}
-            {/*          )}*/}
-            {/*          keyExtractor={item => item.id}*/}
-            {/*/>*/}
         </Background>
     );
 }

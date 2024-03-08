@@ -7,19 +7,49 @@ import BackButton from '../../components/BackButton'
 import Header from '../../components/Header'
 import ProgressBar from '../../components/ProgressBar'
 import {theme} from "../../core/theme";
+import * as getUserData from "../../api/get-user-data";
+import {auth} from "../../../App";
+import * as recommend from "../../api/task-recommendation";
+// import {getDietScore, getExerciseScore, getMeditationScore} from "../../api/get-user-data";
 
 
 export default function CategoriesPage({navigation}) {
 
-    // TODO : query data
-    const dietScore = 25
-    const meditationScore = 50
-    const exerciseScore = 75
+    const day = 1000 * 60 * 60 * 24;    // milliseconds to day
 
     const wMessages = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"]
     const [welcomeMessage, setWelcomeMessage] = useState('')
 
+    const [dietScore, setDietScore] = useState(32)
+    const [exerciseScore, setExerciseScore] = useState(0)
+    const [meditationScore, setMeditationScore] = useState(0)
+
     useEffect(() => {
+
+        const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+        userDoc.then(
+            function(value) {
+                setDietScore(getUserData.getDietScore(value));
+                setMeditationScore(getUserData.getMeditationScore(value));
+                setExerciseScore(getUserData.getExerciseScore(value));
+
+                // if (getUserData.getDietTask(value) == null){
+                //     let tmp1 = recommend.recommendDietTask();
+                //     let tmp2 = recommend.recommendExerciseTask();
+                //     let tmp3 = recommend.recommendMeditationTask();
+                // }
+                // else {
+                //     const timestamp = getUserData.getDietTask(value)[1];
+                //     console.log(timestamp);
+                //     if (new Date().getDay() !== timestamp.getDay()) {
+                //         let tmp1 = recommend.recommendDietTask();
+                //         let tmp2 = recommend.recommendExerciseTask();
+                //         let tmp3 = recommend.recommendMeditationTask();
+                //     }
+                // }
+            }
+        );
+
         const curHour = new Date().getHours()
         if (curHour < 12) {
             setWelcomeMessage(wMessages[0])
@@ -30,6 +60,7 @@ export default function CategoriesPage({navigation}) {
         } else {
             setWelcomeMessage(wMessages[3])
         }
+
     }, []);
 
     return (
