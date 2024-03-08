@@ -11,6 +11,7 @@ import PlainText from '../../components/PlainText'
 import { IconButton } from 'react-native-paper';
 import { theme } from '../../core/theme'
 import CategoriesPage from "../category/CategoriesPage";
+import { logoutUser } from '../../api/auth-api';
 
 const headings = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"];
 const terrariumStates = ["Critical", "Warning", "Thriving", "Best"];
@@ -84,10 +85,10 @@ export default function TerrariumScreen({navigation}) {
                 containerColor={ buttonColor }
                 mode="contained"
                 size={25}
-                onPress={() => navigation.reset({
+                onPress={() => {logoutUser(); navigation.reset({
                     index: 0,
                     routes: [{ name: 'StartScreen' }],
-                  })}
+                  })}}
                 style={[ theme.shadow, { position: 'absolute', right: 20, bottom: 50, elevation: 2} ]}
             />
         </Background>
