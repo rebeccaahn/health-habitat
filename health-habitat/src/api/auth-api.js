@@ -1,5 +1,5 @@
-import { auth } from '../../App'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth'
+import { auth } from '../core/config'
 
 export const logoutUser = () => {
   auth.signOut()
