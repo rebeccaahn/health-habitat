@@ -115,11 +115,14 @@ export async function getExerciseByCategory(category) {
     // Retrieve queried documents
     const categorySnapshot = await getDocs(categoriesQ);
 
-    // Return the documents
-    return categorySnapshot.docs;
+    // Return the array [[name, equipment], ...]
+    let arrayResult = [];
+    categorySnapshot.forEach((doc) => {
+        arrayResult.push([doc.get("name"), doc.get("equipment")])
+    });
 
     // Copy this after calling getExerciseByCategory(category)
-    // let randomExerciseId = _.sample(getExerciseByCategory(category)).get("task_id");
+    // let randomExercise = _.sample(getExerciseByCategory(category));
 }
 
 export async function getMeditationByTag(tag) {
@@ -129,11 +132,14 @@ export async function getMeditationByTag(tag) {
     // Retrieve queried documents
     const tagSnapshot = await getDocs(tagQ);
 
-    // Return the documents
-    return tagSnapshot.docs;
+    // Return the array [[url, time], ...]
+    let arrayResult = [];
+    tagSnapshot.forEach((doc) => {
+        arrayResult.push([doc.get("url"), doc.get("time")])
+    });
 
     // Copy this after calling getMeditationByTag(tag)
-    // let randomSongTag = _.sample(getMeditationByTag(tag)).get("url");
+    // let randomSong = _.sample(getMeditationByTag(tag));
 }
 
 // Getting ideal meal type based on current time
