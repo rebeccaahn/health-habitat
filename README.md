@@ -42,9 +42,10 @@ By: Rebecca Ahn, Angeline Hui, Teresa Liang, Nathan Pietrantonio
          * `Privacy - Location When In Use Usage Description`
          * `Privacy - Location Always In Use Usage Description`
      * Save Xcode (cmd + s)
-13. Start development server: (from `/health-habitat`) `npx expo start`
-14. Press `i` to open IOS simulator, allow Health Habitat to install
-15. Enjoy!
+13. Recompile the app: (from `/health-habitat`) `npx expo run:ios`
+14. Start development server: `npx expo start`
+15. Press `i` to open IOS simulator, allow Health Habitat to install
+16. Enjoy!
 
 ## Project Functionality
 ...
