@@ -3,9 +3,7 @@ import { ActivityIndicator } from 'react-native'
 import { getAuth } from "firebase/auth";
 import Background from '../../components/Background'
 import { theme } from '../../core/theme'
-import { app } from '../../core/config';
-
-const auth = getAuth(app);
+import { auth } from '../../core/config';
 
 export default function AuthLoadingScreen({ navigation }) {
   auth.onAuthStateChanged((user) => {

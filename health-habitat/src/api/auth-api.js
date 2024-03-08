@@ -1,8 +1,5 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth'
-import { app } from '../core/config'
-import { getAuth } from 'firebase/auth';
-
-const auth = getAuth(app);
+import { auth } from '../core/config'
 
 export const logoutUser = () => {
   auth.signOut()

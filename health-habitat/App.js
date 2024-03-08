@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, LogBox } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
@@ -18,7 +18,9 @@ import MeditationPage from "./src/screens/category/MeditationPage";
 import CategoriesPage from "./src/screens/category/CategoriesPage";
 
 const Stack = createNativeStackNavigator();
+
 export default function App() {
+  LogBox.ignoreLogs(['ViewPropTypes']); // ignore errors from react-native-simple-survey
   return (
     <NavigationContainer>
       <Stack.Navigator
