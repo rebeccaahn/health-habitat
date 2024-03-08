@@ -65,6 +65,7 @@ export default function RegisterScreen({ navigation }) {
 
         // Add questionnaire answers into Firestore
         addUser(auth.currentUser.email, answersAsObj["targetCalories"], answersAsObj["cuisines"], answersAsObj["dietRestrictions"], answersAsObj["dietIntolerances"], answersAsObj["priceLimit"], answersAsObj["timeLimit"], answersAsObj["exerciseTime"], answersAsObj["exerciseTypes"], answersAsObj["exerciseEquipments"], answersAsObj["exerciseIntensity"], answersAsObj["meditationTime"]);
+        navigation.navigate('TerrariumScreen');
     }
 
     const QuestionText = (questionText) => {
