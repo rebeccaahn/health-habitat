@@ -9,7 +9,7 @@ import { theme } from '../../core/theme';
 import { SimpleSurvey } from 'react-native-simple-survey';
 import { survey } from './questionnaireQuestions';
 import addUser from '../../api/add-user-data';
-import { auth } from '../../../App'
+import { auth } from '../../core/config';
 
 const surveyLength = survey.length;
 
