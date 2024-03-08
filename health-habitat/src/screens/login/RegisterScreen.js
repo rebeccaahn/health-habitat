@@ -24,7 +24,6 @@ export default function RegisterScreen({ navigation }) {
 
     const onSignUpPressed = async () => {
         // if (loading) return
-
         const nameError = nameValidator(name.value)
         const emailError = emailValidator(email.value)
         const passwordError = passwordValidator(password.value)
@@ -87,7 +86,7 @@ export default function RegisterScreen({ navigation }) {
 
             <Button
                 mode="contained"
-                onPress={onSignUpPressed}
+                onPress={() => {onSignUpPressed(); navigation.replace('QuestionnaireScreen')}}
                 style={{ marginTop: 24 }}
                 loading={loading}
             >

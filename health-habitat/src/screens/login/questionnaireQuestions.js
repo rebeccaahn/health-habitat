@@ -155,6 +155,11 @@ export const survey = [
         questionText:
             'What types of exercise do you prefer?',
         questionId: 'exerciseTypes',
+        questionSettings: {
+            minMultiSelect: 0,
+            maxMultiSelect: 8,
+            autoAdvance: true,
+        },
         options: [
             {
                 optionText: 'Abs',
@@ -195,6 +200,11 @@ export const survey = [
         questionText:
             'What exercise equipment do you have?',
         questionId: 'exerciseEquipments',
+        questionSettings: {
+            minMultiSelect: 0,
+            maxMultiSelect: 7,
+            autoAdvance: true,
+        },
         options: [
             {
                 optionText: 'Barbell',

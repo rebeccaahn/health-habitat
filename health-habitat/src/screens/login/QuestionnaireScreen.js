@@ -24,7 +24,6 @@ export default function RegisterScreen({ navigation }) {
      */
     const onAnswerSubmitted = (answer) => {
         setAnswers(answer);
-        // this.setState({ answersSoFar: JSON.stringify(this.surveyRef.getAnswers(), 2) });
     }
 
     const onSurveyFinished = (currAnswers) => {
@@ -60,10 +59,13 @@ export default function RegisterScreen({ navigation }) {
         const answersAsObj = {};
         for (const elem of infoQuestionsRemoved) { answersAsObj[elem.questionId] = elem.value; }
 
+        console.log(answersAsObj)
+
         // this.props.navigation.navigate('SurveyCompleted', { surveyAnswers: answersAsObj });
 
         // Add questionnaire answers into Firestore
         addUser(auth.currentUser.email, answersAsObj["targetCalories"], answersAsObj["cuisines"], answersAsObj["dietRestrictions"], answersAsObj["dietIntolerances"], answersAsObj["priceLimit"], answersAsObj["timeLimit"], answersAsObj["exerciseTime"], answersAsObj["exerciseTypes"], answersAsObj["exerciseEquipments"], answersAsObj["exerciseIntensity"], answersAsObj["meditationTime"]);
+        navigation.navigate('TerrariumScreen');
     }
 
     const QuestionText = (questionText) => {
@@ -90,7 +92,7 @@ export default function RegisterScreen({ navigation }) {
         return (
             <SmallButton
                 mode="contained"
-                onPress={() => {onPress(); setCurrentQuestion(currentQuestion + 1)}}
+                onPress={() => {onPress(); setCurrentQuestion(currentQuestion + 1); console.log(answers)}}
                 style={styles.navButton}
             >
                 NEXT
@@ -146,7 +148,7 @@ export default function RegisterScreen({ navigation }) {
             placeholder={placeholder}
             keyboardType={'numeric'}
             onBlur={onBlur}
-            maxLength={3}
+            maxLength={5}
         />);
     }
 
@@ -196,30 +198,11 @@ export default function RegisterScreen({ navigation }) {
                 />
 
             </View>
-
-            <ScrollView style={styles.answersContainer}>
-                <Text style={{ textAlign: 'center' }}>JSON output</Text>
-                <Text>{JSON.stringify(answers)}</Text>
-            </ScrollView>
         </Background>
     )
 }
 
 const styles = StyleSheet.create({
-    answers: {
-        alignSelf: 'center',
-        marginBottom: 10,
-    },
-    answersContainer: {
-        width: '90%',
-        Height: '100px',
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        marginBottom: 20,
-        backgroundColor: 'white',
-        elevation: 20,
-        borderRadius: 10
-    },
     container: {
         width: '100%',
         height: '100%',
