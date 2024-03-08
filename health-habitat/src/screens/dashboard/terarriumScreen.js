@@ -84,7 +84,10 @@ export default function TerrariumScreen({navigation}) {
                 containerColor={ buttonColor }
                 mode="contained"
                 size={25}
-                onPress={() => console.log('Pressed')}
+                onPress={() => navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'StartScreen' }],
+                  })}
                 style={[ theme.shadow, { position: 'absolute', right: 20, bottom: 50, elevation: 2} ]}
             />
         </Background>
