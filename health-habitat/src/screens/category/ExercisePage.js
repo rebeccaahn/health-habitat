@@ -8,22 +8,29 @@ import BackButton from '../../components/BackButton'
 import Header from '../../components/Header'
 import ProgressBar from '../../components/ProgressBar'
 import {theme} from "../../core/theme";
+import {incrementExerciseScore} from "../../api/score-categories";
+import * as getUserData from "../../api/get-user-data";
+import {auth} from "../../../App";
+import {getExerciseScore, getExerciseTask} from "../../api/get-user-data";
 
 
 export default function ExercisePage({navigation}) {
 
+    const [exerciseScore, setExerciseScore] = useState(0)
+    const [currentExercise, setCurrentExercise] = useState('')
 
-    // TODO : update user database and remove onclick functionality
     const handleExerciseCompletion = () => {
+        console.log('Exercise Task Completed')
+        // incrementExerciseScore()
+        const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+        userDoc.then(
+            function(value) {
+                setExerciseScore(getExerciseScore(value))
+                // setCurrentExercise(getExerciseTask(value))
+            }
+        );
 
     }
-
-    // TODO : query data
-    const exerciseScore = 75
-
-    // TODO : call getExerciseTask()
-
-
 
     const wMessages = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"]
     const [welcomeMessage, setWelcomeMessage] = useState('')
@@ -39,6 +46,14 @@ export default function ExercisePage({navigation}) {
         } else {
             setWelcomeMessage(wMessages[3])
         }
+
+        const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+        userDoc.then(
+            function(value) {
+                setExerciseScore(getExerciseScore(value))
+                // setCurrentExercise(getExerciseTask(value))
+            }
+        );
     }, []);
 
     return (
@@ -47,39 +62,18 @@ export default function ExercisePage({navigation}) {
             <Header props={welcomeMessage}/>
             <Header props={'Your exercise details:'}/>
             <View style={styles.categoryOverview}>
-                {/*<Image*/}
-                {/*    style={styles.categoryIcon}*/}
-                {/*    source={{*/}
-                {/*        // TODO : find such image*/}
-                {/*        uri: ''*/}
-                {/*    }}*/}
-                {/*/>*/}
                 <ProgressBar step={exerciseScore} numberOfSteps={100}/>
             </View>
 
+            <Text>{currentExercise}</Text>
+
             <Button
                 mode="contained"
-                onPress={handleExerciseCompletion()}
+                onPress={handleExerciseCompletion}
                 style={{ marginTop: 24 }}
             >
                 completed!
             </Button>
-
-            {/*<FlatList style={{width: '100%'}}*/}
-            {/*    data={exerciseData}*/}
-            {/*    renderItem={({item}) => (*/}
-            {/*        <View style={styles.listItem}>*/}
-            {/*            <View styles={styles.itemText}>*/}
-            {/*                <Text style={styles.itemName}>{item.name}</Text>*/}
-            {/*                <Text style={styles.itemDescription}>{item.description}</Text>*/}
-            {/*            </View>*/}
-            {/*            <TouchableOpacity styles={{width: '25%'}} onPress={() => handleExerciseCompletion(item.id)}>*/}
-            {/*                <Text style={styles.completedButton}>{"completed!"}</Text>*/}
-            {/*            </TouchableOpacity>*/}
-            {/*        </View>*/}
-            {/*    )}*/}
-            {/*    keyExtractor={item => item.id}*/}
-            {/*/>*/}
         </Background>
     );
 }
