@@ -48,7 +48,11 @@ function saveDummyCarbs(carbsVal) {
     return "Carbs saved";
 }
 
+function getDummyLocation() {
+    return {"accuracy": 5, "altitude": 0, "altitudeAccuracy": -1, "heading": -1, "latitude": 30.0000, "longitude": -120.000000, "speed": -1};
+}
+
 
 export { dummyInitialize, getDummyHeight, getDummyAge, getDummyWeight, getDummySex, 
          getDummyHeartRateCurrent, getDummyHeartRateResting, getDummyHeartRateWalking,
-         getDummySteps, getDummyCarbs, saveDummyCarbs };
+         getDummySteps, getDummyCarbs, saveDummyCarbs, getDummyLocation };
