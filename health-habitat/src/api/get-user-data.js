@@ -145,10 +145,10 @@ export async function getMeditationByTag(tag) {
 // Getting ideal meal type based on current time
 export function getMealType()
 {
-    const currentHour = Date.now(); // need to find correct function that gives correct hour
+    const currentHour = new Date().getHours();
 
     // breakfast
-    if (currentHour >= 8 && currentHour < 11) {
+    if (currentHour >= 5 && currentHour < 11) {
         return ["breakfast", "salad", "bread", "soup", "beverage", "sauce", "marinade", "fingerfood", "drink"]
     }
     // lunch
@@ -156,15 +156,11 @@ export function getMealType()
         return ["main course", "side dish", "appetizer", "salad", "bread", "soup", "beverage", "sauce", "marinade", "fingerfood", "drink"]
     }
     // dinner
-    else if (currentHour >= 16 && currentHour < 21) {
+    else if (currentHour >= 16 && currentHour < 22) {
         return ["main course", "side dish", "appetizer", "salad", "bread", "soup", "beverage", "sauce", "marinade", "fingerfood", "drink"]
     }
     // late night snack
-    else if (currentHour >= 21 && currentHour < 24) {
-        return ["dessert", "snack"]
-    }
-    // sleeping time
-    else {
-        return []
+    else if ((currentHour >= 22 && currentHour < 24) || (currentHour >= 0 && currentHour < 5)) {
+        return ["dessert", "snack", "bread", "beverage", "sauce", "marinade", "fingerfood", "drink"]
     }
 }
