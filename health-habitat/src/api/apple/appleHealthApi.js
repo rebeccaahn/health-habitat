@@ -10,7 +10,7 @@ import {
 } from "./dummyData";
 
 
-const isProd = false;
+const isProd = true;
 
 const initHealthApi = () => {
     if (isProd) {
@@ -156,4 +156,4 @@ const saveCarbs = async (carbsVal) => {
 
 export { initHealthApi, getHeight, getAge, getWeight, getSex, 
          getHeartRateCurrent, getHeartRateResting, getHeartRateWalking,
-         getSteps, getCarbs, saveCarbs };
+         getSteps, getCarbs, saveCarbs, isProd };
