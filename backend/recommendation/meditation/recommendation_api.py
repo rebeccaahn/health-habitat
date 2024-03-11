@@ -1,7 +1,7 @@
 from pathlib import Path
 from flask import Flask, jsonify, request
 from flask_restful import Resource, Api
-from med_rec_model import MeditationRecommender
+from backend.recommendation.meditation.med_rec_model import MeditationRecommender
 
 meditation_model = None
 
