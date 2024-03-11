@@ -1,7 +1,8 @@
 import { db, auth } from '../../App'
 import { collection, query, where, getDocs, updateDoc } from "firebase/firestore";
 import * as getUserData from "./get-user-data";
-import env from "./env.json" assert { type: 'json' };
+// import env from "./env.json" assert { type: 'json' };
+import env from "./env.json";
 
 // TODO: put in diet page
 // To get recipe card
@@ -18,33 +19,38 @@ async function getRecipeCard() {
 
 
 export async function recommendDietTask() {
+    const _ = require("lodash");
     // Get current user data
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
 
-    // Query parameters to put in endpoint call
-    let response = null;
-    // Account for n/a options and call endpoint accordingly
-    if ((getUserData.getRestrictions(userDoc) == "n/a") && (getUserData.getAllergies(userDoc) == "n/a")) {
-        response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&minCarbs=${getUserData.getCalories(userDoc)}&cuisine=${getUserData.getCuisines(userDoc)}&type=${_.sample(getUserData.getMealType())}`);
-    }
-    else if (getUserData.getRestrictions(userDoc) == "n/a") {
-        response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&minCarbs=${getUserData.getCalories(userDoc)}&cuisine=${getUserData.getCuisines(userDoc)}&intolerances=${getUserData.getAllergies(userDoc)}&type=${_.sample(getUserData.getMealType())}`);
-    }
-    else if (getUserData.getAllergies(userDoc) == "n/a") {
-        response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&minCarbs=${getUserData.getCalories(userDoc)}&cuisine=${getUserData.getCuisines(userDoc)}&diet=${getUserData.getRestrictions(userDoc)}&type=${_.sample(getUserData.getMealType())}`);
-    }
-    else {
-        response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&minCarbs=${getUserData.getCalories(userDoc)}&cuisine=${getUserData.getCuisines(userDoc)}&diet=${getUserData.getRestrictions(userDoc)}&intolerances=${getUserData.getAllergies(userDoc)}&type=${_.sample(getUserData.getMealType())}`);
-    }
-    let jsonResp = await response.json();
+    userDoc.then(
+        async function (value) {
+            // Query parameters to put in endpoint call
+            let response = null;
+            // Account for n/a options and call endpoint accordingly
+            if ((getUserData.getRestrictions(value) == "n/a") && (getUserData.getAllergies(value) == "n/a")) {
+                response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&maxCarbs=${getUserData.getCalories(value)}&cuisine=${getUserData.getCuisines(value)}&type=${_.sample(getUserData.getMealType())}`);
+            } else if (getUserData.getRestrictions(value) == "n/a") {
+                response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&maxCarbs=${getUserData.getCalories(value)}&cuisine=${getUserData.getCuisines(value)}&intolerances=${getUserData.getAllergies(value)}&type=${_.sample(getUserData.getMealType())}`);
+            } else if (getUserData.getAllergies(value) == "n/a") {
+                response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&maxCarbs=${getUserData.getCalories(value)}&cuisine=${getUserData.getCuisines(value)}&diet=${getUserData.getRestrictions(value)}&type=${_.sample(getUserData.getMealType())}`);
+            } else {
+                response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${env.diet_API_key}&maxCarbs=${getUserData.getCalories(value)}&cuisine=${getUserData.getCuisines(value)}&diet=${getUserData.getRestrictions(value)}&intolerances=${getUserData.getAllergies(value)}&type=${_.sample(getUserData.getMealType())}`);
+            }
+            let jsonResp = await response.json();
 
-    // Add recommended task to current user into Firestore
-    let recipeID = _.sample(jsonResp["results"])["id"]
-    let task = [recipeID, new Date()]
-    
-    await updateDoc(userDoc.ref, {
-        dietTask: task
-    });
+            console.log(jsonResp);
+
+            // Add recommended task to current user into Firestore
+            let recipeID = _.sample(jsonResp["results"])["id"];
+            let task = [recipeID, new Date()];
+
+            await updateDoc(value.ref, {
+                dietTask: task
+            });
+        }
+
+    );
 }
 
 // TODO: Incorporate live data into recommendation factors as well
@@ -56,7 +62,7 @@ export async function recommendExerciseTask() {
     // Make queries
     const categoriesQ = query(collection(db, "ExerciseTasks"), where("category", "in", getUserData.getCategories(userDoc)));
     // Account for n/a option and query accordingly
-    const equipmentsQ = null;
+    let equipmentsQ = null;
     if (getUserData.getEquipments(userDoc) == "n/a") {
         equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "==", "none (bodyweight exercise)"));
     }

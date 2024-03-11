@@ -57,13 +57,17 @@ export async function incrementDietScore() {
     // Get current user data
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
 
-    // Recommend new task
-    recommend.recommendDietTask();
+    userDoc.then(
+        async function (value) {
+            // Recommend new task
+            await recommend.recommendDietTask();
 
-    // Increment score
-    await updateDoc(userDoc.ref, {
-        dietScore: increment(10)
-    });
+            // Increment score
+            await updateDoc(value.ref, {
+                dietScore: Math.min(10+getUserData.getDietScore(value), 100)
+            });
+        }
+    );
 }
 
 // Incrementing score of Exercise category
@@ -71,13 +75,17 @@ export async function incrementExerciseScore() {
     // Get current user data
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
 
-    // Recommend new task
-    recommend.recommendExerciseTask();
+    userDoc.then(
+        async function (value){
+            // Recommend new task
+            await recommend.recommendExerciseTask();
 
-    // Increment score
-    await updateDoc(userDoc.ref, {
-        exerciseScore: increment(10)
-    });
+            // Increment score
+            await updateDoc(value.ref, {
+                exerciseScore: Math.min(10+getUserData.getExerciseScore(value), 100)
+            });
+        }
+    );
 }
 
 // Incrementing score of Meditation category
@@ -85,13 +93,17 @@ export async function incrementMeditationScore() {
     // Get current user data
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
 
-    // Recommend new task
-    recommend.recommendMeditationTask();
+    userDoc.then(
+        async function (value){
+            // Recommend new task
+            await recommend.recommendMeditationTask();
 
-    // Increment score
-    await updateDoc(userDoc.ref, {
-        meditationScore: increment(10)
-    });
+            // Increment score
+            await updateDoc(value.ref, {
+                meditationScore: Math.min(10+getUserData.getMeditationScore(value), 100)
+            });
+        }
+    );
 }
 
 // Decrementing score of Diet category
@@ -99,13 +111,20 @@ export async function decrementDietScore() {
     // Get current user data
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
 
-    // Get assigned date of current task
-    const assignedDate = getUserData.getDietTask(userDoc)[1]
+    userDoc.then(
+        async function (value) {
+            // Get assigned date of current task
+            const assignedDate = getUserData.getDietTask(value)[1] * 1000
 
-    // Decrement score by how much time passed by
-    await updateDoc(userDoc.ref, {
-        dietScore: increment(-0.01 * (new Date().getHours() - assignedDate.getHours()))
-    });
+            console.log(new Date().getUTCHours())
+            console.log(new Date(assignedDate).getUTCHours())
+
+            // Decrement score by how much time passed by
+            await updateDoc(value.ref, {
+                dietScore: increment(-0.01 * (new Date().getUTCHours() - new Date(assignedDate).getUTCHours()))
+            });
+        }
+    );
 }
 
 // Decrementing score of Exercise category
@@ -113,13 +132,18 @@ export async function decrementExerciseScore(number) {
     // Get current user data
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
 
-    // Get assigned date of current task
-    const assignedDate = getUserData.getExerciseTask(userDoc)[1]
+    userDoc.then(
+        async function (value){
+            // Get assigned date of current task
+            const assignedDate = getUserData.getExerciseTask(value)[1] * 1000
 
-    // Decrement score by how much time passed by
-    await updateDoc(userDoc.ref, {
-        exerciseScore: increment(-0.01 * (new Date().getHours() - assignedDate.getHours()))
-    });
+            // Decrement score by how much time passed by
+            await updateDoc(value.ref, {
+                exerciseScore: increment(-0.01 * (new Date().getUTCHours() - new Date(assignedDate).getUTCHours()))
+            });
+        }
+    );
+
 }
 
 // Decrementing score of Meditation category
@@ -127,13 +151,17 @@ export async function decrementMeditationScore(number) {
     // Get current user data
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
 
-    // Get assigned date of current task
-    const assignedDate = getUserData.getMeditationTask(userDoc)[1]
+    userDoc.then(
+        async function (value){
+            // Get assigned date of current task
+            const assignedDate = getUserData.getMeditationTask(value)[1] * 1000
 
-    // Decrement score by how much time passed by
-    await updateDoc(userDoc.ref, {
-        meditationScore: increment(-0.01 * (new Date().getHours() - assignedDate.getHours()))
-    });
+            // Decrement score by how much time passed by
+            await updateDoc(value.ref, {
+                meditationScore: increment(-0.01 * (new Date().getUTCHours() - new Date(assignedDate).getUTCHours()))
+            });
+        }
+    );
 }
 
 // Calculate the terrarium score for dashboard

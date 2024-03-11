@@ -21,12 +21,12 @@ export default function MeditationPage({navigation}) {
 
     const handleMeditationCompletion = () => {
         console.log('Meditation Task Completed')
-        // incrementMeditationScore()
+        incrementMeditationScore()
         const userDoc = getUserData.getUserDocument(auth.currentUser.email);
         userDoc.then(
             function (value){
                 setMeditationScore(getMeditationScore(value))
-                // setCurrentMeditation(getMeditationTask(value))
+                setCurrentMeditation(getMeditationTask(value))
             }
         );
     }
@@ -50,7 +50,7 @@ export default function MeditationPage({navigation}) {
         userDoc.then(
             function (value){
                 setMeditationScore(getMeditationScore(value))
-                // setCurrentMeditation(getMeditationTask(value))
+                setCurrentMeditation(getMeditationTask(value))
             }
         );
     }, []);
@@ -73,6 +73,10 @@ export default function MeditationPage({navigation}) {
             >
                 completed!
             </Button>
+
+            <Text>
+                Credits to Last.fm API for song track information!
+            </Text>
         </Background>
     );
 }

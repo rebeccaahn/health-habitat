@@ -60,7 +60,7 @@ export function getIntensity(userDoc) {
 
 // Getting user's preferred meditation duration in seconds
 export function getMeditationTime(userDoc) {
-    time = userDoc.get("meditationTime")
+    let time = userDoc.get("meditationTime")
     return time*60;
 }
 

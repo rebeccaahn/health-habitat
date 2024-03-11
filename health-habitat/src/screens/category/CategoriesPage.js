@@ -10,7 +10,7 @@ import {theme} from "../../core/theme";
 import * as getUserData from "../../api/get-user-data";
 import {auth} from "../../../App";
 import * as recommend from "../../api/task-recommendation";
-// import {getDietScore, getExerciseScore, getMeditationScore} from "../../api/get-user-data";
+import {decrementDietScore, decrementMeditationScore, decrementExerciseScore} from "../../api/score-categories";
 
 
 export default function CategoriesPage({navigation}) {
@@ -33,20 +33,24 @@ export default function CategoriesPage({navigation}) {
                 setMeditationScore(getUserData.getMeditationScore(value));
                 setExerciseScore(getUserData.getExerciseScore(value));
 
-                // if (getUserData.getDietTask(value) == null){
-                //     let tmp1 = recommend.recommendDietTask();
-                //     let tmp2 = recommend.recommendExerciseTask();
-                //     let tmp3 = recommend.recommendMeditationTask();
-                // }
-                // else {
-                //     const timestamp = getUserData.getDietTask(value)[1];
-                //     console.log(timestamp);
-                //     if (new Date().getDay() !== timestamp.getDay()) {
-                //         let tmp1 = recommend.recommendDietTask();
-                //         let tmp2 = recommend.recommendExerciseTask();
-                //         let tmp3 = recommend.recommendMeditationTask();
-                //     }
-                // }
+                if (getUserData.getDietTask(value) == null){
+                    recommend.recommendDietTask();
+                    // recommend.recommendExerciseTask();
+                    // recommend.recommendMeditationTask();
+                }
+                else {
+                    const timestamp = getUserData.getDietTask(value)[1];
+                    console.log(timestamp);
+
+                    if (new Date().getUTCDay() !== new Date(timestamp*1000).getUTCDay()) {
+                        decrementDietScore();
+                        // decrementMeditationScore();
+                        // decrementExerciseScore();
+                        recommend.recommendDietTask();
+                        // recommend.recommendExerciseTask();
+                        // recommend.recommendMeditationTask();
+                    }
+                }
             }
         );
 

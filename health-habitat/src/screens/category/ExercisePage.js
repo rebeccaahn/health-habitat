@@ -21,12 +21,12 @@ export default function ExercisePage({navigation}) {
 
     const handleExerciseCompletion = () => {
         console.log('Exercise Task Completed')
-        // incrementExerciseScore()
+        incrementExerciseScore()
         const userDoc = getUserData.getUserDocument(auth.currentUser.email);
         userDoc.then(
             function(value) {
                 setExerciseScore(getExerciseScore(value))
-                // setCurrentExercise(getExerciseTask(value))
+                setCurrentExercise(getExerciseTask(value))
             }
         );
 
@@ -51,7 +51,7 @@ export default function ExercisePage({navigation}) {
         userDoc.then(
             function(value) {
                 setExerciseScore(getExerciseScore(value))
-                // setCurrentExercise(getExerciseTask(value))
+                setCurrentExercise(getExerciseTask(value))
             }
         );
     }, []);
@@ -74,6 +74,10 @@ export default function ExercisePage({navigation}) {
             >
                 completed!
             </Button>
+
+            <Text>
+                Credits to wger API for exercise sets!
+            </Text>
         </Background>
     );
 }
