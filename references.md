@@ -10,6 +10,10 @@
 - Javascript sliciing; https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
 
 ## Angeline
+- Spoonacular API documentation: https://spoonacular.com/food-api/docs
+- Last.fm API documentation: https://www.last.fm/api
+- Wger API documentation: https://wger.de/en/software/api
+- Weather API documentation: https://openweathermap.org/current
 - 
 
 ## Teresa

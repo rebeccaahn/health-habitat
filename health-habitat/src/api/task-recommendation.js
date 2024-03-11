@@ -1,24 +1,11 @@
 import { db, auth } from '../../App'
 import { collection, query, where, getDocs, updateDoc } from "firebase/firestore";
 import * as getUserData from "./get-user-data";
-// import env from "./env.json" assert { type: 'json' };
 import env from "./env.json";
-
-// TODO: put in diet page
-// To get recipe card
-async function getRecipeCard() {
-    // Get current user data
-    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
-
-    // Query parameters to put in endpoint call    
-    let response = await fetch(`https://api.spoonacular.com/recipes/${getUserData.getDietTask(userDoc)[0]}/card?apiKey=${env.diet_API_key}`);
-    let jsonResp = await response.json();
-    
-    return jsonResp["url"];
-}
 
 
 export async function recommendDietTask() {
+    // To be able to use sample function
     const _ = require("lodash");
     // Get current user data
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
