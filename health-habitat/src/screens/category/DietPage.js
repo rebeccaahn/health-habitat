@@ -22,25 +22,40 @@ export default function DietPage({navigation}) {
 
     const [recipeUrl, setRecipeUrl] = useState('')
     const [dietScore, setDietScore] = useState(0)
+    const [recipeDescription, setRecipeDescription] = useState('')
 
     const handleDietCompletion = () => {
         console.log('Diet Task Completed')
-        // incrementDietScore()
+        incrementDietScore()
         const userDoc = getUserData.getUserDocument(auth.currentUser.email);
         userDoc.then(
             function(value) {
                 setDietScore(getDietScore(value))
-                // let recipeId = getDietTask(value)
-                // fetch(`https://api.spoonacular.com/recipes/${recipeId}/card?apiKey=${env.diet_API_key}`)
+                let recipeId = getDietTask(value)[0]
+                fetch(`https://api.spoonacular.com/recipes/${recipeId}/card?apiKey=${env.diet_API_key}`)
+                    .then((response) => {
+                        if (response.ok) {
+                            response.json()
+                        }
+                        throw new Error('400 Bad Request')
+                    })
+                    .then((responseJson) => {
+                        setRecipeUrl(responseJson["url"]);
+                        setRecipeDescription('')
+                    })
+                    .catch(error => {
+                        fetch(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${env.diet_API_key}`)
+                            .then((response) => response.json())
+                            .then((responseJson) => {
+                                setRecipeUrl(responseJson["image"]);
+                                setRecipeDescription(responseJson['summary'])
+                            })
+                    });
+                // fetch(`https://api.spoonacular.com/recipes/4632/card?apiKey=${env.diet_API_key}`)
                 //     .then((response) => response.json())
                 //     .then((responseJson) => {
                 //         setRecipeUrl(responseJson["url"]);
                 //     })
-                fetch(`https://api.spoonacular.com/recipes/4632/card?apiKey=${env.diet_API_key}`)
-                    .then((response) => response.json())
-                    .then((responseJson) => {
-                        setRecipeUrl(responseJson["url"]);
-                    })
             }
         );
     }
@@ -64,17 +79,31 @@ export default function DietPage({navigation}) {
         userDoc.then(
             function(value) {
                 setDietScore(getDietScore(value))
-                // let recipeId = getDietTask(value)
-                // fetch(`https://api.spoonacular.com/recipes/${recipeId}/card?apiKey=${env.diet_API_key}`)
+                let recipeId = getDietTask(value)[0]
+                fetch(`https://api.spoonacular.com/recipes/${recipeId}/card?apiKey=${env.diet_API_key}`)
+                    .then((response) => {
+                        if (response.ok) {
+                            response.json()
+                        }
+                        throw new Error('400 Bad Request')
+                    })
+                    .then((responseJson) => {
+                        setRecipeUrl(responseJson["url"]);
+                        setRecipeDescription('')
+                    })
+                    .catch(error => {
+                        fetch(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${env.diet_API_key}`)
+                            .then((response) => response.json())
+                            .then((responseJson) => {
+                                setRecipeUrl(responseJson["image"]);
+                                setRecipeDescription(responseJson['summary'])
+                            })
+                    });
+                // fetch(`https://api.spoonacular.com/recipes/4632/card?apiKey=${env.diet_API_key}`)
                 //     .then((response) => response.json())
                 //     .then((responseJson) => {
                 //         setRecipeUrl(responseJson["url"]);
                 //     })
-                fetch(`https://api.spoonacular.com/recipes/4632/card?apiKey=${env.diet_API_key}`)
-                    .then((response) => response.json())
-                    .then((responseJson) => {
-                        setRecipeUrl(responseJson["url"]);
-                    })
             }
         );
     }, []);
@@ -93,6 +122,8 @@ export default function DietPage({navigation}) {
                 source={{uri: recipeUrl}}
             />
 
+            <Text>{<div dangerouslySetInnerHTML={{__html: recipeDescription}} />}</Text>
+
             <Button
                 mode="contained"
                 onPress={handleDietCompletion}
@@ -100,6 +131,10 @@ export default function DietPage({navigation}) {
             >
                 completed!
             </Button>
+
+            <Text>
+                Credits to spoonacular API for recipes!
+            </Text>
         </Background>
     )
 
