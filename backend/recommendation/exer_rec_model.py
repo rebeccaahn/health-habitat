@@ -179,7 +179,7 @@ class ExerciseClassifier:
         self._model = pipeline
 
     
-    def predict_category(self, dream_weight: int, actual_weight: int, age: int, gender: str, weather_conditions) -> str:
+    def predict_category(self, dream_weight: int, actual_weight: int, age: int, gender: str, weather_condition: str) -> str:
         """
         Predict the category of exercise to do based on the given parameters
 
@@ -194,7 +194,15 @@ class ExerciseClassifier:
         if self._model is None:
             # Training should be done before predicting
             self.train_model()
-        
+
+        # adjust weather_condition for mode
+        if weather_condition in ["thunderstorm", "snow", "tornado", "mist", "haze", "fog", "drizzle", "rain", "squall", "smoke", "dust", "sand", "ash"]:
+            weather_condition = 'Rainy'
+        elif weather_condition == 'clouds':
+            weather_condition = 'Cloudy'
+        else:
+            weather_condition = 'Sunny'
+            
         # Create a new user dataframe
         new_user = pd.DataFrame({
             'Exercise': None,
@@ -206,13 +214,10 @@ class ExerciseClassifier:
             'Duration': None,
             'Heart Rate': None,
             'BMI': None,
-            'Weather Conditions': [weather_conditions],
+            'Weather Conditions': [weather_condition],
             'Weight Difference': [actual_weight - dream_weight],
             'Gain': self._gain(actual_weight - dream_weight)
         })
-
-        # new_user = self.preprocessor.transform(new_user)
-
 
         # print out new user as a row in dataframe
         print(new_user)
