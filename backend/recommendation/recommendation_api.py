@@ -98,5 +98,5 @@ recommendationApi.add_resource(ExerciseLocation, '/exercise_location')
 
 if __name__ == '__main__':
     meditation_model = MeditationRecommender(Path("meditation_data.csv"))
-    exercise_model = ExerciseClassifier(Path("exercise_data.csv"))
+    exercise_model = ExerciseClassifier(Path("exercise_dataset.csv"))
     recommendationApp.run(debug = True, port=8000)
