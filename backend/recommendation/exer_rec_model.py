@@ -242,11 +242,6 @@ class ExerciseClassifier:
             str: The location to exercise at
         """
         # TODO: add gym as a place if user has access to a gym
-
-        weather_condition = weather_condition.lower()
-        time_of_day = time_of_day.lower()
-        temperature = float(temperature)
-
         if weather_condition in ["thunderstorm", "snow", "tornado", "mist", "haze", "fog", "drizzle", "rain", "squall", "smoke", "dust", "sand", "ash"]:
             return "home (inside)"
         elif weather_condition in ["clear", "clouds"]:
