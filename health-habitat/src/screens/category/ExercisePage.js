@@ -102,6 +102,10 @@ export default function ExercisePage({navigation}) {
 
     }, []);
 
+    useEffect(() => {
+
+    }, []);
+
     return (
         <Background color={theme.colors.tealGradient}>
             <BackButton goBack={() => navigation.goBack()}/>
