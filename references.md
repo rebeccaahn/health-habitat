@@ -7,7 +7,10 @@
 - Javascript imports: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import
 - Javascript date: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
 - Calling API endpoint in Javascript: https://stackoverflow.com/a/51417209
-- Javascript sliciing; https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+- Javascript slicing; https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+- Javascript sampling: https://www.geeksforgeeks.org/lodash-_-sample-method/
+- Fetch: https://stackoverflow.com/a/38236296
+- Rendering HTML in Javascript: https://stackoverflow.com/a/27958683
 
 ## Angeline
 - Spoonacular API documentation: https://spoonacular.com/food-api/docs
