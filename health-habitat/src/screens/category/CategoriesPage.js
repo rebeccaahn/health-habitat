@@ -8,7 +8,7 @@ import Header from '../../components/Header'
 import ProgressBar from '../../components/ProgressBar'
 import {theme} from "../../core/theme";
 import * as getUserData from "../../api/get-user-data";
-import {auth} from "../../../App";
+import {auth} from "../../core/config";
 import * as recommend from "../../api/task-recommendation";
 import {decrementDietScore, decrementMeditationScore, decrementExerciseScore} from "../../api/score-categories";
 
