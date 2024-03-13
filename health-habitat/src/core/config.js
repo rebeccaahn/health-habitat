@@ -27,3 +27,6 @@ export const auth = initializeAuth(app, {
 
 // Initialize Firebase Firestore and get a reference to the service
 export const db = getFirestore(app);
+
+// Recommendation URL
+export const API_URL = "http://localhost:5000";

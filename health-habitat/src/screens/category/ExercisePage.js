@@ -6,16 +6,20 @@ import Background from '../../components/Background'
 import BackButton from '../../components/BackButton'
 import Header from '../../components/Header'
 import ProgressBar from '../../components/ProgressBar'
+import * as appleHealthApi from '../../api/apple/appleHealthApi'
+import { recommendExerciseTask } from '../../api/task-recommendation'
+import { getUserDocument, getExerciseTask } from '../../api/get-user-data'
+import { getLocation } from '../../api/apple/appleLocationApi'
 import {theme} from "../../core/theme";
+import { API_URL } from '../../core/config'
 
 
 export default function ExercisePage({navigation}) {
-
-
     // TODO : update user database and remove onclick functionality
     const handleExerciseCompletion = async (exerciseId) => {
         setWelcomeMessage(wMessages[0])
     }
+
 
     // TODO : query data
     const exerciseScore = 75
@@ -26,9 +30,38 @@ export default function ExercisePage({navigation}) {
         {id: 1, name: 'exercise2', description: 'do more smth'},
     ]
 
+    const getExerciseTask = async () => {
+        const weather = getLocation();
+        appleHealthApi.initHealthApi();
+        const actualWeight = appleHealthApi.getWeight();
+        const age = appleHealthApi.getAge();
+        const gender = appleHealthApi.getSex();
 
+        // TODO: get dream weight from user database (in kg)
+        const dreamWeight = 80;
 
-    //
+        // get exercise intensity level from the exercise ml model
+        const response = await fetch(API_URL + '/exercise_rec', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: {
+                'weather_condition': weather,
+                'actual_weight': actualWeight,
+                'dream_weight': dreamWeight,
+                'age': age,
+                'gender': gender
+            }
+        });
+
+        // convert response to an integer
+        const intensityLevel = parseInt(response);
+
+        // recommend the user a task
+        const task = recommendExerciseTask(intensityLevel);
+        return task;
+    }
 
     const wMessages = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"]
     const [welcomeMessage, setWelcomeMessage] = useState('')
@@ -44,6 +77,10 @@ export default function ExercisePage({navigation}) {
         } else {
             setWelcomeMessage(wMessages[3])
         }
+    }, []);
+
+    useEffect(() => {
+
     }, []);
 
     return (
