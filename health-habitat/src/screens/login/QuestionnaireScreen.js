@@ -64,7 +64,7 @@ export default function RegisterScreen({ navigation }) {
         // this.props.navigation.navigate('SurveyCompleted', { surveyAnswers: answersAsObj });
 
         // Add questionnaire answers into Firestore
-        addUser(auth.currentUser.email, answersAsObj["targetCalories"], answersAsObj["cuisines"], answersAsObj["dietRestrictions"], answersAsObj["dietIntolerances"], answersAsObj["priceLimit"], answersAsObj["timeLimit"], answersAsObj["exerciseTime"], answersAsObj["exerciseTypes"], answersAsObj["exerciseEquipments"], answersAsObj["exerciseIntensity"], answersAsObj["meditationTime"]);
+        addUser(auth.currentUser.email, answersAsObj["targetCalories"], answersAsObj["cuisines"], answersAsObj["dietRestrictions"], answersAsObj["dietIntolerances"], answersAsObj["priceLimit"], answersAsObj["timeLimit"], answersAsObj["exerciseEquipments"], answersAsObj["gymAccess"], answersAsObj["goalWeight"], answersAsObj["meditationTime"]);
         navigation.navigate('TerrariumScreen');
     }
 

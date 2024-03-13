@@ -145,57 +145,6 @@ export const survey = [
         placeholderText: '20',
     },
     {
-        questionType: 'NumericInput',
-        questionText: 'How much time would you like to spend exercising in a day? (in minutes)',
-        questionId: 'exerciseTime',
-        placeholderText: '30',
-    },
-    {
-        questionType: 'MultipleSelectionGroup',
-        questionText:
-            'What types of exercise do you prefer?',
-        questionId: 'exerciseTypes',
-        questionSettings: {
-            minMultiSelect: 0,
-            maxMultiSelect: 8,
-            autoAdvance: true,
-        },
-        options: [
-            {
-                optionText: 'Abs',
-                value: 'abs'
-            },
-            {
-                optionText: 'Arms',
-                value: 'arms'
-            },
-            {
-                optionText: 'Back',
-                value: 'back'
-            },
-            {
-                optionText: 'Calves',
-                value: 'calves'
-            },
-            {
-                optionText: 'Cardio',
-                value: 'cardio'
-            },
-            {
-                optionText: 'Chest',
-                value: 'chest'
-            },
-            {
-                optionText: 'Legs',
-                value: 'legs'
-            },
-            {
-                optionText: 'Shoulders',
-                value: 'shoulders'
-            }
-        ]
-    },
-    {
         questionType: 'MultipleSelectionGroup',
         questionText:
             'What exercise equipment do you have?',
@@ -238,23 +187,24 @@ export const survey = [
     },
     {
         questionType: 'SelectionGroup',
-        questionText:
-            'What is your preferred exercise intensity?',
-        questionId: 'exerciseIntensity',
+        questionText: 'Do you have access to a gym?',
+        questionId: 'gymAccess',
         options: [
             {
-                optionText: 'Low',
-                value: 1
+                optionText: 'Yes',
+                value: 'yes'
             },
             {
-                optionText: 'Moderate',
-                value: 2
-            },
-            {
-                optionText: 'High',
-                value: 3
-            },
+                optionText: 'No',
+                value: 'no'
+            }
         ]
+    },
+    {
+        questionType: 'NumericInput',
+        questionText: 'What is your goal weight? (in lbs)',
+        questionId: 'goalWeight',
+        placeholderText: '140',
     },
     {
         questionType: 'NumericInput',
