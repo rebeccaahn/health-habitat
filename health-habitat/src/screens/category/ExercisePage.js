@@ -35,6 +35,7 @@ export default function ExercisePage({navigation}) {
 
     }
 
+
     // TODO : query data
     const exerciseData = [
         {id: 0, name: 'exercise1', description: 'do smth'},
@@ -96,6 +97,10 @@ export default function ExercisePage({navigation}) {
                 setCurrentExercise(getExerciseTask(value))
             }
         );
+    }, []);
+
+    useEffect(() => {
+
     }, []);
 
     useEffect(() => {
