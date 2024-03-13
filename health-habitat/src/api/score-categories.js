@@ -121,7 +121,7 @@ export async function decrementDietScore() {
 
             // Decrement score by how much time passed by
             await updateDoc(value.ref, {
-                dietScore: increment(-0.01 * (new Date().getUTCHours() - new Date(assignedDate).getUTCHours()))
+                dietScore: increment(-0.25 * (new Date().getUTCHours() - new Date(assignedDate).getUTCHours()))
             });
         }
     );
@@ -139,7 +139,7 @@ export async function decrementExerciseScore(number) {
 
             // Decrement score by how much time passed by
             await updateDoc(value.ref, {
-                exerciseScore: increment(-0.01 * (new Date().getUTCHours() - new Date(assignedDate).getUTCHours()))
+                exerciseScore: increment(-0.25 * (new Date().getUTCHours() - new Date(assignedDate).getUTCHours()))
             });
         }
     );
@@ -158,7 +158,7 @@ export async function decrementMeditationScore(number) {
 
             // Decrement score by how much time passed by
             await updateDoc(value.ref, {
-                meditationScore: increment(-0.01 * (new Date().getUTCHours() - new Date(assignedDate).getUTCHours()))
+                meditationScore: increment(-0.25 * (new Date().getUTCHours() - new Date(assignedDate).getUTCHours()))
             });
         }
     );
@@ -168,6 +168,15 @@ export async function decrementMeditationScore(number) {
 export function calculateOverallScore() {
     // Get current user data
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+
+    /*
+    Calculate average of all scores
+    Overview of scoring algorithm:
+        - each completed task will increase the total score by 10/3 = 3.33 points
+        - after each hour each subscore will decrease by .25 points which will decrease the total score by .25 points
+        - this means that after each day the total score will decrease by 6 points if no tasks are completed
+        - by completing 1 task per wellness category in one day, the total score will increase by (10 - 6) = 4 points
+    */
 
     return (getDietScore(userDoc) + getExerciseScore(userDoc) + getMeditationScore(userDoc))/3;
 }
