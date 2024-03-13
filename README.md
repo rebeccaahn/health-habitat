@@ -7,10 +7,12 @@ By: Rebecca Ahn, Angeline Hui, Teresa Liang, Nathan Pietrantonio
 
 ### Setup Backend
 2. Navigate into `backend/recommendation`
-4. Run: `pip install -r requirements.txt`
+3. Run: `pip install -r requirements.txt`
     * Optional: create and source Python virtual environment
-6. Run: `python recommendation_api.py`
+4. Run: `python recommendation_api.py`
     * Leave this running in the background, this service hosts the backend recommendation API
+5. Download the [env.json](https://drive.google.com/file/d/1bj97ZT4HrGWpvc5iWnEgs3vkP_bnK6Q-/view?usp=sharing) file using your UCI account
+6. Move the env.json file to the health-habitat/src/api directory
 
 ### Setup Frontend
 **NOTE:** A Mac with Xcode and Xcode CLI tools is required to compile and run the app
