@@ -7,15 +7,18 @@ import Background from '../../components/Background'
 import BackButton from '../../components/BackButton'
 import Header from '../../components/Header'
 import ProgressBar from '../../components/ProgressBar'
+import * as appleHealthApi from '../../api/apple/appleHealthApi'
+import { recommendExerciseTask } from '../../api/task-recommendation'
+import { getUserDocument, getExerciseTask } from '../../api/get-user-data'
+import { getLocation } from '../../api/apple/appleLocationApi'
 import {theme} from "../../core/theme";
 import {incrementExerciseScore} from "../../api/score-categories";
 import * as getUserData from "../../api/get-user-data";
 import {auth} from "../../core/config";
 import {getExerciseScore, getExerciseTask} from "../../api/get-user-data";
-
+import { API_URL } from '../../core/config'
 
 export default function ExercisePage({navigation}) {
-
     const [exerciseScore, setExerciseScore] = useState(0)
     const [currentExercise, setCurrentExercise] = useState('')
 
@@ -30,6 +33,45 @@ export default function ExercisePage({navigation}) {
             }
         );
 
+    }
+
+    // TODO : query data
+    const exerciseData = [
+        {id: 0, name: 'exercise1', description: 'do smth'},
+        {id: 1, name: 'exercise2', description: 'do more smth'},
+    ]
+
+    const getExerciseTask = async () => {
+        const weather = getLocation();
+        appleHealthApi.initHealthApi();
+        const actualWeight = appleHealthApi.getWeight();
+        const age = appleHealthApi.getAge();
+        const gender = appleHealthApi.getSex();
+
+        // TODO: get dream weight from user database (in kg)
+        const dreamWeight = 80;
+
+        // get exercise intensity level from the exercise ml model
+        const response = await fetch(API_URL + '/exercise_rec', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: {
+                'weather_condition': weather,
+                'actual_weight': actualWeight,
+                'dream_weight': dreamWeight,
+                'age': age,
+                'gender': gender
+            }
+        });
+
+        // convert response to an integer
+        const intensityLevel = parseInt(response);
+
+        // recommend the user a task
+        const task = recommendExerciseTask(intensityLevel);
+        return task;
     }
 
     const wMessages = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"]
@@ -54,6 +96,10 @@ export default function ExercisePage({navigation}) {
                 setCurrentExercise(getExerciseTask(value))
             }
         );
+    }, []);
+
+    useEffect(() => {
+
     }, []);
 
     return (
