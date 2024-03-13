@@ -114,7 +114,7 @@ export default function DietPage({navigation}) {
             <Header props={welcomeMessage}/>
             <Header props={'Your diet details:'}/>
             <View style={styles.categoryOverview}>
-                <ProgressBar step={dietScore} numberOfSteps={100}/>
+                <ProgressBar step={dietScore} numberOfSteps={100} color={theme.colors.darkGreenGradient}/>
             </View>
 
             <Image
