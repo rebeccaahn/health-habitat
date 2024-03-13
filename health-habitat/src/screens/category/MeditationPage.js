@@ -1,6 +1,6 @@
 
 import React, {useEffect, useState} from 'react'
-import {StyleSheet, View, TouchableOpacity} from 'react-native'
+import {StyleSheet, View, Linking} from 'react-native'
 import { Text } from 'react-native-paper'
 import Button from '../../components/Button'
 import Background from '../../components/Background'
@@ -12,12 +12,16 @@ import * as getUserData from "../../api/get-user-data";
 import {auth} from "../../../App";
 import {getMeditationScore, getMeditationTask} from "../../api/get-user-data";
 import {incrementMeditationScore} from "../../api/score-categories";
+import {getRecommendationLocation} from "../../api/task-recommendation";
 
 
 export default function MeditationPage({navigation}) {
 
     const [meditationScore, setMeditationScore] = useState(0)
-    const [currentMeditation, setCurrentMeditation] = useState('')
+    const [trackUrl, setTrackUrl] = useState('')
+    const [meditationLocation, setMeditationLocation] = useState('')
+    const [trackName, setTrackName] = useState('')
+    const [trackArtist, setTrackArtist] = useState('')
 
     const handleMeditationCompletion = () => {
         console.log('Meditation Task Completed')
@@ -26,7 +30,10 @@ export default function MeditationPage({navigation}) {
         userDoc.then(
             function (value){
                 setMeditationScore(getMeditationScore(value))
-                setCurrentMeditation(getMeditationTask(value))
+                setTrackUrl(getMeditationTask(value)[0])
+                setMeditationLocation(getRecommendationLocation())
+                setTrackName(getUserData.getTrackAndArtist(trackUrl)[0])
+                setTrackArtist(getUserData.getTrackAndArtist(trackUrl)[1])
             }
         );
     }
@@ -50,7 +57,10 @@ export default function MeditationPage({navigation}) {
         userDoc.then(
             function (value){
                 setMeditationScore(getMeditationScore(value))
-                setCurrentMeditation(getMeditationTask(value))
+                setTrackUrl(getMeditationTask(value)[0])
+                setMeditationLocation(getRecommendationLocation())
+                setTrackName(getUserData.getTrackAndArtist(trackUrl)[0])
+                setTrackArtist(getUserData.getTrackAndArtist(trackUrl)[1])
             }
         );
     }, []);
@@ -64,7 +74,12 @@ export default function MeditationPage({navigation}) {
                 <ProgressBar step={meditationScore} numberOfSteps={100}/>
             </View>
 
-            <Text>{currentMeditation}</Text>
+            <Text>{`Let's go meditate in a ${meditationLocation}!\nWhile you are meditating, we recommend listening to the following song:`}</Text>
+            <Text
+                onPress={() => Linking.openURL(trackUrl)}
+            >
+                {`${trackName} by ${trackArtist}`}
+            </Text>
 
             <Button
                 mode="contained"

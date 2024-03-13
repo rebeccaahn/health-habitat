@@ -14,6 +14,9 @@
 - Last.fm API documentation: https://www.last.fm/api
 - Wger API documentation: https://wger.de/en/software/api
 - Weather API documentation: https://openweathermap.org/current
+- Add hyperlink to text component : https://stackoverflow.com/questions/30540252/how-does-one-display-a-hyperlink-in-react-native-app
+- Send request to FLASK API : https://javascript.plainenglish.io/sending-a-post-to-your-flask-api-from-a-react-js-app-6496692514e
+- Convert to JSON string : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
 - 
 
 ## Teresa

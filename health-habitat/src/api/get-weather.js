@@ -1,8 +1,8 @@
-import { getLocation } from "./appleLocationApi";
+import { getLocation } from "./apple/appleLocationApi";
 import env from "./env.json" assert { type: 'json' };
 
 // Getting current weather data
-async function getWeather() {
+export async function getWeather() {
     let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${getLocation()["latitude"]}&lon=${getLocation()["longitude"]}&appid=${env.weather_API_key}`);
     let jsonResp = await response.json();
     return jsonResp["weather"][0];
@@ -14,7 +14,13 @@ export async function getWeatherCategory(currentWeather) {
 }
 
 // Getting current weather icon URL
-export async function getWeatherIcon(jsonResp) {
+export async function getWeatherIcon(currentWeather) {
     let icon = currentWeather["icon"];
     return `https://openweathermap.org/img/wn/${icon}@2x.png`;
+}
+
+export async function getTemperature(){
+    let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${getLocation()["latitude"]}&lon=${getLocation()["longitude"]}&appid=${env.weather_API_key}`);
+    let jsonResp = await response.json();
+    return jsonResp["main"]["temp"];
 }
