@@ -69,7 +69,7 @@ export default function TerrariumScreen({navigation}) {
             <Text style={[theme.lgText, { textAlign: 'center' }]}>{terrariumDescriptions[terrariumState]}</Text>
             <TerrariumImage state={terrariumState} />
             {/* <ProgressBar terrariumScore={score} /> */}
-            <ProgressBar step={50} numberOfSteps={100} />
+            <ProgressBar step={50} numberOfSteps={100} color={theme.colors.blueGradient} />
             <IconButton
                 icon="plus"
                 iconColor="white"

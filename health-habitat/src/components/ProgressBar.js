@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 export const styles = StyleSheet.create({
     bar: {
         alignSelf: 'center',
-        borderColor: theme.colors.blue,
+        borderColor: theme.colors.fadedGrey,
         borderRadius: 10,
         borderWidth: 1,
         height: 20,
@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
     },
     });
 
-export default function ProgressBar({ step, numberOfSteps }) {
+export default function ProgressBar({ step, numberOfSteps, color }) {
     const prevStep = Math.min(0, step - 1);
     const { current: progress } = useRef(new Animated.Value(prevStep));
 
@@ -59,7 +59,7 @@ export default function ProgressBar({ step, numberOfSteps }) {
                 <LinearGradient
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
-                    colors={theme.colors.blueGradient}
+                    colors={color}
                     style={StyleSheet.absoluteFillObject}
                 />
                 <Text style={styles.score}>{step}</Text>
