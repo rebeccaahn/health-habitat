@@ -9,7 +9,7 @@ import Header from '../../components/Header'
 import ProgressBar from '../../components/ProgressBar'
 import {theme} from "../../core/theme";
 import * as getUserData from "../../api/get-user-data";
-import {auth} from "../../../App";
+import {auth} from "../../core/config";
 import {getMeditationScore, getMeditationTask} from "../../api/get-user-data";
 import {incrementMeditationScore} from "../../api/score-categories";
 import {getRecommendationLocation} from "../../api/task-recommendation";

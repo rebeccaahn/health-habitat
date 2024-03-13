@@ -1,4 +1,4 @@
-import { db, auth } from '../../App'
+import { db, auth } from '../core/config';
 import { collection, query, where, getDocs, updateDoc } from "firebase/firestore";
 import * as getUserData from "./get-user-data";
 import env from "./env.json";

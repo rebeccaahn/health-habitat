@@ -1,19 +1,19 @@
 
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, TouchableOpacity } from 'react-native'
-import {IconButton, Text} from 'react-native-paper'
+import { IconButton, Text } from 'react-native-paper'
 import Background from '../../components/Background'
 import BackButton from '../../components/BackButton'
 import Header from '../../components/Header'
 import ProgressBar from '../../components/ProgressBar'
-import {theme} from "../../core/theme";
+import { theme } from "../../core/theme";
 import * as getUserData from "../../api/get-user-data";
-import {auth} from "../../../App";
+import { auth } from "../../core/config";
 import * as recommend from "../../api/task-recommendation";
-import {decrementDietScore, decrementMeditationScore, decrementExerciseScore} from "../../api/score-categories";
+import { decrementDietScore, decrementMeditationScore, decrementExerciseScore } from "../../api/score-categories";
 
 
-export default function CategoriesPage({navigation}) {
+export default function CategoriesPage({ navigation }) {
 
     const day = 1000 * 60 * 60 * 24;    // milliseconds to day
 
@@ -28,12 +28,12 @@ export default function CategoriesPage({navigation}) {
 
         const userDoc = getUserData.getUserDocument(auth.currentUser.email);
         userDoc.then(
-            function(value) {
+            function (value) {
                 setDietScore(getUserData.getDietScore(value));
                 setMeditationScore(getUserData.getMeditationScore(value));
                 setExerciseScore(getUserData.getExerciseScore(value));
 
-                if (getUserData.getDietTask(value) == null){
+                if (getUserData.getDietTask(value) == null) {
                     recommend.recommendDietTask();
                     // recommend.recommendExerciseTask();
                     // recommend.recommendMeditationTask();
@@ -42,7 +42,7 @@ export default function CategoriesPage({navigation}) {
                     const timestamp = getUserData.getDietTask(value)[1];
                     console.log(timestamp);
 
-                    if (new Date().getUTCDay() !== new Date(timestamp*1000).getUTCDay()) {
+                    if (new Date().getUTCDay() !== new Date(timestamp * 1000).getUTCDay()) {
                         decrementDietScore();
                         // decrementMeditationScore();
                         // decrementExerciseScore();
@@ -69,9 +69,9 @@ export default function CategoriesPage({navigation}) {
 
     return (
         <Background color={theme.colors.darkBlueGradient}>
-            <BackButton goBack={() => navigation.goBack()}/>
+            <BackButton goBack={() => navigation.goBack()} />
             <Header props={welcomeMessage} />
-            <Header props={"Your health overview:"}/>
+            <Header props={"Your health overview:"} />
 
             <View style={styles.dietCategory}>
                 <View style={styles.categoryLeft}>
@@ -84,11 +84,11 @@ export default function CategoriesPage({navigation}) {
                     <IconButton
                         icon="plus"
                         iconColor="white"
-                        containerColor={ theme.colors.darkestGreen }
+                        containerColor={theme.colors.darkestGreen}
                         mode="contained"
                         size={45}
                         onPress={() => navigation.navigate('DietPage')}
-                        style={[ theme.shadow, { position: 'absolute', bottom: 50, elevation: 2} ]}
+                        style={[theme.shadow, { position: 'absolute', bottom: 50, elevation: 2 }]}
                     />
                 </View>
             </View>
@@ -105,11 +105,11 @@ export default function CategoriesPage({navigation}) {
                     <IconButton
                         icon="plus"
                         iconColor="white"
-                        containerColor={ theme.colors.darkestBlue }
+                        containerColor={theme.colors.darkestBlue}
                         mode="contained"
                         size={45}
                         onPress={() => navigation.navigate('MeditationPage')}
-                        style={[ theme.shadow, { position: 'absolute', bottom: 50, elevation: 2} ]}
+                        style={[theme.shadow, { position: 'absolute', bottom: 50, elevation: 2 }]}
                     />
                 </View>
             </View>
@@ -126,11 +126,11 @@ export default function CategoriesPage({navigation}) {
                     <IconButton
                         icon="plus"
                         iconColor="white"
-                        containerColor={ theme.colors.darkTeal }
+                        containerColor={theme.colors.darkTeal}
                         mode="contained"
                         size={45}
                         onPress={() => navigation.navigate('ExercisePage')}
-                        style={[ theme.shadow, { position: 'absolute', bottom: 50, elevation: 2} ]}
+                        style={[theme.shadow, { position: 'absolute', bottom: 50, elevation: 2 }]}
                     />
                 </View>
             </View>
