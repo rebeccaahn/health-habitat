@@ -2,7 +2,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { db } from '../core/config';
 
 // Adding document to collection UserInfo
-export default async function addUser(email, calories, cuisines, restrictions, allergies, priceLimit, dietDuration, exerciseDuration, exerciseTypes, equipments, intensity, meditationDuration, dScore=100, eScore=100, mScore=100) {
+export default async function addUser(email, calories, cuisines, restrictions, allergies, priceLimit, dietDuration, exerciseDuration, exerciseTypes, equipments, intensity, meditationDuration, dScore=80, eScore=80, mScore=80) {
     const userData = {
         userID: email,
         dietCalories: calories,
