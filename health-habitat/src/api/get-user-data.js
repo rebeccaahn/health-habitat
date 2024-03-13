@@ -1,4 +1,4 @@
-import { db } from '../../App'
+import { db } from "../core/config"
 import { collection, query, where, getDocs } from "firebase/firestore";
 
 // Call this function before any function call that accepts userDoc parameter

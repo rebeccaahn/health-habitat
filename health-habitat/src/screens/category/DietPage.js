@@ -10,7 +10,7 @@ import ProgressBar from '../../components/ProgressBar'
 import {theme} from "../../core/theme";
 
 import {getDietScore, getDietTask, getExerciseScore, getMeditationScore} from "../../api/get-user-data";
-import {auth} from "../../../App";
+import {auth} from "../../core/config";
 import * as getUserData from "../../api/get-user-data";
 // import env from "../../api/env.json" assert { type: 'json' };
 import env from "../../api/env.json";

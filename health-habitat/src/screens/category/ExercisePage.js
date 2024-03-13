@@ -10,7 +10,7 @@ import ProgressBar from '../../components/ProgressBar'
 import {theme} from "../../core/theme";
 import {incrementExerciseScore} from "../../api/score-categories";
 import * as getUserData from "../../api/get-user-data";
-import {auth} from "../../../App";
+import {auth} from "../../core/config";
 import {getExerciseScore, getExerciseTask} from "../../api/get-user-data";
 
 
