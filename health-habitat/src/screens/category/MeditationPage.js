@@ -1,34 +1,42 @@
 
 import React, {useEffect, useState} from 'react'
-import {StyleSheet, View, TouchableOpacity, FlatList} from 'react-native'
+import {StyleSheet, View, Linking} from 'react-native'
 import { Text } from 'react-native-paper'
+import Button from '../../components/Button'
 import Background from '../../components/Background'
 import BackButton from '../../components/BackButton'
 import Header from '../../components/Header'
 import ProgressBar from '../../components/ProgressBar'
 import {theme} from "../../core/theme";
+import * as getUserData from "../../api/get-user-data";
+import {auth} from "../../../App";
+import {getMeditationScore, getMeditationTask} from "../../api/get-user-data";
+import {incrementMeditationScore} from "../../api/score-categories";
+import {getRecommendationLocation} from "../../api/task-recommendation";
 
 
 export default function MeditationPage({navigation}) {
 
+    const [meditationScore, setMeditationScore] = useState(0)
+    const [trackUrl, setTrackUrl] = useState('')
+    const [meditationLocation, setMeditationLocation] = useState('')
+    const [trackName, setTrackName] = useState('')
+    const [trackArtist, setTrackArtist] = useState('')
 
-    // TODO : update user database and remove onclick functionality
-    const handleMeditationCompletion = async (meditationId) => {
-        setWelcomeMessage(wMessages[0])
+    const handleMeditationCompletion = () => {
+        console.log('Meditation Task Completed')
+        incrementMeditationScore()
+        const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+        userDoc.then(
+            function (value){
+                setMeditationScore(getMeditationScore(value))
+                setTrackUrl(getMeditationTask(value)[0])
+                setMeditationLocation(getRecommendationLocation())
+                setTrackName(getUserData.getTrackAndArtist(trackUrl)[0])
+                setTrackArtist(getUserData.getTrackAndArtist(trackUrl)[1])
+            }
+        );
     }
-
-    // TODO : query data
-    const meditationScore = 75
-
-    // TODO : query data
-    const meditationData = [
-        {id: 0, name: 'meditation1', description: 'listen to smth'},
-        {id: 1, name: 'exercise2', description: 'do more listening'},
-    ]
-
-
-
-    //
 
     const wMessages = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"]
     const [welcomeMessage, setWelcomeMessage] = useState('')
@@ -44,6 +52,17 @@ export default function MeditationPage({navigation}) {
         } else {
             setWelcomeMessage(wMessages[3])
         }
+
+        const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+        userDoc.then(
+            function (value){
+                setMeditationScore(getMeditationScore(value))
+                setTrackUrl(getMeditationTask(value)[0])
+                setMeditationLocation(getRecommendationLocation())
+                setTrackName(getUserData.getTrackAndArtist(trackUrl)[0])
+                setTrackArtist(getUserData.getTrackAndArtist(trackUrl)[1])
+            }
+        );
     }, []);
 
     return (
@@ -52,30 +71,27 @@ export default function MeditationPage({navigation}) {
             <Header props={welcomeMessage}/>
             <Header props={'Your meditation details:'}/>
             <View style={styles.categoryOverview}>
-                {/*<Image*/}
-                {/*    style={styles.categoryIcon}*/}
-                {/*    source={{*/}
-                {/*        // TODO : find such image*/}
-                {/*        uri: ''*/}
-                {/*    }}*/}
-                {/*/>*/}
                 <ProgressBar step={meditationScore} numberOfSteps={100}/>
             </View>
-            <FlatList style={{width: '100%'}}
-                      data={meditationData}
-                      renderItem={({item}) => (
-                          <View style={styles.listItem}>
-                              <View styles={styles.itemText}>
-                                  <Text style={styles.itemName}>{item.name}</Text>
-                                  <Text style={styles.itemDescription}>{item.description}</Text>
-                              </View>
-                              <TouchableOpacity styles={{width: '25%'}} onPress={() => handleMeditationCompletion(item.id)}>
-                                  <Text style={styles.completedButton}>{"completed!"}</Text>
-                              </TouchableOpacity>
-                          </View>
-                      )}
-                      keyExtractor={item => item.id}
-            />
+
+            <Text>{`Let's go meditate in a ${meditationLocation}!\nWhile you are meditating, we recommend listening to the following song:`}</Text>
+            <Text
+                onPress={() => Linking.openURL(trackUrl)}
+            >
+                {`${trackName} by ${trackArtist}`}
+            </Text>
+
+            <Button
+                mode="contained"
+                onPress={handleMeditationCompletion}
+                style={{ marginTop: 24 }}
+            >
+                completed!
+            </Button>
+
+            <Text>
+                Credits to Last.fm API for song track information!
+            </Text>
         </Background>
     );
 }
