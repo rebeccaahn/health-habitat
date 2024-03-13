@@ -1,4 +1,4 @@
-import { auth } from '../../App'
+import { auth } from '../core/config';
 import { updateDoc, increment } from "firebase/firestore";
 import * as getUserData from "./get-user-data";
 import * as recommend from "./task-recommendation";
