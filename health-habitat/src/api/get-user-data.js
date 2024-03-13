@@ -113,7 +113,7 @@ export async function getExerciseByCategory(category) {
     const categoryQ = query(collection(db, "ExerciseTasks"), where("category", "==", category));
 
     // Retrieve queried documents
-    const categorySnapshot = await getDocs(categoriesQ);
+    const categorySnapshot = await getDocs(categoryQ);
 
     // Return the array [[name, equipment], ...]
     let arrayResult = [];
@@ -138,9 +138,20 @@ export async function getMeditationByTag(tag) {
         arrayResult.push([doc.get("url"), doc.get("time")])
     });
 
+    return arrayResult;
+
     // Copy this after calling getMeditationByTag(tag)
     // let randomSong = _.sample(getMeditationByTag(tag));
 }
+
+
+export async function getTrackAndArtist(songUrl) {
+    const songQ = query(collection(db, "MeditationTasks"), where("url", "==", songUrl));
+    const songSnapshot = await getDocs(songQ);
+    let songDoc = songSnapshot.docs[0];
+    return [songDoc.get("track"), songDoc.get("artist")]
+}
+
 
 // Getting ideal meal type based on current time
 export function getMealType()
