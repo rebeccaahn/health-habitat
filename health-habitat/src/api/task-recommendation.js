@@ -21,20 +21,20 @@ export async function recommendDietTask() {
 
 // TODO: Incorporate live data into recommendation factors as well
 // Combining queries of ExerciseTasks to get personalized task(s) because AND queries only work on 1 field at a time
-export async function recommendExerciseTask() {
+export async function recommendExerciseTask(intensityLevel) {
     // Get current user data
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
 
     // Make queries
-    const categoriesQ = query(collection(db, "ExerciseTasks"), where("category", "in", getUserData.getCategories(userDoc)));
     const equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "in", getUserData.getEquipments(userDoc)));
+    const intensityQ = query(collection(db, "ExerciseTasks"), where("intensity", "<=", intensityLevel));
 
     // Retrieve queried documents
-    const categoriesSnapshot = await getDocs(categoriesQ);
     const equipmentsSnapshot = await getDocs(equipmentsQ);
+    const intensitySnapshot = await getDocs(intensityQ);
 
     // Uniquely union multiple arrays
-    let exerciseUnion = _.union(categoriesSnapshot.docs, equipmentsSnapshot.docs);
+    let exerciseUnion = _.union(intensitySnapshot.docs, equipmentsSnapshot.docs);
     
     // Add recommended task to current user into Firestore
     let randomExercise = _.sample(exerciseUnion);
