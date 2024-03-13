@@ -62,7 +62,7 @@ export default function ExercisePage({navigation}) {
             <Header props={welcomeMessage}/>
             <Header props={'Your exercise details:'}/>
             <View style={styles.categoryOverview}>
-                <ProgressBar step={exerciseScore} numberOfSteps={100}/>
+                <ProgressBar step={exerciseScore} numberOfSteps={100} color={theme.colors.tealGradient}/>
             </View>
 
             <Text>{currentExercise}</Text>

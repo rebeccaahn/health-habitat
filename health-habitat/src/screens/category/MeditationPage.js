@@ -71,7 +71,7 @@ export default function MeditationPage({navigation}) {
             <Header props={welcomeMessage}/>
             <Header props={'Your meditation details:'}/>
             <View style={styles.categoryOverview}>
-                <ProgressBar step={meditationScore} numberOfSteps={100}/>
+                <ProgressBar step={meditationScore} numberOfSteps={100} color={theme.colors.orangeGradient}/>
             </View>
 
             <Text>{`Let's go meditate in a ${meditationLocation}!\nWhile you are meditating, we recommend listening to the following song:`}</Text>
