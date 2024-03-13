@@ -32,7 +32,8 @@
     "react-native-screens": "~3.29.0",
     "react-native-status-bar-height": "^2.6.0",
     "react-native-web": "~0.19.6",
-    "react-navigation": "^5.0.0"
+    "react-navigation": "^5.0.0",
+    "underscore": "^1.13.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

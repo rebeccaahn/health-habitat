@@ -1,33 +1,7 @@
 import { db } from '../../App'
 import { collection, query, where, getDocs } from "firebase/firestore";
 
-// Getting ideal meal type based on current time
-export function getMealType()
-{
-    const currentHour = Date.now(); // need to find correct function that gives correct hour
-
-    // breakfast
-    if (currentHour >= 8 && currentHour < 11) {
-        return ["breakfast", "salad", "bread", "soup", "beverage", "sauce", "marinade", "fingerfood", "drink"]
-    }
-    // lunch
-    else if (currentHour >= 11 && currentHour < 16) {
-        return ["main course", "side dish", "appetizer", "salad", "bread", "soup", "beverage", "sauce", "marinade", "fingerfood", "drink"]
-    }
-    // dinner
-    else if (currentHour >= 16 && currentHour < 21) {
-        return ["main course", "side dish", "appetizer", "salad", "bread", "soup", "beverage", "sauce", "marinade", "fingerfood", "drink"]
-    }
-    // late night snack
-    else if (currentHour >= 21 && currentHour < 24) {
-        return ["dessert", "snack"]
-    }
-    // sleeping time
-    else {
-        return []
-    }
-}
-
+// Call this function before any function call that accepts userDoc parameter
 // Finding user's document
 export async function getUserDocument(email) {
     const userQ = query(collection(db, "UserInfo"), where("userID", "==", email));
@@ -86,31 +60,118 @@ export function getIntensity(userDoc) {
 
 // Getting user's preferred meditation duration in seconds
 export function getMeditationTime(userDoc) {
-    time = userDoc.get("meditationTime")
+    let time = userDoc.get("meditationTime")
     return time*60;
 }
 
+// Getting user's diet score
 export function getDietScore(userDoc) {
     return userDoc.get("dietScore");
 }
 
+// Getting user's exercise score
 export function getExerciseScore(userDoc) {
     return userDoc.get("exerciseScore");
 }
 
+// Getting user's meditation score
 export function getMeditationScore(userDoc) {
     return userDoc.get("meditationScore");
 }
 
-// [id, timestamp]
+// [id, date]
+// Getting user's current diet task
 export function getDietTask(userDoc) {
     return userDoc.get("dietTask");
 }
 
+// Getting user's current exercise task
 export function getExerciseTask(userDoc) {
     return userDoc.get("exerciseTask");
 }
 
+// Getting user's current meditation task
 export function getMeditationTask(userDoc) {
     return userDoc.get("meditationTask");
+}
+
+// [least recent ... most recent]
+// Getting user's 7 most recent past workout categories (most recent is last of the array)
+export function getPastWorkoutCategories(userDoc) {
+    const workoutArray = userDoc.get("pastWorkoutCategories");
+    const length = workoutArray.length;
+    if (length < 7) {
+        return workoutArray;
+    }
+    else {
+        return workoutArray.slice(length-7);
+    }
+}
+
+export async function getExerciseByCategory(category) {
+    // Make query
+    const categoryQ = query(collection(db, "ExerciseTasks"), where("category", "==", category));
+
+    // Retrieve queried documents
+    const categorySnapshot = await getDocs(categoryQ);
+
+    // Return the array [[name, equipment], ...]
+    let arrayResult = [];
+    categorySnapshot.forEach((doc) => {
+        arrayResult.push([doc.get("name"), doc.get("equipment")])
+    });
+
+    // Copy this after calling getExerciseByCategory(category)
+    // let randomExercise = _.sample(getExerciseByCategory(category));
+}
+
+export async function getMeditationByTag(tag) {
+    // Make query
+    const tagQ = query(collection(db, "MeditationTasks"), where("tag", "==", tag));
+
+    // Retrieve queried documents
+    const tagSnapshot = await getDocs(tagQ);
+
+    // Return the array [[url, time], ...]
+    let arrayResult = [];
+    tagSnapshot.forEach((doc) => {
+        arrayResult.push([doc.get("url"), doc.get("time")])
+    });
+
+    return arrayResult;
+
+    // Copy this after calling getMeditationByTag(tag)
+    // let randomSong = _.sample(getMeditationByTag(tag));
+}
+
+
+export async function getTrackAndArtist(songUrl) {
+    const songQ = query(collection(db, "MeditationTasks"), where("url", "==", songUrl));
+    const songSnapshot = await getDocs(songQ);
+    let songDoc = songSnapshot.docs[0];
+    return [songDoc.get("track"), songDoc.get("artist")]
+}
+
+
+// Getting ideal meal type based on current time
+export function getMealType()
+{
+    const currentHour = new Date().getHours();
+
+    // breakfast
+    if (currentHour >= 5 && currentHour < 11) {
+        return ["breakfast", "salad", "bread", "soup", "beverage", "sauce", "marinade", "fingerfood", "drink"]
+    }
+    // lunch
+    else if (currentHour >= 11 && currentHour < 16) {
+        return ["main course", "side dish", "appetizer", "salad", "bread", "soup", "beverage", "sauce", "marinade", "fingerfood", "drink"]
+    }
+    // dinner
+    else if (currentHour >= 16 && currentHour < 22) {
+        return ["main course", "side dish", "appetizer", "salad", "bread", "soup", "beverage", "sauce", "marinade", "fingerfood", "drink"]
+    }
+    // late night snack
+    else if ((currentHour >= 22 && currentHour < 24) || (currentHour >= 0 && currentHour < 5)) {
+        return ["dessert", "snack", "bread", "beverage", "sauce", "marinade", "fingerfood", "drink"]
+    }
 }
