@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { StyleSheet, ScrollView, Text, TextInput, View } from 'react-native';
 import Background from '../../components/Background';
 import SmallButton from '../../components/SmallButton';
-import Button from '../../components/Button';
 import { ProgressBar } from 'react-native-paper'
 import { Button as PaperButton } from 'react-native-paper';
 import { theme } from '../../core/theme';
@@ -64,7 +63,7 @@ export default function RegisterScreen({ navigation }) {
         // this.props.navigation.navigate('SurveyCompleted', { surveyAnswers: answersAsObj });
 
         // Add questionnaire answers into Firestore
-        addUser(auth.currentUser.email, answersAsObj["targetCalories"], answersAsObj["cuisines"], answersAsObj["dietRestrictions"], answersAsObj["dietIntolerances"], answersAsObj["priceLimit"], answersAsObj["timeLimit"], answersAsObj["exerciseTime"], answersAsObj["exerciseTypes"], answersAsObj["exerciseEquipments"], answersAsObj["exerciseIntensity"], answersAsObj["meditationTime"]);
+        addUser(auth.currentUser.email, answersAsObj["targetCalories"], answersAsObj["cuisines"], answersAsObj["dietRestrictions"], answersAsObj["dietIntolerances"], answersAsObj["priceLimit"], answersAsObj["timeLimit"], answersAsObj["exerciseEquipments"], answersAsObj["gymAccess"], answersAsObj["goalWeight"], answersAsObj["meditationTime"]);
         navigation.navigate('TerrariumScreen');
     }
 
@@ -92,7 +91,7 @@ export default function RegisterScreen({ navigation }) {
         return (
             <SmallButton
                 mode="contained"
-                onPress={() => {onPress(); setCurrentQuestion(currentQuestion + 1); console.log(answers)}}
+                onPress={() => {onPress(); setCurrentQuestion(currentQuestion + 1)}}
                 style={styles.navButton}
             >
                 NEXT

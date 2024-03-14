@@ -2,8 +2,10 @@ from pathlib import Path
 from flask import Flask, jsonify, request
 from flask_restful import Resource, Api
 from med_rec_model import MeditationRecommender
+from exer_rec_model import ExerciseClassifier
 
 meditation_model = None
+exercise_model = None
 
 recommendationApp = Flask(__name__)
 recommendationApi = Api(recommendationApp)
@@ -55,13 +57,49 @@ class MeditationSongPick(Resource):
             return jsonify({'song_name': 'Invalid input'})
 
         return jsonify({'song_name': song})
+    
+class ExerciseRec(Resource):
+    def get(self):
+        try:
+            data = request.get_json()
+            dream_weight = data['dream_weight']
+            actual_weight = data['actual_weight']
+            age = data['age']
+            gender = data['gender']
+            weather_condition = data['weather_condition']
 
+            prediction = exercise_model.predict_category(dream_weight, actual_weight, age, gender, weather_condition)
+        except (KeyError, ValueError) as exc:
+            print(exc)
+            return jsonify({'category': 'Invalid input'})
+
+        return jsonify({'category': prediction})
+    
+class ExerciseLocation(Resource):
+    def get(self):
+        try:
+            data = request.get_json()
+            weather_condition = data['weather_condition']
+            temperature = data['temperature']
+            time_of_day = data['time_of_day']
+
+            location = exercise_model.choose_location(weather_condition, temperature, time_of_day)
+        except (KeyError, ValueError) as exc:
+            print(exc)
+            return jsonify({'location': 'Invalid input'})
+
+        return jsonify({'location': location})
+    
 
 recommendationApi.add_resource(MeditationRec, '/meditation_rec')
 recommendationApi.add_resource(MeditationLocation, '/meditation_location')
 recommendationApi.add_resource(MeditationSongPick, '/meditation_song_pick')
+recommendationApi.add_resource(ExerciseRec, '/exercise_rec')
+recommendationApi.add_resource(ExerciseLocation, '/exercise_location')
 
 
 if __name__ == '__main__':
     meditation_model = MeditationRecommender(Path("meditation_data.csv"))
+    exercise_model = ExerciseClassifier(Path("exercise_dataset.csv"))
+    exercise_model.train_model()
     recommendationApp.run(debug = True, port=8000)
