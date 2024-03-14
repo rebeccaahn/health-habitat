@@ -62,11 +62,13 @@ class ExerciseRec(Resource):
     def get(self):
         try:
             data = request.get_json()
-            steps = data['steps']
-            calories = data['calories']
-            heart_rate = data['heart_rate']
+            dream_weight = data['dream_weight']
+            actual_weight = data['actual_weight']
+            age = data['age']
+            gender = data['gender']
+            weather_condition = data['weather_condition']
 
-            prediction = exercise_model.predict_category(steps, calories, heart_rate)
+            prediction = exercise_model.predict_category(dream_weight, actual_weight, age, gender, weather_condition)
         except (KeyError, ValueError) as exc:
             print(exc)
             return jsonify({'category': 'Invalid input'})
@@ -99,4 +101,5 @@ recommendationApi.add_resource(ExerciseLocation, '/exercise_location')
 if __name__ == '__main__':
     meditation_model = MeditationRecommender(Path("meditation_data.csv"))
     exercise_model = ExerciseClassifier(Path("exercise_dataset.csv"))
+    exercise_model.train_model()
     recommendationApp.run(debug = True, port=8000)
