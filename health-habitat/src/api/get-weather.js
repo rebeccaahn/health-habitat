@@ -24,9 +24,7 @@ export async function getWeatherIcon(currentWeather) {
 
 export async function getTemperature(){
     let location = await getLocation();
-    console.log("Location", location);
     let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${location["latitude"]}&lon=${location["longitude"]}&appid=${env.weather_API_key}`);
     let jsonResp = await response.json();
-    console.log("temp", jsonResp);
     return jsonResp["main"]["temp"];
 }
