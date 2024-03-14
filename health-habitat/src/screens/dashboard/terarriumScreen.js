@@ -85,10 +85,7 @@ export default function TerrariumScreen({navigation}) {
                 containerColor={ buttonColor }
                 mode="contained"
                 size={25}
-                onPress={() => {logoutUser(); navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'StartScreen' }],
-                  })}}
+                onPress={logoutUser}
                 style={[ theme.shadow, { position: 'absolute', right: 20, bottom: 50, elevation: 2} ]}
             />
         </Background>

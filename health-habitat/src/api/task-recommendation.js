@@ -1,11 +1,12 @@
 import { db, auth } from '../core/config';
-import { collection, query, where, getDocs, updateDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
 import * as getUserData from "./get-user-data";
 import env from "./env.json";
 import {getWeatherCategory, getWeather, getTemperature} from "./get-weather";
-import {getHeartRateCurrent} from "./apple/appleHealthApi";
+import { getLocation } from './apple/appleLocationApi'
+import * as appleHealthApi from "./apple/appleHealthApi";
 import {getMeditationByTag} from "./get-user-data";
-
+import { lbToKg } from '../utils/lbKgConverter';
 
 export async function recommendDietTask() {
     // To be able to use sample function
@@ -49,41 +50,109 @@ export async function recommendDietTask() {
 // TODO: Incorporate live data into recommendation factors as well
 // Combining queries of ExerciseTasks to get personalized task(s) because AND queries only work on 1 field at a time
 export async function recommendExerciseTask() {
+    // to be able to filter through query results
+    const _ = require("lodash");
+
     // Get current user data
+    console.log('recommending exercise');
+    let equipmentsQ = null;
+    let exerciseIntersection = null;
+    
     const userDoc = getUserData.getUserDocument(auth.currentUser.email);
     let availCategories = await userDoc.get("exerciseCategories");
     let availEquipment = await userDoc.get("exerciseEquipments");
 
-    // Make queries
-    const categoriesQ = query(collection(db, "ExerciseTasks"), where("category", "in", availCategories));
-    // Account for n/a option and query accordingly
-    let equipmentsQ = null;
-    if (availEquipment == "n/a") {
-        equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "==", "none (bodyweight exercise)"));
-    }
-    else {
-        equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "in", availEquipment));
-    }
+    userDoc.then(
+        async function (doc) {
+            // console.log('userDoc:', value)
+            // const weather = getLocation();
+            // console.log('weather')
+            // appleHealthApi.initHealthApi(false);
+            // use lbtokg converter to here to convert weight to kg
+            // const actualWeight = appleHealthApi.getWeight();
+            // const dreamWeight = getUserData.getGoalWeight(userDoc);
+            // console.log('actualWeight:', actualWeight);
+            // console.log('dreamWEight:', dreamWeight);
+            // const age = appleHealthApi.getAge();
+            // const gender = appleHealthApi.getSex();
 
-    // Retrieve queried documents
-    const categoriesSnapshot = await getDocs(categoriesQ);
-    const equipmentsSnapshot = await getDocs(equipmentsQ);
+            // use machine learning model to recommend the user an intensity level for their exercise
+            // using the user's actual weight, dream weight, age, and gender and the current weather condition 
+        // const response = await fetch(API_URL + '/exercise_rec', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //     },
+                //     body: {
+                //         'weather_condition': weather,
+                //         'actual_weight': actualWeight,
+                //         'dream_weight': dreamWeight,
+                //         'age': age,
+                //         'gender': gender
+                //     }
+                // })
+                //     .then((response) => {
+                //         if (response.ok) {
+                //             response.json()
+                //         }
+                //         throw new Error('400 Bad Request')
+                //     })
+                //     .then((responseJson) => {
+                //         console.log(responseJson['category']);
+                //     })
+                //     .catch(error => {
+                //        console.log("error: ", error.message);
+                //     });
+            const response = 5.09; // delete this line once we get API to work
+            // convert response to an integer
+            const intensityLevel = parseInt(response);
+            const pastWorkoutCategories = getUserData.getPastWorkoutCategories(doc);
 
-    // Uniquely union multiple arrays
-    let exerciseUnion = _.union(categoriesSnapshot.docs, equipmentsSnapshot.docs);
-    
-    // Add recommended task to current user into Firestore
-    let randomExercise = _.sample(exerciseUnion);
-    let task = [randomExercise.get("task_id"), new Date()];
+            // filter our documents by user equipment,intensity level, and by past workout categories
+            // Account for n/a option and query accordingly
+            if (getUserData.getEquipments(doc)[0].value == "n/a") {
+                equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "==", "none (bodyweight exercise)"));
+            }
+            else {
+                equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "==", "none (bodyweight exercise)"), where("equipment", "in", getUserData.getEquipments(doc)));
+            }
+            
+            const intensityQ = query(collection(db, "ExerciseTasks"), where("intensity_level", "<=", intensityLevel));
 
-    await updateDoc(userDoc.ref, {
-        exerciseTask: task
-    });
+            // Retrieve queried documents
+            const equipmentsSnapshot = await getDocs(equipmentsQ);
+            const intensitySnapshot = await getDocs(intensityQ);
 
-    // Push current exercise category to pastWorkoutCategories
-    await updateDoc(userDoc.ref, {
-        pastWorkoutCategories: arrayUnion(randomExercise.get("category"))
-    });
+            // filter out workouts that involve muscle groups in pastWorkoutCategories if there are any
+            if (pastWorkoutCategories.length > 0) {
+                const muscleGroupQ = query(collection(db, "ExerciseTasks"), where("category", "not-in", pastWorkoutCategories));
+                const muscleGroupSnapshot = await getDocs(muscleGroupQ);
+                exerciseIntersection = _.intersectionBy(intensitySnapshot.docs, equipmentsSnapshot.docs, muscleGroupSnapshot.docs, 'task_id');
+            } else {
+                exerciseIntersection = _.intersectionBy(intensitySnapshot.docs, equipmentsSnapshot.docs, 'task_id');
+            }
+                        
+            // RANKING: Sort by intensity level (decreasing)
+            exerciseIntersection = _.sortBy(exerciseIntersection, function (exercise) { return exercise.intensity_level; }).reverse();
+            
+            // Get the first task in exerciseUnion
+            let exercise = exerciseIntersection[0];
+            let exerciseTask = [exercise.get("task_id"), exercise.get("name"), new Date()];
+            console.log(exerciseTask);
+
+            // Add recommended task to current user into Firestore
+            await updateDoc(doc.ref, {
+                exerciseTask: exerciseTask
+            });
+            
+            // Push current exercise category to pastWorkoutCategories
+            await updateDoc(doc.ref, {
+                pastWorkoutCategories: arrayUnion(exercise.get("category"))
+            });
+
+            return exerciseTask;
+        }
+    )
 }
 
 
@@ -107,7 +176,7 @@ export async function recommendMeditationTask() {
 
             const currentWeatherCondition = getWeatherCategory(getWeather())
             const currentTemperature = getTemperature()
-            const currentHeartRate = getHeartRateCurrent()
+            const currentHeartRate = appleHealthApi.getHeartRateCurrent()
 
             let genreResponse = await fetch(`http://localhost:8000/meditation_rec/`, {
                 method: "GET",
