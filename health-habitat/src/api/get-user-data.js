@@ -38,24 +38,20 @@ export function getPriceLimit(userDoc) {
 export function getDietTime(userDoc) {
     return userDoc.get("dietTime");
 }
-// Getting user's exercise time
-export function getExerciseTime(userDoc) {
-    return userDoc.get("exerciseTime");
-}
-
-// Getting user's preferred exercise categories
-export function getCategories(userDoc) {
-    return userDoc.get("exerciseCategories");
-}
 
 // Getting user's preferred exercise equipments
 export function getEquipments(userDoc) {
     return userDoc.get("exerciseEquipments");
 }
 
-// Getting user's preferred exercise intensity
-export function getIntensity(userDoc) {
-    return userDoc.get("exerciseIntensity");
+// Getting user's gym access
+export function getGymAccess(userDoc) {
+    return userDoc.get("gymAccess");
+}
+
+// Getting user's goal weight
+export function getGoalWeight(userDoc) {
+    return userDoc.get("goalWeight");
 }
 
 // Getting user's preferred meditation duration in seconds
