@@ -3,8 +3,6 @@ import { auth } from '../core/config'
 
 export const logoutUser = () => {
   signOut(auth)
-  console.log("LOGGED OUT");
-  console.log(auth.currentUser.email);
 }
 
 export const signUpUser = async ({ name, email, password }) => {

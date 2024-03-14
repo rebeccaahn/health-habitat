@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { StyleSheet, ScrollView, Text, TextInput, View } from 'react-native';
 import Background from '../../components/Background';
 import SmallButton from '../../components/SmallButton';
-import Button from '../../components/Button';
 import { ProgressBar } from 'react-native-paper'
 import { Button as PaperButton } from 'react-native-paper';
 import { theme } from '../../core/theme';
@@ -92,7 +91,7 @@ export default function RegisterScreen({ navigation }) {
         return (
             <SmallButton
                 mode="contained"
-                onPress={() => {onPress(); setCurrentQuestion(currentQuestion + 1); console.log(answers)}}
+                onPress={() => {onPress(); setCurrentQuestion(currentQuestion + 1)}}
                 style={styles.navButton}
             >
                 NEXT

@@ -35,7 +35,7 @@ export default function LoginScreen({ navigation }) {
             email: email.value,
             password: password.value,
           })
-        console.log("response: " + response)
+
         if (response.error) {
         setError(response.error)
         }
