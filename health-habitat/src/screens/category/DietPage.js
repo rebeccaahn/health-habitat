@@ -16,6 +16,8 @@ import * as getUserData from "../../api/get-user-data";
 import env from "../../api/env.json";
 import * as recommend from "../../api/task-recommendation";
 import {incrementDietScore} from "../../api/score-categories";
+import { Linking } from 'react-native'
+import CategoriesPage from './CategoriesPage'
 
 
 export default function DietPage({navigation}) {
@@ -23,47 +25,49 @@ export default function DietPage({navigation}) {
     const [recipeUrl, setRecipeUrl] = useState('')
     const [dietScore, setDietScore] = useState(0)
     const [recipeDescription, setRecipeDescription] = useState('')
+    const [recipeLink, setRecipeLink] = useState('')
 
-    const handleDietCompletion = () => {
+    const handleDietCompletion = async () => {
         console.log('Diet Task Completed')
-        incrementDietScore()
-        const userDoc = getUserData.getUserDocument(auth.currentUser.email);
-        userDoc.then(
-            function(value) {
-                setDietScore(getDietScore(value))
-                let recipeId = getDietTask(value)[0]
-                fetch(`https://api.spoonacular.com/recipes/${recipeId}/card?apiKey=${env.diet_API_key}`)
-                    .then((response) => {
-                        if (response.ok) {
-                            response.json()
-                        }
-                        throw new Error('400 Bad Request')
-                    })
+        let result = await incrementDietScore()
+        const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
+
+        let value = userDoc
+
+        // let dietScoreToSet = await getDietScore(userDoc);
+        let dietScoreToSet = userDoc.get("dietScore");
+        // setDietScore(getDietScore(value))
+        setDietScore(dietScoreToSet);
+        // let recipeId = await getDietTask(userDoc)[0]
+        let recipeId = await userDoc.get("dietTask")[0]
+        fetch(`https://api.spoonacular.com/recipes/${recipeId}/card?apiKey=${env.diet_API_key}`)
+            .then((response) => {
+                if (response.ok) {
+                    response.json()
+                }
+                throw new Error('400 Bad Request')
+            })
+            .then((responseJson) => {
+                setRecipeUrl(responseJson["url"]);
+                setRecipeDescription('')
+                setRecipeLink(responseJson["url"])
+            })
+            .catch(async error => {
+                await fetch(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${env.diet_API_key}`)
+                    .then((response) => response.json())
                     .then((responseJson) => {
-                        setRecipeUrl(responseJson["url"]);
-                        setRecipeDescription('')
+                        setRecipeUrl(responseJson["image"]);
+                        setRecipeDescription(responseJson['title'])
+                        setRecipeLink(responseJson['spoonacularSourceUrl'])
                     })
-                    .catch(error => {
-                        fetch(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${env.diet_API_key}`)
-                            .then((response) => response.json())
-                            .then((responseJson) => {
-                                setRecipeUrl(responseJson["image"]);
-                                setRecipeDescription(responseJson['summary'])
-                            })
-                    });
-                // fetch(`https://api.spoonacular.com/recipes/4632/card?apiKey=${env.diet_API_key}`)
-                //     .then((response) => response.json())
-                //     .then((responseJson) => {
-                //         setRecipeUrl(responseJson["url"]);
-                //     })
-            }
-        );
+            });
     }
 
     const wMessages = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"]
     const [welcomeMessage, setWelcomeMessage] = useState('')
 
     useEffect(() => {
+        async function wrapperFunc() {
         const curHour = new Date().getHours()
         if (curHour < 12) {
             setWelcomeMessage(wMessages[0])
@@ -75,42 +79,54 @@ export default function DietPage({navigation}) {
             setWelcomeMessage(wMessages[3])
         }
 
-        const userDoc = getUserData.getUserDocument(auth.currentUser.email);
-        userDoc.then(
-            function(value) {
-                setDietScore(getDietScore(value))
-                let recipeId = getDietTask(value)[0]
-                fetch(`https://api.spoonacular.com/recipes/${recipeId}/card?apiKey=${env.diet_API_key}`)
-                    .then((response) => {
-                        if (response.ok) {
-                            response.json()
-                        }
-                        throw new Error('400 Bad Request')
-                    })
+        const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
+        // need to stop using .then
+
+        let value = userDoc;
+        
+        // let newDietScore = await getDietScore(value);
+        let newDietScore = await userDoc.get("dietScore");
+        setDietScore(newDietScore);
+        // let recipeId = await getDietTask(value)[0]
+        let recipeId = await userDoc.get("dietTask")[0];
+        console.log("BEFORE", recipeId)
+        await fetch(`https://api.spoonacular.com/recipes/${recipeId}/card?apiKey=${env.diet_API_key}`)
+            .then(async (response) => {
+                console.log("made it", response);
+                let responseJson = await response.json()
+                if (response.ok) {
+                    console.log("JSON", responseJson)
+                    setRecipeUrl(responseJson["url"]);
+                    setRecipeDescription('')
+                    setRecipeLink(responseJson["url"])
+                }
+                console.log("JSON", responseJson)
+                setRecipeUrl(responseJson["url"]);
+                setRecipeDescription('')
+                setRecipeLink(responseJson["url"])
+                throw new Error('400 Bad Request')
+            })
+            .then((responseJson) => {
+                setRecipeUrl(responseJson["url"]);
+                setRecipeDescription('')
+                setRecipeLink(responseJson["url"])
+            })
+            .catch(error => {
+                fetch(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${env.diet_API_key}`)
+                    .then((response) => response.json())
                     .then((responseJson) => {
-                        setRecipeUrl(responseJson["url"]);
-                        setRecipeDescription('')
+                        setRecipeUrl(responseJson["image"]);
+                        setRecipeDescription(responseJson['title'])
+                        setRecipeLink(responseJson['spoonacularSourceUrl'])
                     })
-                    .catch(error => {
-                        fetch(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${env.diet_API_key}`)
-                            .then((response) => response.json())
-                            .then((responseJson) => {
-                                setRecipeUrl(responseJson["image"]);
-                                setRecipeDescription(responseJson['summary'])
-                            })
-                    });
-                // fetch(`https://api.spoonacular.com/recipes/4632/card?apiKey=${env.diet_API_key}`)
-                //     .then((response) => response.json())
-                //     .then((responseJson) => {
-                //         setRecipeUrl(responseJson["url"]);
-                //     })
-            }
-        );
+            });
+        }
+    wrapperFunc();
     }, []);
 
     return (
         <Background color={theme.colors.blueGradient}>
-            <BackButton goBack={() => navigation.goBack()}/>
+            <BackButton goBack={() => navigation.navigate('CategoriesPage')}/>
             <Header props={welcomeMessage}/>
             <Header props={'Your diet details:'}/>
             <View style={styles.categoryOverview}>
@@ -118,11 +134,15 @@ export default function DietPage({navigation}) {
             </View>
 
             <Image
+                source={recipeUrl ? { uri: recipeUrl } : { uri: 'https://c.pxhere.com/photos/57/f4/croissant_breakfast_eggs_tomato_lettuce_food_morning_meal-683757.jpg' }}
                 style={styles.recipeCard}
-                source={{uri: recipeUrl}}
             />
 
-            <Text>{<div dangerouslySetInnerHTML={{__html: recipeDescription}} />}</Text>
+            <Text
+                onPress={() => Linking.openURL(recipeLink)}
+            >
+                {recipeDescription}
+            </Text>
 
             <Button
                 mode="contained"

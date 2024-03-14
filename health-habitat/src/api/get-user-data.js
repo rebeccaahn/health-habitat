@@ -4,9 +4,24 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 // Call this function before any function call that accepts userDoc parameter
 // Finding user's document
 export async function getUserDocument(email) {
+    console.log("Email searching", email);
     const userQ = query(collection(db, "UserInfo"), where("userID", "==", email));
+    console.log(userQ);
     const userSnapshot = await getDocs(userQ);
-    return userSnapshot.docs[0];    // there should only be 1 document in the snapshot as the email is unique
+    console.log("get docs", userSnapshot); // up to here works...
+    // oof whaa which email did you use? ok yeaa i see it on firebase too okok
+
+    let response = userSnapshot.docs;
+    // with this, response is an array of len 0, so there is no email found??
+    console.log("RESPONSE", response)
+    return response[0];
+    // userSnapshot.then(
+    //     async function(value){
+    //         return value.docs[0]
+    //     }
+    // )
+    //
+    // return userSnapshot.docs[0];    // there should only be 1 document in the snapshot as the email is unique
 }
 
 // Getting user's preferred diet calories
@@ -65,24 +80,24 @@ export function getMeditationTime(userDoc) {
 }
 
 // Getting user's diet score
-export function getDietScore(userDoc) {
-    return userDoc.get("dietScore");
+export async function getDietScore(userDoc) {
+    return await userDoc.get("dietScore");
 }
 
 // Getting user's exercise score
-export function getExerciseScore(userDoc) {
-    return userDoc.get("exerciseScore");
+export async function getExerciseScore(userDoc) {
+    return await userDoc.get("exerciseScore");
 }
 
 // Getting user's meditation score
-export function getMeditationScore(userDoc) {
-    return userDoc.get("meditationScore");
+export async function getMeditationScore(userDoc) {
+    return await userDoc.get("meditationScore");
 }
 
 // [id, date]
 // Getting user's current diet task
-export function getDietTask(userDoc) {
-    return userDoc.get("dietTask");
+export async function getDietTask(userDoc) {
+    return await userDoc.get("dietTask");
 }
 
 // Getting user's current exercise task

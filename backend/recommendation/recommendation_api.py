@@ -9,7 +9,7 @@ recommendationApp = Flask(__name__)
 recommendationApi = Api(recommendationApp)
 
 class MeditationRec(Resource):
-    def get(self):
+    def post(self):
         try:
             data = request.get_json()
             weather_condition = data['weather_condition']
@@ -26,7 +26,7 @@ class MeditationRec(Resource):
 
 
 class MeditationLocation(Resource):
-    def get(self):
+    def post(self):
         try:
             data = request.get_json()
             weather_condition = data['weather_condition']
@@ -42,7 +42,7 @@ class MeditationLocation(Resource):
 
 
 class MeditationSongPick(Resource):
-    def get(self):
+    def post(self):
         print("start")
         try:
             data = request.get_json()
