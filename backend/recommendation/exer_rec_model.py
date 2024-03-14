@@ -51,7 +51,6 @@ class ExerciseClassifier:
             data_path (Path): Path to the CSV file containing the training data
         """
         self.state = np.random.RandomState(12345)
-        print(data_path)
         self._data = self._extract_data(data_path)
         self.trainX, self.testX, self.trainY, self.testY = self._split_data(self._data)
         # model based on the best hyperparameters found from https://www.kaggle.com/datasets/aakashjoshi123/exercise-and-fitness-metrics-dataset
@@ -104,10 +103,6 @@ class ExerciseClassifier:
         # Read the CSV file
         data = pd.read_csv(data_path)
 
-        # print data to check if it was read correctly
-        print(data.head())
-        print(data.info())
-
         # process the training data
         data.drop('ID', axis=1, inplace=True)
         data['Exercise'] = data['Exercise'].map(lambda x: ''.join([i for i in x if i.isdigit()])) # change exercise column to int
@@ -134,9 +129,6 @@ class ExerciseClassifier:
         data['Weight Difference'] = data['Actual Weight'] - data['Dream Weight']
         data['Gain'] = data['Weight Difference'].apply(self._gain).astype('category')
         data['Weight Difference'] = abs(data['Weight Difference'])
-
-        # print data to check if it was processed correctly
-        print(data.describe())
 
         # Convert the data to a list of lists
         # data = data.values.tolist()
@@ -219,9 +211,6 @@ class ExerciseClassifier:
             'Gain': self._gain(actual_weight - dream_weight)
         })
 
-        # print out new user as a row in dataframe
-        print(new_user)
-
         # Predict the category
         category = self._model.predict(new_user)
 
@@ -256,4 +245,4 @@ if __name__ == '__main__':
     exercise_model = ExerciseClassifier("exercise_dataset.csv")
     exercise_model.train_model()
     print('RESULT')
-    print(exercise_model.predict_category(91, 96, 45, 'Male', 'Sunny')) # Output: 'Cardio'
+    print(exercise_model.predict_category(91, 96, 45, 'Male', 'Sunny'))
