@@ -6,7 +6,7 @@ import {getWeatherCategory, getWeather, getTemperature} from "./get-weather";
 import { getLocation } from './apple/appleLocationApi'
 import * as appleHealthApi from "./apple/appleHealthApi";
 import {getMeditationByTag} from "./get-user-data";
-
+import { lbToKg } from '../utils/lbKgConverter';
 
 export async function recommendDietTask() {
     // To be able to use sample function
@@ -63,6 +63,7 @@ export async function recommendExerciseTask() {
             // const weather = getLocation();
             // console.log('weather')
             // appleHealthApi.initHealthApi(false);
+            // use lbtokg converter to here to convert weight to kg
             // const actualWeight = appleHealthApi.getWeight();
             // const dreamWeight = getUserData.getGoalWeight(userDoc);
             // console.log('actualWeight:', actualWeight);
