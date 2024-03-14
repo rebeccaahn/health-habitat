@@ -11,7 +11,6 @@ const getLocation = async () => {
             let response = await getAppleLocation();
             console.log("location is", response);
             return response;
-            // return await getAppleLocation();
         } catch (error) {
             console.error("Error fetching location data:", error);
         }
