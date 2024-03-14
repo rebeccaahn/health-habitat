@@ -1,6 +1,6 @@
 
-import React, {useEffect, useState} from 'react'
-import {StyleSheet, View, TouchableOpacity} from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, View, TouchableOpacity } from 'react-native'
 import { Text } from 'react-native-paper'
 import Button from '../../components/Button'
 import Background from '../../components/Background'
@@ -9,71 +9,53 @@ import Header from '../../components/Header'
 import ProgressBar from '../../components/ProgressBar'
 import * as appleHealthApi from '../../api/apple/appleHealthApi'
 import { recommendExerciseTask } from '../../api/task-recommendation'
-import { getUserDocument, getExerciseTask } from '../../api/get-user-data'
 import { getLocation } from '../../api/apple/appleLocationApi'
-import {theme} from "../../core/theme";
-import {incrementExerciseScore} from "../../api/score-categories";
+import { theme } from "../../core/theme";
+import { incrementExerciseScore } from "../../api/score-categories";
 import * as getUserData from "../../api/get-user-data";
-import {auth} from "../../core/config";
-import {getExerciseScore, getExerciseTask} from "../../api/get-user-data";
+import { auth } from "../../core/config";
+import { getExerciseScore, getExerciseTask } from "../../api/get-user-data";
 import { API_URL } from '../../core/config'
 
-export default function ExercisePage({navigation}) {
+export default function ExercisePage({ navigation }) {
     const [exerciseScore, setExerciseScore] = useState(0)
     const [currentExercise, setCurrentExercise] = useState('')
+
+    const getNewExerciseTask = async () => {
+        // recommend the user a task
+        const task = recommendExerciseTask();
+        console.log(task.get('name'))
+        setCurrentExercise(task.get('name'));
+        return task.get('name');
+    }
 
     const handleExerciseCompletion = () => {
         console.log('Exercise Task Completed')
         incrementExerciseScore()
         const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+
+        // TODO: FIX BUG THAT IS INTRODUCED IN THIS FUNCTION
         userDoc.then(
-            function(value) {
-                setExerciseScore(getExerciseScore(value))
-                setCurrentExercise(getExerciseTask(value))
+            async function (value) {
+                const newExerciseTask = await getNewExerciseTask();
+                return value, newExerciseTask
             }
+            .then(
+                function (value, newExerciseTask) {
+                    setCurrentExercise(getExerciseScore(value));
+                    setCurrentExercise(newExerciseTask[1]);
+                }
+            )
+            
         );
-
     }
-
 
     // TODO : query data
     const exerciseData = [
-        {id: 0, name: 'exercise1', description: 'do smth'},
-        {id: 1, name: 'exercise2', description: 'do more smth'},
+        { id: 0, name: 'exercise1', description: 'do smth' },
+        { id: 1, name: 'exercise2', description: 'do more smth' },
     ]
 
-    const getExerciseTask = async () => {
-        const weather = getLocation();
-        appleHealthApi.initHealthApi();
-        const actualWeight = appleHealthApi.getWeight();
-        const age = appleHealthApi.getAge();
-        const gender = appleHealthApi.getSex();
-
-        // TODO: get dream weight from user database (in kg)
-        const dreamWeight = 80;
-
-        // get exercise intensity level from the exercise ml model
-        const response = await fetch(API_URL + '/exercise_rec', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: {
-                'weather_condition': weather,
-                'actual_weight': actualWeight,
-                'dream_weight': dreamWeight,
-                'age': age,
-                'gender': gender
-            }
-        });
-
-        // convert response to an integer
-        const intensityLevel = parseInt(response);
-
-        // recommend the user a task
-        const task = recommendExerciseTask(intensityLevel);
-        return task;
-    }
 
     const wMessages = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"]
     const [welcomeMessage, setWelcomeMessage] = useState('')
@@ -92,23 +74,27 @@ export default function ExercisePage({navigation}) {
 
         const userDoc = getUserData.getUserDocument(auth.currentUser.email);
         userDoc.then(
-            function(value) {
+            function (value) {
                 setExerciseScore(getExerciseScore(value))
-                setCurrentExercise(getExerciseTask(value))
+                if (getExerciseTask(value) == null) {
+                    setCurrentExercise(getNewExerciseTask())
+                } else {
+                    setCurrentExercise(getExerciseTask(value)[0])
+                }
             }
         );
     }, []);
 
     return (
         <Background color={theme.colors.tealGradient}>
-            <BackButton goBack={() => navigation.goBack()}/>
-            <Header props={welcomeMessage}/>
-            <Header props={'Your exercise details:'}/>
+            <BackButton goBack={() => navigation.goBack()} />
+            <Header props={welcomeMessage} />
+            <Header props={'Your exercise details:'} />
             <View style={styles.categoryOverview}>
-                <ProgressBar step={exerciseScore} numberOfSteps={100} color={theme.colors.tealGradient}/>
+                <ProgressBar step={exerciseScore} numberOfSteps={100} color={theme.colors.tealGradient} />
             </View>
 
-            <Text>{currentExercise}</Text>
+            <Text style={{color: 'white'}}>{currentExercise}</Text>
 
             <Button
                 mode="contained"
@@ -156,7 +142,7 @@ const styles = StyleSheet.create({
     },
     itemDescription: {
         color: "white",
-        fontSize : 20,
+        fontSize: 20,
         padding: 10,
         marginVertical: 10,
         marginHorizontal: 10,
@@ -165,7 +151,7 @@ const styles = StyleSheet.create({
     },
     completedButton: {
         color: "white",
-        fontSize : 20,
+        fontSize: 20,
         alignItems: 'flex-end',
         textAlign: 'center',
         width: '100%',
