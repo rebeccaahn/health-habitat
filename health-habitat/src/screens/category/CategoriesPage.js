@@ -11,9 +11,26 @@ import * as getUserData from "../../api/get-user-data";
 import { auth } from "../../core/config";
 import * as recommend from "../../api/task-recommendation";
 import { decrementDietScore, decrementMeditationScore, decrementExerciseScore } from "../../api/score-categories";
+import { useFocusEffect } from '@react-navigation/native';
 
 
 export default function CategoriesPage({ navigation }) {
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchData = async () => {
+                const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
+                let dietScore = await userDoc.get("dietScore");
+                setDietScore(dietScore);
+            };
+
+            fetchData(); // Immediately invoke the async function
+
+            return () => {
+            // Cleanup function (optional)
+            console.log('Cleanup function');
+            };
+        }, [])
+    );
 
     const day = 1000 * 60 * 60 * 24;    // milliseconds to day
 
@@ -25,34 +42,50 @@ export default function CategoriesPage({ navigation }) {
     const [meditationScore, setMeditationScore] = useState(50)
 
     useEffect(() => {
+        async function wrapperFunc() {
+        const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
+        // dont await this as it causes .then to not work
+        let value = userDoc;
 
-        const userDoc = getUserData.getUserDocument(auth.currentUser.email);
-        userDoc.then(
-            function (value) {
-                setDietScore(getUserData.getDietScore(value));
-                setMeditationScore(getUserData.getMeditationScore(value));
-                setExerciseScore(getUserData.getExerciseScore(value));
+        console.log("USER DOC", userDoc);
+        // User doc is stll undefined here, this means that getuserrdata.getuserdocument is not working
 
-                if (getUserData.getDietTask(value) == null) {
-                    recommend.recommendDietTask();
-                    // recommend.recommendExerciseTask();
-                    // recommend.recommendMeditationTask();
-                }
-                else {
-                    const timestamp = getUserData.getDietTask(value)[1];
-                    console.log(timestamp);
+        
+        console.log("User document:", value);
+        // let dietScore = await getUserData.getDietScore(value);
+        let dietScore = await value.get("dietScore");
+        setDietScore(dietScore);
+        // let newMeditationScore = await getUserData.getMeditationScore(value);
+        let newMeditationScore = await value.get("meditationScore");
+        setMeditationScore(newMeditationScore);
+        // let newExerciseScore = await getUserData.getExerciseScore(value);
+        let newExerciseScore = await value.get("exerciseScore");
+        setExerciseScore(newExerciseScore);
 
-                    if (new Date().getUTCDay() !== new Date(timestamp * 1000).getUTCDay()) {
-                        decrementDietScore();
-                        // decrementMeditationScore();
-                        // decrementExerciseScore();
-                        recommend.recommendDietTask();
-                        // recommend.recommendExerciseTask();
-                        // recommend.recommendMeditationTask();
-                    }
-                }
+        // let dietTask = await getUserData.getDietTask(value)
+        let dietTask = await userDoc.get("dietTask");
+
+        if (dietTask == null) {
+            await recommend.recommendDietTask();
+            // recommend.recommendExerciseTask();
+            // recommend.recommendMeditationTask();
+        }
+        else {
+            // const timestamp = await getUserData.getDietTask(value);
+            const timestamp = await userDoc.get("dietTask");
+            console.log(timestamp[1]);
+
+            if (new Date().getUTCDay() !== new Date(timestamp[1] * 1000).getUTCDay()) {
+                await decrementDietScore();
+                // decrementMeditationScore();
+                // decrementExerciseScore();
+                await recommend.recommendDietTask();
+                // recommend.recommendExerciseTask();
+                // recommend.recommendMeditationTask();
             }
-        );
+        }
+
+
 
         const curHour = new Date().getHours()
         if (curHour < 12) {
@@ -64,7 +97,8 @@ export default function CategoriesPage({ navigation }) {
         } else {
             setWelcomeMessage(wMessages[3])
         }
-
+    }
+    wrapperFunc()
     }, []);
 
     return (
