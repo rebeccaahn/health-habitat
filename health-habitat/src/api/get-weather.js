@@ -4,8 +4,10 @@ import env from "./env.json";
 
 // Getting current weather data
 export async function getWeather() {
-    let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${getLocation()["latitude"]}&lon=${getLocation()["longitude"]}&appid=${env.weather_API_key}`);
+    let location = await getLocation();
+    let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${location["latitude"]}&lon=${location["longitude"]}&appid=${env.weather_API_key}`);
     let jsonResp = await response.json();
+    console.log("weather", jsonResp);
     return jsonResp["weather"][0];
 }
 
@@ -21,7 +23,8 @@ export async function getWeatherIcon(currentWeather) {
 }
 
 export async function getTemperature(){
-    let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${getLocation()["latitude"]}&lon=${getLocation()["longitude"]}&appid=${env.weather_API_key}`);
+    let location = await getLocation();
+    let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${location["latitude"]}&lon=${location["longitude"]}&appid=${env.weather_API_key}`);
     let jsonResp = await response.json();
     return jsonResp["main"]["temp"];
 }

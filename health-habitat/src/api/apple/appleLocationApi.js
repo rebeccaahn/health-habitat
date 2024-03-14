@@ -8,7 +8,9 @@ import { isProd } from "./appleHealthApi";
 const getLocation = async () => {
     if (isProd) {
         try {
-            return await getAppleLocation();
+            let response = await getAppleLocation();
+            console.log("location is", response);
+            return response;
         } catch (error) {
             console.error("Error fetching location data:", error);
         }
