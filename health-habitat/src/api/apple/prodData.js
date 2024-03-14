@@ -229,11 +229,12 @@ const getAppleLocation = async () => {
       }
 
       const currentLocation = await Location.getCurrentPositionAsync({});
-      console.log(currentLocation);
+      console.log("current location", currentLocation);
       return currentLocation.coords;
   }
 
-  internalFunction();
+  let response = await internalFunction();
+  return response;
 }
 
 export { initializeHealthKit, getAppleHeight, getAppleAge, getAppleWeight, getAppleSex,
