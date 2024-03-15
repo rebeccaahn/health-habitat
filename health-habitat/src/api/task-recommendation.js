@@ -86,7 +86,7 @@ export async function recommendDietTask() {
 }
 
 // scoring function for exercise recommendation
-function calculateExerciseScore(exercise, userIntensityLevel, pastWorkoutCategories){
+function calculateExerciseScore(exercise, userIntensityLevel, pastWorkoutCategories, pastExerciseTasks){
     let score  = 0;
 
     // Calculate intensity match bonus (higher for closer intensity)
@@ -102,11 +102,16 @@ function calculateExerciseScore(exercise, userIntensityLevel, pastWorkoutCategor
         score -= .5;
     }
 
+    // Past exercise task penalty
+    // Penalize the score if the exercise has been recommended before
+    if (pastExerciseTasks.includes(exercise.task_id)) {
+        score -= 1;
+    }
+
     return score
 }
 
-// TODO: Incorporate live data into recommendation factors as well
-// Combining queries of ExerciseTasks to get personalized task(s) because AND queries only work on 1 field at a time
+// Recommend exercise task based on user's preferences, weather, and user's past exercise tasks
 export async function recommendExerciseTask() {
     // to be able to filter through query results
     const _ = require("lodash");
@@ -126,6 +131,16 @@ export async function recommendExerciseTask() {
     dreamWeight = lbToKg(dreamWeight);
     const availEquipment = await userDoc.get("exerciseEquipments");
     const pastWorkoutCategories = await userDoc.get("pastWorkoutCategories");
+    let pastExerciseTasks = await userDoc.get("completedExerciseTasks");
+
+    // if the user has more than 10 past exercise tasks, reset the past exercise tasks
+    if (pastExerciseTasks.length > 10) {
+        pastExerciseTasks = [];
+        // update the user's document in Firestore
+        await updateDoc(userDoc.ref, {
+            completedExerciseTasks: pastExerciseTasks
+        });
+    }
 
     // use machine learning model to recommend the user an intensity level for their exercise
     // using the user's actual weight, dream weight, age, and gender and the current weather condition
@@ -170,7 +185,7 @@ export async function recommendExerciseTask() {
 
     // Apply scoring function to each exercise
     const exercises = equipmentsSnapshot.docs.map(exercise => {
-        const score = calculateExerciseScore(exercise.data(), intensityLevel, pastWorkoutCategories);
+        const score = calculateExerciseScore(exercise.data(), intensityLevel, pastWorkoutCategories, pastExerciseTasks);
         return { ...exercise.data(), 'score': score };
     })
 
@@ -178,12 +193,13 @@ export async function recommendExerciseTask() {
     rankedExercises = _.sortBy(exercises, function (exercise) { return exercise.score; }).reverse();
     console.log("INTENSITY LEVEL", intensityLevel)
     console.log("PAST MUSCLE GROUPS", pastWorkoutCategories)
+    console.log("PAST EXERCISE TASKS", pastExerciseTasks)
     console.log("RECOMMENDED EXERCISE # 1", rankedExercises[0])
     console.log("RECOMMENDED EXERCISE # 2", rankedExercises[1])
     console.log("RECOMMENDED EXERCISE # 3", rankedExercises[2])
     console.log("RECOMMENDED EXERCISE # 4", rankedExercises[3])
 
-    // Get the first task in rankedExercises
+    // Get the first task in rankedExercises (the one with the highest score i.e. the best match for the user's preferences)
     let exercise = rankedExercises[0];
     
     let exerciseTask = {
@@ -196,13 +212,12 @@ export async function recommendExerciseTask() {
     console.log("IN TASK-RECOMMENDATION EXERCISE TASK", exerciseTask);
 
     // Add recommended task to current user into Firestore
+    // Push current exercise category to pastWorkoutCategories
+    // Push current exercise task to pastExerciseTasks
     await updateDoc(userDoc.ref, {
         exerciseTask: exerciseTask,
-    });
-
-    // Push current exercise category to pastWorkoutCategories
-    await updateDoc(userDoc.ref, {
-        pastWorkoutCategories: arrayUnion(exercise.category)
+        pastWorkoutCategories: arrayUnion(exercise.category),
+        completedExerciseTasks: arrayUnion(exercise.task_id)
     });
 
     return exerciseTask;

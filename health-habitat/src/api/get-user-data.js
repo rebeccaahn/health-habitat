@@ -119,6 +119,10 @@ export function getPastWorkoutCategories(userDoc) {
     }
 }
 
+export function getCompletedExerciseTasks(userDoc) {
+    return userDoc.get("completedExerciseTasks");
+}
+
 export async function getExerciseByCategory(category) {
     // Make query
     const categoryQ = query(collection(db, "ExerciseTasks"), where("category", "==", category));
