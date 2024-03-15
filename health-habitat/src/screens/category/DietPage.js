@@ -150,7 +150,7 @@ export default function DietPage({navigation}) {
             <BackButton goBack={() => navigation.navigate('CategoriesPage')}/>
             <Header props={'Diet Details'}/>
             <View style={styles.categoryOverview}>
-                <ProgressBar step={dietScore} numberOfSteps={100} color={theme.colors.darkGreenGradient}/>
+                <ProgressBar step={parseInt(dietScore)} numberOfSteps={100} color={theme.colors.darkGreenGradient}/>
             </View>
 
             <Image
@@ -175,6 +175,8 @@ export default function DietPage({navigation}) {
 
             <Text style={styles.creditText}>
                 Credits to spoonacular API for recipes!
+                
+                Recipe information may not be 100% accurate and always double check allergies and restrictions.
             </Text>
         </Background>
     )
@@ -233,11 +235,14 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
     recipeText: {
-        color: theme.lgText.color,
+        color:  'white',
         fontSize: theme.lgText.fontSize,
-        fontWeight: 'bold',
         letterSpacing: theme.lgText.letterSpacing,
-        marginTop: 15
+        width: '100%',
+        textAlign: 'center',
+        textDecorationLine: 'underline',
+        marginTop: 10,
+        fontWeight: 'bold'
     },
     creditText: {
         color: theme.smText.color,

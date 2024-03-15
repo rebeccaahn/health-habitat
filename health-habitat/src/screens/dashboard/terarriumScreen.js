@@ -12,6 +12,9 @@ import { IconButton } from 'react-native-paper';
 import { theme } from '../../core/theme'
 import CategoriesPage from "../category/CategoriesPage";
 import { logoutUser } from '../../api/auth-api';
+import * as getUserData from "../../api/get-user-data";
+import { auth } from "../../core/config";
+import { useFocusEffect } from '@react-navigation/native'
 
 const headings = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"];
 const terrariumStates = ["Critical", "Warning", "Thriving", "Best"];
@@ -23,13 +26,46 @@ const terrariumDescriptions = {
 }
 
 export default function TerrariumScreen({navigation}) {
-    const score = 25;
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchData = async () => {
+                const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
+                let dietS = await userDoc.get("dietScore")
+                let exerciseS = await userDoc.get("exerciseScore")
+                let meditationS = await userDoc.get("meditationScore")
+                let overallScore = (dietS + exerciseS + meditationS) / 3
+                setScore(overallScore)
+            };
+
+            fetchData(); // Immediately invoke the async function
+
+            return () => {
+            // Cleanup function (optional)
+            console.log('Cleanup function');
+            };
+        }, [])
+    );
+    
     const [terrariumState, setTerrariumState] = useState('');
     const [timeOfDay, setTimeOfDay] = useState('');
     const [backgroundColor, setBackgroundColor] = useState([]);
     const [buttonColor, setButtonColor] = useState('');
 
+    const [score, setScore] = useState(0)
+
     useEffect(() => {
+        async function wrapperFunc() {
+        const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
+
+        let dietS = await userDoc.get("dietScore")
+        let exerciseS = await userDoc.get("exerciseScore")
+        let meditationS = await userDoc.get("meditationScore")
+
+        let overallScore = (dietS + exerciseS + meditationS) / 3
+        console.log(overallScore);
+        setScore(overallScore)
+
         // Set the time of day
         const date = new Date();
         const hours = date.getHours();
@@ -61,6 +97,8 @@ export default function TerrariumScreen({navigation}) {
         } else {
             setTerrariumState(terrariumStates[3]);
         }
+    }
+    wrapperFunc();
     }, []);
     return (
         <Background color={backgroundColor}>
@@ -69,7 +107,8 @@ export default function TerrariumScreen({navigation}) {
             <Text style={[theme.lgText, { textAlign: 'center' }]}>{terrariumDescriptions[terrariumState]}</Text>
             <TerrariumImage state={terrariumState} />
             {/* <ProgressBar terrariumScore={score} /> */}
-            <ProgressBar step={50} numberOfSteps={100} color={theme.colors.blueGradient} />
+            <Text style={{color:'white', paddingBottom: 10, fontSize: 20, letterSpacing: 2}}>Health Score:</Text>
+            <ProgressBar step={parseInt(score)} numberOfSteps={100} color={theme.colors.blueGradient} />
             <IconButton
                 icon="plus"
                 iconColor="white"

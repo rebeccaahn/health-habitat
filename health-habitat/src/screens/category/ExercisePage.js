@@ -15,6 +15,7 @@ import * as getUserData from "../../api/get-user-data";
 import { auth } from "../../core/config";
 import { getExerciseScore, getExerciseTask } from "../../api/get-user-data";
 import { API_URL } from "../../core/config";
+import RenderHtml from 'react-native-render-html';
 
 export default function ExercisePage({ navigation }) {
     const [exerciseScore, setExerciseScore] = useState(0);
@@ -29,15 +30,10 @@ export default function ExercisePage({ navigation }) {
         let newExerciseScore = await userDoc.get("exerciseScore");
         setExerciseScore(newExerciseScore);
         let newExerciseTask = await userDoc.get("exerciseTask");
+        console.log('Exercise Task:', newExerciseTask);
         setCurrentExercise(newExerciseTask.name)
         setCurrentExerciseDescrip(newExerciseTask.description)
     };
-
-    // TODO : query data
-    const exerciseData = [
-        { id: 0, name: "exercise1", description: "do smth" },
-        { id: 1, name: "exercise2", description: "do more smth" },
-    ];
 
     useEffect(() => {
         async function wrapperFunc() {
@@ -53,19 +49,21 @@ export default function ExercisePage({ navigation }) {
     }, []);
 
     return (
-        <Background color={theme.colors.tealGradient}>
+        <Background color={theme.colors.brownGradient}>
             <BackButton goBack={() => navigation.goBack()} />
             <Header props={"Exercise Details"} />
             <View style={styles.categoryOverview}>
                 <ProgressBar
-                    step={exerciseScore}
+                    step={parseInt(exerciseScore)}
                     numberOfSteps={100}
-                    color={theme.colors.tealGradient}
+                    color={theme.colors.orangeGradient}
                 />
             </View>
 
-            <Text style={{ color: "white" }}>{currentExercise}</Text>
-            <Text style={{ color: "white" }}>{currentExerciseDescrip}</Text>
+            <Text style={styles.exercise}>{currentExercise}</Text>
+            <View style={[styles.exerciseDescrip, theme.shadow]}>
+            <RenderHtml tagStyles={{ p: {color: '#FFFFFF'}, body: {color: '#FFFFFF'} }} source={{ html: currentExerciseDescrip }} />
+            </View>
 
             <Button
                 mode="contained"
@@ -125,6 +123,25 @@ const styles = StyleSheet.create({
         alignItems: "flex-end",
         textAlign: "center",
         width: "100%",
+    },
+    exercise: {
+        color:  theme.colors.lightBlue,
+        fontSize: theme.lgText.fontSize,
+        letterSpacing: theme.lgText.letterSpacing,
+        width: '100%',
+        textAlign: 'center',
+        fontWeight: 'bold'
+    },
+    exerciseDescrip: {
+        opacity: .7,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        color: theme.lgText.color,
+        fontSize: theme.lgText.fontSize,
+        textAlign: 'center',
+        marginVertical: 15,
+        padding: 15,
+        paddingVertical: 25
     },
     creditText: {
         color: theme.smText.color,
