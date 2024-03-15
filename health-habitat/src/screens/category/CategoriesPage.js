@@ -94,6 +94,7 @@ export default function CategoriesPage({ navigation }) {
         }
 
         if (exerciseTask == null ){
+            console.log("NULLLLLLL")
             await recommend.recommendExerciseTask();
         }
         else {
