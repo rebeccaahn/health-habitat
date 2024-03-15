@@ -14,13 +14,24 @@ recommendationApi = Api(recommendationApp)
 class MeditationRec(Resource):
     def post(self):
         try:
+            print("-"*80)
+            print("POST to /meditation_rec")
             data = request.get_json()
             weather_condition = data['weather_condition']
             temperature = data['temperature']
             heart_rate = data['heart_rate']
             time_of_day = data['time_of_day']
+            print(
+                f"""Incoming:
+                Weather Condition: {weather_condition}
+                Temperature      : {temperature}
+                Heart Rate       : {heart_rate}
+                Time Of Day      : {time_of_day}"""
+            )
 
             prediction = meditation_model.predict_genre(weather_condition, temperature, heart_rate, time_of_day)
+            print(f"Outgoing: {prediction}")
+            print("-"*80)
         except (KeyError, ValueError) as exc:
             print(exc)
             return jsonify({'genre': 'Invalid input'})
@@ -46,17 +57,12 @@ class MeditationLocation(Resource):
 
 class MeditationSongPick(Resource):
     def post(self):
-        print("start")
         try:
             data = request.get_json()
             songs = json.loads(data['songs'])
             heart_rate = data['heart_rate']
-            # print(songs)
-            for song in songs:
-                print(song)
 
             song = meditation_model.choose_song_by_duration(songs, heart_rate)
-            print("song", song)
         except (KeyError, ValueError) as exc:
             print(exc)
             return jsonify({'song_name': 'Invalid input'})
@@ -64,7 +70,7 @@ class MeditationSongPick(Resource):
         return jsonify({'song_name': song})
     
 class ExerciseRec(Resource):
-    def get(self):
+    def post(self):
         try:
             data = request.get_json()
             dream_weight = data['dream_weight']
@@ -81,7 +87,7 @@ class ExerciseRec(Resource):
         return jsonify({'category': prediction})
     
 class ExerciseLocation(Resource):
-    def get(self):
+    def post(self):
         try:
             data = request.get_json()
             weather_condition = data['weather_condition']
@@ -107,4 +113,4 @@ if __name__ == '__main__':
     meditation_model = MeditationRecommender(Path("meditation_data.csv"))
     exercise_model = ExerciseClassifier(Path("exercise_dataset.csv"))
     exercise_model.train_model()
-    recommendationApp.run(debug = True, port=8000)
+    recommendationApp.run(debug = False, port=8000)

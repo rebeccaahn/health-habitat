@@ -138,7 +138,7 @@ export default function CategoriesPage({ navigation }) {
                 <View style={styles.categoryRight}>
                     <Text style={styles.catText}>Diet</Text>
                     <View style={styles.progressView}>
-                        <ProgressBar step={dietScore} numberOfSteps={100} color={theme.colors.darkGreenGradient}/>
+                        <ProgressBar step={parseInt(dietScore)} numberOfSteps={100} color={theme.colors.darkGreenGradient}/>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -155,7 +155,7 @@ export default function CategoriesPage({ navigation }) {
                 <View style={styles.categoryRight}>
                     <Text style={styles.catText}>Meditation</Text>
                     <View style={styles.progressView}>
-                        <ProgressBar step={meditationScore} numberOfSteps={100} color={theme.colors.blueGradient}/>
+                        <ProgressBar step={parseInt(meditationScore)} numberOfSteps={100} color={theme.colors.blueGradient}/>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -172,7 +172,7 @@ export default function CategoriesPage({ navigation }) {
                 <View style={styles.categoryRight}>
                     <Text style={styles.catText}>Exercise</Text>
                     <View style={styles.progressView}>
-                        <ProgressBar step={exerciseScore} numberOfSteps={100} color={theme.colors.orangeGradient}/>
+                        <ProgressBar step={parseInt(exerciseScore)} numberOfSteps={100} color={theme.colors.orangeGradient}/>
                     </View>
                 </View>
             </TouchableOpacity>
