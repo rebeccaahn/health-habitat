@@ -130,7 +130,7 @@ export async function recommendExerciseTask() {
     let dreamWeight = await userDoc.get("goalWeight");
     dreamWeight = lbToKg(dreamWeight);
     const availEquipment = await userDoc.get("exerciseEquipments");
-    const pastWorkoutCategories = await userDoc.get("pastWorkoutCategories");
+    let pastWorkoutCategories = await userDoc.get("pastWorkoutCategories");
     let pastExerciseTasks = await userDoc.get("completedExerciseTasks");
 
     // if the user has more than 10 past exercise tasks, reset the past exercise tasks
@@ -141,6 +141,16 @@ export async function recommendExerciseTask() {
             completedExerciseTasks: pastExerciseTasks
         });
     }
+
+    // if the user has more than 6 past muscle categories, reset the past workout categories
+    if (pastWorkoutCategories.length > 6){
+        pastWorkoutCategories = [];
+        // update the user's document in Firestore
+        await updateDoc(userDoc.ref, {
+            pastWorkoutCategories: pastWorkoutCategories
+        });
+    }
+
 
     // use machine learning model to recommend the user an intensity level for their exercise
     // using the user's actual weight, dream weight, age, and gender and the current weather condition
