@@ -8,7 +8,6 @@ import BackButton from '../../components/BackButton'
 import Header from '../../components/Header'
 import ProgressBar from '../../components/ProgressBar'
 import {theme} from "../../core/theme";
-
 import {getDietScore, getDietTask, getExerciseScore, getMeditationScore} from "../../api/get-user-data";
 import {auth} from "../../core/config";
 import * as getUserData from "../../api/get-user-data";
@@ -91,22 +90,8 @@ export default function DietPage({navigation}) {
             });
     }
 
-    const wMessages = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"]
-    const [welcomeMessage, setWelcomeMessage] = useState('')
-
     useEffect(() => {
         async function wrapperFunc() {
-        const curHour = new Date().getHours()
-        if (curHour < 12) {
-            setWelcomeMessage(wMessages[0])
-        } else if (curHour < 17) {
-            setWelcomeMessage(wMessages[1])
-        } else if (curHour < 20) {
-            setWelcomeMessage(wMessages[2])
-        } else {
-            setWelcomeMessage(wMessages[3])
-        }
-
         const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
         // need to stop using .then
 
@@ -163,18 +148,18 @@ export default function DietPage({navigation}) {
     return (
         <Background color={theme.colors.blueGradient}>
             <BackButton goBack={() => navigation.navigate('CategoriesPage')}/>
-            <Header props={welcomeMessage}/>
-            <Header props={'Your diet details:'}/>
+            <Header props={'Diet Details'}/>
             <View style={styles.categoryOverview}>
                 <ProgressBar step={dietScore} numberOfSteps={100} color={theme.colors.darkGreenGradient}/>
             </View>
 
             <Image
                 source={recipeUrl ? { uri: recipeUrl } : { uri: 'https://c.pxhere.com/photos/57/f4/croissant_breakfast_eggs_tomato_lettuce_food_morning_meal-683757.jpg' }}
-                style={styles.recipeCard}
+                style={[styles.recipeCard, theme.shadow]}
             />
 
             <Text
+                style={styles.recipeText}
                 onPress={() => Linking.openURL(recipeLink)}
             >
                 {recipeDescription}
@@ -185,10 +170,10 @@ export default function DietPage({navigation}) {
                 onPress={handleDietCompletion}
                 style={{ marginTop: 24 }}
             >
-                completed!
+                COMPLETED
             </Button>
 
-            <Text>
+            <Text style={styles.creditText}>
                 Credits to spoonacular API for recipes!
             </Text>
         </Background>
@@ -199,7 +184,8 @@ export default function DietPage({navigation}) {
 const styles = StyleSheet.create({
     categoryOverview: {
         flexDirection: 'row',
-        width: '75%'
+        width: '100%',
+        marginVertical: 5
     },
     categoryIcon: {
         width: '50',
@@ -242,7 +228,21 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     recipeCard: {
-        width: '60%',
-        height: '60%'
+        width: '90%',
+        height: '45%',
+        borderRadius: 15,
+    },
+    recipeText: {
+        color: theme.lgText.color,
+        fontSize: theme.lgText.fontSize,
+        fontWeight: 'bold',
+        letterSpacing: theme.lgText.letterSpacing,
+        marginTop: 15
+    },
+    creditText: {
+        color: theme.smText.color,
+        fontSize: theme.smText.fontSize,
+        letterSpacing: theme.smText.letterSpacing,
+        marginTop: 10
     }
 });
