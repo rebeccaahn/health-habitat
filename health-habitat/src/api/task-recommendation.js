@@ -152,7 +152,9 @@ export async function recommendExerciseTask() {
 
     // Use machine learning model to recommend the user an intensity level for their exercise
     // Using the user's actual weight, dream weight, age, and gender and the current weather condition (context)
-    const response = await fetch(API_URL + "/exercise_rec", {
+
+
+    const response = await fetch("http://localhost:8000//exercise_rec", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -165,8 +167,10 @@ export async function recommendExerciseTask() {
             gender: gender,
         }),
     });
+
     let intensityResp = await response.json();
     let intensityLevel = intensityResp["category"];
+
 
     // Convert response to an integer
     intensityLevel = parseInt(intensityLevel);
@@ -187,6 +191,7 @@ export async function recommendExerciseTask() {
             )
         );
     }
+
 
     // Retrieve queried documents i.e. exercises that match the user's available equipment
     const equipmentsSnapshot = await getDocs(equipmentsQ);
