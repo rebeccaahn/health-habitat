@@ -207,7 +207,6 @@ export async function recommendExerciseTask() {
     console.log("RECOMMENDED EXERCISE # 1", rankedExercises[0])
     console.log("RECOMMENDED EXERCISE # 2", rankedExercises[1])
     console.log("RECOMMENDED EXERCISE # 3", rankedExercises[2])
-    console.log("RECOMMENDED EXERCISE # 4", rankedExercises[3])
 
     // Get the first task in rankedExercises (the one with the highest score i.e. the best match for the user's preferences)
     let exercise = rankedExercises[0];
