@@ -23,7 +23,9 @@
 - 
 
 ## Teresa
-- 
+- Kaggle Dataset and Model for Exercise Recommendation: https://www.kaggle.com/datasets/aakashjoshi123/exercise-and-fitness-metrics-dataset/data
+- Questionnaire: https://github.com/devlinb/react-native-simple-survey
+- Account Creation/Login Workflow: https://github.com/venits/react-native-firebase-login-screen
 
 ## Nathan
 - 
