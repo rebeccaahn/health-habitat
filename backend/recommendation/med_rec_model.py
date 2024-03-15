@@ -212,10 +212,10 @@ class MeditationRecommender:
         attempts = 20
         while count <= attempts:
             choice = random.choice(songs)
-            if min <= choice[1] <= max:
-                return choice[0]
+            if min <= int(choice['time']) <= max:
+                return choice['url']
             count += 1
-        return random.choice(songs)[0]
+        return random.choice(songs)['url']
 
     def choose_song_by_duration(self, songs: list, heart_rate: int | float):
         """

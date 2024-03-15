@@ -13,12 +13,13 @@ export async function getWeather() {
 
 // Getting current weather category
 export async function getWeatherCategory(currentWeather) {
-    return currentWeather["main"];
+    let result = await currentWeather["main"]
+    return result;
 }
 
 // Getting current weather icon URL
 export async function getWeatherIcon(currentWeather) {
-    let icon = currentWeather["icon"];
+    let icon = await currentWeather["icon"];
     return `https://openweathermap.org/img/wn/${icon}@2x.png`;
 }
 
@@ -26,5 +27,6 @@ export async function getTemperature(){
     let location = await getLocation();
     let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${location["latitude"]}&lon=${location["longitude"]}&appid=${env.weather_API_key}`);
     let jsonResp = await response.json();
-    return jsonResp["main"]["temp"];
+    let result = jsonResp["main"]["temp"]
+    return result;
 }

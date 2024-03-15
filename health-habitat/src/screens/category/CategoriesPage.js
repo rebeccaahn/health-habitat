@@ -21,6 +21,8 @@ export default function CategoriesPage({ navigation }) {
                 const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
                 let dietScore = await userDoc.get("dietScore");
                 setDietScore(dietScore);
+                let newMeditationScore = await userDoc.get("meditationScore");
+                setMeditationScore(newMeditationScore);
             };
 
             fetchData(); // Immediately invoke the async function
@@ -64,26 +66,59 @@ export default function CategoriesPage({ navigation }) {
 
         // let dietTask = await getUserData.getDietTask(value)
         let dietTask = await userDoc.get("dietTask");
+        let meditationTask = await userDoc.get("meditationTask");
+        let exerciseTask = await userDoc.get("exerciseTask")
 
-        if (dietTask == null) {
-            await recommend.recommendDietTask();
-            // recommend.recommendExerciseTask();
-            // recommend.recommendMeditationTask();
+        // if (dietTask == null) {
+        //     await recommend.recommendDietTask();
+        // }
+        // else {
+        //     const timestamp = await userDoc.get("dietTask");
+        //     if (new Date().getUTCDay() !== new Date(timestamp[1] * 1000).getUTCDay()) {
+        //         await decrementDietScore();
+        //         await recommend.recommendDietTask();
+        //     }
+        // }
+
+        if (meditationTask == null) {
+            console.log("TASK NULL")
+            await recommend.recommendMeditationTask();
+            let meditationTask = await userDoc.get("meditationTask");
+            console.log("NEW GEN TASK", meditationTask)
         }
         else {
-            // const timestamp = await getUserData.getDietTask(value);
-            const timestamp = await userDoc.get("dietTask");
-            console.log(timestamp[1]);
-
+            const timestamp = await userDoc.get("meditationTask");
             if (new Date().getUTCDay() !== new Date(timestamp[1] * 1000).getUTCDay()) {
-                await decrementDietScore();
-                // decrementMeditationScore();
-                // decrementExerciseScore();
-                await recommend.recommendDietTask();
-                // recommend.recommendExerciseTask();
-                // recommend.recommendMeditationTask();
+                await decrementMeditationScore();
+                await recommend.recommendMeditationTask();
             }
         }
+
+        if (exerciseTask == null ){
+            await recommend.recommendExerciseTask();
+        }
+        else {
+            const timestamp = await userDoc.get("exerciseTask");
+            if (new Date().getUTCDay() !== new Date(timestamp[1] * 1000).getUTCDay()) {
+                await decrementExerciseScore();
+                await recommend.recommendExerciseTask();
+            }
+        }
+        
+        // else {
+        //     // const timestamp = await getUserData.getDietTask(value);
+        //     const timestamp = await userDoc.get("dietTask");
+        //     console.log(timestamp[1]);
+
+        //     if (new Date().getUTCDay() !== new Date(timestamp[1] * 1000).getUTCDay()) {
+        //         await decrementDietScore();
+        //         await decrementMeditationScore();
+        //         // await decrementExerciseScore();
+        //         await recommend.recommendDietTask();
+        //         await recommend.recommendMeditationTask();
+        //         // await recommend.recommendExerciseTask();
+        //     }
+        // }
 
 
 
@@ -179,19 +214,25 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.darkGreen,
         flexDirection: 'row',
         width: '100%',
-        height: '25%'
+        height: '25%',
+        verticalMargin: 5,
+        borderRadius: 5
     },
     meditationCategory: {
         backgroundColor: theme.colors.darkBlue,
         flexDirection: 'row',
         width: '100%',
-        height: '25%'
+        height: '25%',
+        verticalMargin: 5,
+        borderRadius: 5
     },
     exerciseCategory: {
         backgroundColor: theme.colors.darkBrown,
         flexDirection: 'row',
         width: '100%',
-        height: '25%'
+        height: '25%',
+        verticalMargin: 5,
+        borderRadius: 5
     },
     categoryOverview: {
         flexDirection: 'row',

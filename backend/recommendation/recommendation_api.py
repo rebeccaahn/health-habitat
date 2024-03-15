@@ -3,6 +3,7 @@ from flask import Flask, jsonify, request
 from flask_restful import Resource, Api
 from med_rec_model import MeditationRecommender
 from exer_rec_model import ExerciseClassifier
+import json
 
 meditation_model = None
 exercise_model = None
@@ -48,10 +49,14 @@ class MeditationSongPick(Resource):
         print("start")
         try:
             data = request.get_json()
-            songs = data['songs']
+            songs = json.loads(data['songs'])
             heart_rate = data['heart_rate']
+            # print(songs)
+            for song in songs:
+                print(song)
 
             song = meditation_model.choose_song_by_duration(songs, heart_rate)
+            print("song", song)
         except (KeyError, ValueError) as exc:
             print(exc)
             return jsonify({'song_name': 'Invalid input'})
