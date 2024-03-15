@@ -22,7 +22,7 @@ export default async function addUser(email, calories, cuisines, restrictions, a
         exerciseTask: null,
         meditationTask: null,
         pastWorkoutCategories: [],
-        completedTasks: []
+        completedExerciseTasks: []
     };
     
     await addDoc(collection(db, "UserInfo"), userData);

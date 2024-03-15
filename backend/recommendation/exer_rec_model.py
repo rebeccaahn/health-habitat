@@ -1,6 +1,7 @@
 '''
 Module to recommend exercise task based on age, dream weight, actual weight, duration, heart rate, BMI, gender, weather conditions, and weight difference
 Based off of model in https://www.kaggle.com/datasets/aakashjoshi123/exercise-and-fitness-metrics-dataset
+Citation: Akash Joshi. (2023). Exercise and Fitness Metrics Dataset [Data set]. Kaggle. https://doi.org/10.34740/KAGGLE/DS/3337014
 '''
 
 import pandas as pd
