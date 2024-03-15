@@ -16,24 +16,26 @@ import { useFocusEffect } from '@react-navigation/native';
 
 
 export default function CategoriesPage({ navigation }) {
-    // useFocusEffect(
-    //     React.useCallback(() => {
-    //         const fetchData = async () => {
-    //             const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
-    //             let dietScore = await userDoc.get("dietScore");
-    //             setDietScore(dietScore);
-    //             let newMeditationScore = await userDoc.get("meditationScore");
-    //             setMeditationScore(newMeditationScore);
-    //         };
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchData = async () => {
+                const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
+                let dietScore = await userDoc.get("dietScore");
+                setDietScore(dietScore);
+                let newMeditationScore = await userDoc.get("meditationScore");
+                setMeditationScore(newMeditationScore);
+                let exerciseStore = await userDoc.get("exerciseScore");
+                setExerciseScore(exerciseStore)
+            };
 
-    //         fetchData(); // Immediately invoke the async function
+            fetchData(); // Immediately invoke the async function
 
-    //         return () => {
-    //         // Cleanup function (optional)
-    //         console.log('Cleanup function');
-    //         };
-    //     }, [])
-    // );
+            return () => {
+            // Cleanup function (optional)
+            console.log('Cleanup function');
+            };
+        }, [])
+    );
 
     const day = 1000 * 60 * 60 * 24;    // milliseconds to day
     const [dietScore, setDietScore] = useState(32)
@@ -66,41 +68,41 @@ export default function CategoriesPage({ navigation }) {
         let meditationTask = await userDoc.get("meditationTask");
         let exerciseTask = await userDoc.get("exerciseTask")
 
-        // if (dietTask == null) {
-        //     await recommend.recommendDietTask();
-        // }
-        // else {
-        //     const timestamp = await userDoc.get("dietTask");
-        //     if (new Date().getUTCDay() !== new Date(timestamp[1] * 1000).getUTCDay()) {
-        //         await decrementDietScore();
-        //         await recommend.recommendDietTask();
-        //     }
-        // }
+        if (dietTask == null) {
+            await recommend.recommendDietTask();
+        }
+        else {
+            const timestamp = await userDoc.get("dietTask");
+            if (new Date().getUTCDay() !== new Date(timestamp[1] * 1000).getUTCDay()) {
+                await decrementDietScore();
+                await recommend.recommendDietTask();
+            }
+        }
 
-        // if (meditationTask == null) {
-        //     console.log("TASK NULL")
-        //     await recommend.recommendMeditationTask();
-        //     let meditationTask = await userDoc.get("meditationTask");
-        //     console.log("NEW GEN TASK", meditationTask)
-        // }
-        // else {
-        //     const timestamp = await userDoc.get("meditationTask");
-        //     if (new Date().getUTCDay() !== new Date(timestamp[1] * 1000).getUTCDay()) {
-        //         await decrementMeditationScore();
-        //         await recommend.recommendMeditationTask();
-        //     }
-        // }
+        if (meditationTask == null) {
+            console.log("TASK NULL")
+            await recommend.recommendMeditationTask();
+            let meditationTask = await userDoc.get("meditationTask");
+            console.log("NEW GEN TASK", meditationTask)
+        }
+        else {
+            const timestamp = await userDoc.get("meditationTask");
+            if (new Date().getUTCDay() !== new Date(timestamp[1] * 1000).getUTCDay()) {
+                await decrementMeditationScore();
+                await recommend.recommendMeditationTask();
+            }
+        }
 
-        // if (exerciseTask == null ){
-        //     await recommend.recommendExerciseTask();
-        // }
-        // else {
-        //     const timestamp = await userDoc.get("exerciseTask");
-        //     if (new Date().getUTCDay() !== new Date(timestamp[1] * 1000).getUTCDay()) {
-        //         await decrementExerciseScore();
-        //         await recommend.recommendExerciseTask();
-        //     }
-        // }
+        if (exerciseTask == null ){
+            await recommend.recommendExerciseTask();
+        }
+        else {
+            const timestamp = await userDoc.get("exerciseTask");
+            if (new Date().getUTCDay() !== new Date(timestamp[1] * 1000).getUTCDay()) {
+                await decrementExerciseScore();
+                await recommend.recommendExerciseTask();
+            }
+        }
         
         // else {
         //     // const timestamp = await getUserData.getDietTask(value);

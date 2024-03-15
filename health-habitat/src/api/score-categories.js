@@ -125,7 +125,7 @@ export async function decrementExerciseScore(number) {
     let currentExercise = await userDoc.get("exerciseTask")
 
     // Get assigned date of current task
-    const assignedDate = currentExercise[1] * 1000
+    const assignedDate = currentExercise.date * 1000
 
     // Decrement score by how much time passed by
     await updateDoc(userDoc.ref, {
