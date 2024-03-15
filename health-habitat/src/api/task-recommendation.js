@@ -1,5 +1,5 @@
 import { db, auth } from '../core/config';
-import { collection, query, where, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
+import { collection, query, where, getDocs, updateDoc, arrayUnion, or } from "firebase/firestore";
 import * as getUserData from "./get-user-data";
 import env from "./env.json";
 import {getWeatherCategory, getWeather, getTemperature} from "./get-weather";
@@ -111,7 +111,7 @@ export async function recommendExerciseTask() {
         equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "==", "none (bodyweight exercise)"));
     }
     else {
-        equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "==", "none (bodyweight exercise)"), where("equipment", "in", availEquipment));
+        equipmentsQ = query(collection(db, "ExerciseTasks"), or(where("equipment", "==", "none (bodyweight exercise)"), where("equipment", "in", availEquipment)));
     }
     
     const intensityQ = query(collection(db, "ExerciseTasks"), where("intensity_level", "<=", intensityLevel));
@@ -120,17 +120,33 @@ export async function recommendExerciseTask() {
     const equipmentsSnapshot = await getDocs(equipmentsQ);
     const intensitySnapshot = await getDocs(intensityQ);
 
+    console.log("EQ SNAP", equipmentsSnapshot.docs);
+    console.log("INT SNAP", intensitySnapshot.docs);
+
     // filter out workouts that involve muscle groups in pastWorkoutCategories if there are any
     if (pastWorkoutCategories.length > 0) {
+        console.log("PAST WORKOUT CATEGORIES", pastWorkoutCategories)
         const muscleGroupQ = query(collection(db, "ExerciseTasks"), where("category", "not-in", pastWorkoutCategories));
         const muscleGroupSnapshot = await getDocs(muscleGroupQ);
-        exerciseIntersection = _.intersectionBy(intensitySnapshot.docs, equipmentsSnapshot.docs, muscleGroupSnapshot.docs, 'task_id');
+        const totalQ = query(collection(db, "ExerciseTasks"));
+        const totalSnapshot = await getDocs(totalQ);
+        console.log("MUSCLE SNAP", muscleGroupSnapshot.docs);
+        console.log("TOTAL SNAP", totalSnapshot.docs[0].data().task_id);
+        exerciseIntersection = _.intersectionBy(intensitySnapshot.docs, equipmentsSnapshot.docs, muscleGroupSnapshot.docs, doc => doc.data().task_id);
+        console.log("INTERSECTION", exerciseIntersection);
     } else {
-        exerciseIntersection = _.intersectionBy(intensitySnapshot.docs, equipmentsSnapshot.docs, 'task_id');
+        exerciseIntersection = _.intersectionBy(intensitySnapshot.docs, equipmentsSnapshot.docs, doc => doc.data().task_id);
     }
-                
+
+    if (exerciseIntersection.length == 0) {
+        console.log("INVALID AMOUNT OF WORKOUTS")
+        exerciseIntersection = intensitySnapshot.docs;
+    } else {
+        console.log("VALID NUM OF WORKOUTS")
+    }
+
     // RANKING: Sort by intensity level (decreasing)
-    exerciseIntersection = _.sortBy(exerciseIntersection, function (exercise) { return exercise.intensity_level; }).reverse();
+    exerciseIntersection = _.sortBy(exerciseIntersection, function (exercise) { return exercise.intensity_level; });
     
     // Get the first task in exerciseUnion
     let exercise = exerciseIntersection[0];
@@ -145,7 +161,7 @@ export async function recommendExerciseTask() {
         'description': description
     };
 
-    console.log(exerciseTask);
+    console.log("IN TASK-RECOMMENDATION EXERCISE TASK", exerciseTask);
 
     // Add recommended task to current user into Firestore
     await updateDoc(userDoc.ref, {

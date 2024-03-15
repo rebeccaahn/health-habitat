@@ -24,13 +24,13 @@ export default function ExercisePage({ navigation }) {
     const handleExerciseCompletion = async () => {
         console.log("Exercise Task Completed");
         await incrementExerciseScore();
-        const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+        const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
 
-        let newExerciseScore = userDoc.get("exerciseScore");
+        let newExerciseScore = await userDoc.get("exerciseScore");
         setExerciseScore(newExerciseScore);
-
-        setCurrentExercise(await getExerciseTask().name)
-        setCurrentExerciseDescrip(await getExerciseTask().description)
+        let newExerciseTask = await userDoc.get("exerciseTask");
+        setCurrentExercise(newExerciseTask.name)
+        setCurrentExerciseDescrip(newExerciseTask.description)
     };
 
     // TODO : query data
