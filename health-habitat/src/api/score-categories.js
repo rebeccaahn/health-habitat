@@ -71,11 +71,11 @@ export async function incrementDietScore() {
 // Incrementing score of Exercise category
 export async function incrementExerciseScore() {
     // Get current user data
-    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+    const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
 
     // Recommend new task
     await recommend.recommendExerciseTask();
-    let currentScore = (await userDoc).get("exerciseScore")
+    let currentScore = await userDoc.get("exerciseScore")
 
     // Increment score
     await updateDoc(userDoc.ref, {
@@ -86,11 +86,11 @@ export async function incrementExerciseScore() {
 // Incrementing score of Meditation category
 export async function incrementMeditationScore() {
     // Get current user data
-    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+    const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
 
     // Recommend new task
     await recommend.recommendMeditationTask();
-    let currentScore = userDoc.get("meditationScore")
+    let currentScore = await userDoc.get("meditationScore")
 
     // Increment score
     await updateDoc(userDoc.ref, {
@@ -120,7 +120,7 @@ export async function decrementDietScore() {
 // Decrementing score of Exercise category
 export async function decrementExerciseScore(number) {
     // Get current user data
-    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+    const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
 
     let currentExercise = await userDoc.get("exerciseTask")
 
@@ -136,7 +136,7 @@ export async function decrementExerciseScore(number) {
 // Decrementing score of Meditation category
 export async function decrementMeditationScore(number) {
     // Get current user data
-    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+    const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
 
     let currentMeditation = await userDoc.get("meditationTask")
 
@@ -152,7 +152,7 @@ export async function decrementMeditationScore(number) {
 // Calculate the terrarium score for dashboard
 export async function calculateOverallScore() {
     // Get current user data
-    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+    const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
 
     /*
     Calculate average of all scores

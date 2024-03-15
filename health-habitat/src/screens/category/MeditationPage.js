@@ -12,7 +12,7 @@ import * as getUserData from "../../api/get-user-data";
 import {auth} from "../../core/config";
 import {getMeditationScore, getMeditationTask} from "../../api/get-user-data";
 import {incrementMeditationScore} from "../../api/score-categories";
-import {getRecommendationLocation} from "../../api/task-recommendation";
+import { getRecommendationLocation } from '../../api/task-recommendation'
 
 
 export default function MeditationPage({navigation}) {
@@ -23,25 +23,25 @@ export default function MeditationPage({navigation}) {
     const [trackName, setTrackName] = useState('')
     const [trackArtist, setTrackArtist] = useState('')
 
-    const handleMeditationCompletion = () => {
+    const handleMeditationCompletion = async () => {
         console.log('Meditation Task Completed')
-        incrementMeditationScore()
-        const userDoc = getUserData.getUserDocument(auth.currentUser.email);
-        userDoc.then(
-            function (value){
-                setMeditationScore(getMeditationScore(value))
-                setTrackUrl(getMeditationTask(value)[0])
-                setMeditationLocation(getRecommendationLocation())
-                setTrackName(getUserData.getTrackAndArtist(trackUrl)[0])
-                setTrackArtist(getUserData.getTrackAndArtist(trackUrl)[1])
-            }
-        );
+        await incrementMeditationScore()
+        const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
+
+        let value = userDoc;
+
+        setMeditationScore(await userDoc.get("meditationScore"))
+        setTrackUrl(await userDoc.get("meditationTask")[0])
+        setMeditationLocation(await getRecommendationLocation())
+        setTrackName(await getUserData.getTrackAndArtist(trackUrl)[0])
+        setTrackArtist(await getUserData.getTrackAndArtist(trackUrl)[1])
     }
 
     const wMessages = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"]
     const [welcomeMessage, setWelcomeMessage] = useState('')
 
     useEffect(() => {
+        async function wrapperFunc() {
         const curHour = new Date().getHours()
         if (curHour < 12) {
             setWelcomeMessage(wMessages[0])
@@ -53,16 +53,24 @@ export default function MeditationPage({navigation}) {
             setWelcomeMessage(wMessages[3])
         }
 
-        const userDoc = getUserData.getUserDocument(auth.currentUser.email);
-        userDoc.then(
-            function (value){
-                setMeditationScore(getMeditationScore(value))
-                setTrackUrl(getMeditationTask(value)[0])
-                setMeditationLocation(getRecommendationLocation())
-                setTrackName(getUserData.getTrackAndArtist(trackUrl)[0])
-                setTrackArtist(getUserData.getTrackAndArtist(trackUrl)[1])
-            }
-        );
+        const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
+
+        let meditationScore = await userDoc.get("meditationScore");
+        console.log("SCORE IS", meditationScore);
+        setMeditationScore(meditationScore);
+        let meditationTask = await userDoc.get("meditationTask");
+        console.log("TASK IS", meditationTask);
+        console.log(meditationTask[0]);
+        setTrackUrl(meditationTask[0]);
+        let location = await getRecommendationLocation()
+        setMeditationLocation(location)
+        console.log("FINAL URL IS", meditationTask[0])
+        let trackInfo = await getUserData.getTrackAndArtist(meditationTask[0])
+        setTrackName(trackInfo[0])
+        setTrackArtist(trackInfo[1])
+
+        }
+        wrapperFunc();
     }, []);
 
     return (
@@ -74,9 +82,18 @@ export default function MeditationPage({navigation}) {
                 <ProgressBar step={meditationScore} numberOfSteps={100} color={theme.colors.orangeGradient}/>
             </View>
 
-            <Text>{`Let's go meditate in a ${meditationLocation}!\nWhile you are meditating, we recommend listening to the following song:`}</Text>
+            <Text
+                style={{
+                    color: "white"
+                }}
+            >
+                {`Let's go meditate in a ${meditationLocation}!\nWhile you are meditating, we recommend listening to the following song:`}
+            </Text>
             <Text
                 onPress={() => Linking.openURL(trackUrl)}
+                style={{
+                    color: "white"
+                }}
             >
                 {`${trackName} by ${trackArtist}`}
             </Text>

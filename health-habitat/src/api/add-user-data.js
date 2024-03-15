@@ -21,7 +21,8 @@ export default async function addUser(email, calories, cuisines, restrictions, a
         dietTask: null,
         exerciseTask: null,
         meditationTask: null,
-        pastWorkoutCategories: []
+        pastWorkoutCategories: [],
+        completedTasks: []
     };
     
     await addDoc(collection(db, "UserInfo"), userData);

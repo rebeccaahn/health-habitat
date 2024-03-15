@@ -7,6 +7,7 @@ import { getLocation } from './apple/appleLocationApi'
 import * as appleHealthApi from "./apple/appleHealthApi";
 import {getMeditationByTag} from "./get-user-data";
 import { lbToKg } from '../utils/lbKgConverter';
+import { getCarbs } from './apple/appleHealthApi';
 
 export async function recommendDietTask() {
     // To be able to use sample function
@@ -19,10 +20,14 @@ export async function recommendDietTask() {
     // Query parameters to put in endpoint call
     let response = null;
 
-    let calorieField = await value.get("dietCalories")
+    let calorieIntakeMax = await value.get("dietCalories")
     let cuisineField = await value.get("dietCuisines")
     let allergyField = await value.get("dietAllergies")
     let restrictionField = await value.get("dietRestrictions")
+    let currentCalorieIntake = await getCarbs()
+    let calorieField = calorieIntakeMax - currentCalorieIntake
+
+    console.log("CALORIES", calorieField)
 
     // Account for n/a options and call endpoint accordingly
     if ((restrictionField == "n/a") && (allergyField == "n/a")) {
@@ -58,105 +63,106 @@ export async function recommendExerciseTask() {
     let equipmentsQ = null;
     let exerciseIntersection = null;
     
-    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
-    let availCategories = await userDoc.get("exerciseCategories");
-    let availEquipment = await userDoc.get("exerciseEquipments");
+    const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
+    const weather = await getWeather()
+    const age = await appleHealthApi.getAge();
+    const gender = await appleHealthApi.getSex();
+    let actualWeight = await appleHealthApi.getWeight();
+    actualWeight = lbToKg(actualWeight);
+    let dreamWeight = await userDoc.get("goalWeight");
+    dreamWeight = lbToKg(dreamWeight);
+    const availEquipment = await userDoc.get("exerciseEquipments");
+    const pastWorkoutCategories = await userDoc.get("pastWorkoutCategories");
 
-    userDoc.then(
-        async function (doc) {
-            // console.log('userDoc:', value)
-            // const weather = getLocation();
-            // console.log('weather')
-            // appleHealthApi.initHealthApi(false);
-            // use lbtokg converter to here to convert weight to kg
-            // const actualWeight = appleHealthApi.getWeight();
-            // const dreamWeight = getUserData.getGoalWeight(userDoc);
-            // console.log('actualWeight:', actualWeight);
-            // console.log('dreamWEight:', dreamWeight);
-            // const age = appleHealthApi.getAge();
-            // const gender = appleHealthApi.getSex();
+    // use machine learning model to recommend the user an intensity level for their exercise
+    // using the user's actual weight, dream weight, age, and gender and the current weather condition 
+    // const response = await fetch(API_URL + '/exercise_rec', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: {
+            //         'weather_condition': weather,
+            //         'actual_weight': actualWeight,
+            //         'dream_weight': dreamWeight,
+            //         'age': age,
+            //         'gender': gender
+            //     }
+            // })
+            //     .then((response) => {
+            //         if (response.ok) {
+            //             response.json()
+            //         }
+            //         throw new Error('400 Bad Request')
+            //     })
+            //     .then((responseJson) => {
+            //         console.log(responseJson['category']);
+            //     })
+            //     .catch(error => {
+            //        console.log("error: ", error.message);
+            //     });
+    const response = 5.09; // delete this line once we get API to work
+    // convert response to an integer
+    const intensityLevel = parseInt(response);
 
-            // use machine learning model to recommend the user an intensity level for their exercise
-            // using the user's actual weight, dream weight, age, and gender and the current weather condition 
-        // const response = await fetch(API_URL + '/exercise_rec', {
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json',
-                //     },
-                //     body: {
-                //         'weather_condition': weather,
-                //         'actual_weight': actualWeight,
-                //         'dream_weight': dreamWeight,
-                //         'age': age,
-                //         'gender': gender
-                //     }
-                // })
-                //     .then((response) => {
-                //         if (response.ok) {
-                //             response.json()
-                //         }
-                //         throw new Error('400 Bad Request')
-                //     })
-                //     .then((responseJson) => {
-                //         console.log(responseJson['category']);
-                //     })
-                //     .catch(error => {
-                //        console.log("error: ", error.message);
-                //     });
-            const response = 5.09; // delete this line once we get API to work
-            // convert response to an integer
-            const intensityLevel = parseInt(response);
-            const pastWorkoutCategories = getUserData.getPastWorkoutCategories(doc);
+    // filter our documents by user equipment,intensity level, and by past workout categories
+    // Account for n/a option and query accordingly
+    if (getUserData.getEquipments(userDoc)[0].value == "n/a") {
+        equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "==", "none (bodyweight exercise)"));
+    }
+    else {
+        equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "==", "none (bodyweight exercise)"), where("equipment", "in", availEquipment));
+    }
+    
+    const intensityQ = query(collection(db, "ExerciseTasks"), where("intensity_level", "<=", intensityLevel));
 
-            // filter our documents by user equipment,intensity level, and by past workout categories
-            // Account for n/a option and query accordingly
-            if (getUserData.getEquipments(doc)[0].value == "n/a") {
-                equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "==", "none (bodyweight exercise)"));
-            }
-            else {
-                equipmentsQ = query(collection(db, "ExerciseTasks"), where("equipment", "==", "none (bodyweight exercise)"), where("equipment", "in", getUserData.getEquipments(doc)));
-            }
-            
-            const intensityQ = query(collection(db, "ExerciseTasks"), where("intensity_level", "<=", intensityLevel));
+    // Retrieve queried documents
+    const equipmentsSnapshot = await getDocs(equipmentsQ);
+    const intensitySnapshot = await getDocs(intensityQ);
 
-            // Retrieve queried documents
-            const equipmentsSnapshot = await getDocs(equipmentsQ);
-            const intensitySnapshot = await getDocs(intensityQ);
+    // filter out workouts that involve muscle groups in pastWorkoutCategories if there are any
+    if (pastWorkoutCategories.length > 0) {
+        const muscleGroupQ = query(collection(db, "ExerciseTasks"), where("category", "not-in", pastWorkoutCategories));
+        const muscleGroupSnapshot = await getDocs(muscleGroupQ);
+        exerciseIntersection = _.intersectionBy(intensitySnapshot.docs, equipmentsSnapshot.docs, muscleGroupSnapshot.docs, 'task_id');
+    } else {
+        exerciseIntersection = _.intersectionBy(intensitySnapshot.docs, equipmentsSnapshot.docs, 'task_id');
+    }
+                
+    // RANKING: Sort by intensity level (decreasing)
+    exerciseIntersection = _.sortBy(exerciseIntersection, function (exercise) { return exercise.intensity_level; }).reverse();
+    
+    // Get the first task in exerciseUnion
+    let exercise = exerciseIntersection[0];
+    const task_id = await exercise.get("task_id");
+    const name = await exercise.get("name");
+    const description = await exercise.get("description");
+    
+    let exerciseTask = {
+        'date': new Date(),
+        'task_id': task_id,
+        'name': name,
+        'description': description
+    };
 
-            // filter out workouts that involve muscle groups in pastWorkoutCategories if there are any
-            if (pastWorkoutCategories.length > 0) {
-                const muscleGroupQ = query(collection(db, "ExerciseTasks"), where("category", "not-in", pastWorkoutCategories));
-                const muscleGroupSnapshot = await getDocs(muscleGroupQ);
-                exerciseIntersection = _.intersectionBy(intensitySnapshot.docs, equipmentsSnapshot.docs, muscleGroupSnapshot.docs, 'task_id');
-            } else {
-                exerciseIntersection = _.intersectionBy(intensitySnapshot.docs, equipmentsSnapshot.docs, 'task_id');
-            }
-                        
-            // RANKING: Sort by intensity level (decreasing)
-            exerciseIntersection = _.sortBy(exerciseIntersection, function (exercise) { return exercise.intensity_level; }).reverse();
-            
-            // Get the first task in exerciseUnion
-            let exercise = exerciseIntersection[0];
-            let exerciseTask = [exercise.get("task_id"), exercise.get("name"), new Date()];
-            console.log(exerciseTask);
+    console.log(exerciseTask);
 
-            // Add recommended task to current user into Firestore
-            await updateDoc(doc.ref, {
-                exerciseTask: exerciseTask
-            });
-            
-            // Push current exercise category to pastWorkoutCategories
-            await updateDoc(doc.ref, {
-                pastWorkoutCategories: arrayUnion(exercise.get("category"))
-            });
+    // Add recommended task to current user into Firestore
+    await updateDoc(userDoc.ref, {
+        exerciseTask: exerciseTask
+    });
+    
+    // Push current exercise category to pastWorkoutCategories
+    await updateDoc(userDoc.ref, {
+        pastWorkoutCategories: arrayUnion(exercise.get("category"))
+    });
 
-            return exerciseTask;
-        }
-    )
+    return exerciseTask;
 }
 
 
 export async function recommendMeditationTask() {
+    const _ = require("lodash");
     let currentTime = 'morning'
     const curHour = new Date().getHours()
     if (curHour < 12) {
@@ -169,51 +175,62 @@ export async function recommendMeditationTask() {
         currentTime = 'night'
     }
 
-    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+    const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
 
-    userDoc.then(
-        async function (value) {
+    let value = userDoc;
 
-            const currentWeatherCondition = getWeatherCategory(getWeather())
-            const currentTemperature = getTemperature()
-            const currentHeartRate = appleHealthApi.getHeartRateCurrent()
+    const weather = await getWeather()
+    const currentWeatherCondition = await getWeatherCategory(weather)
+    const currentTemperature = await getTemperature()
+    const currentHeartRate = await appleHealthApi.getHeartRateCurrent()
 
-            let genreResponse = await fetch(`http://localhost:8000/meditation_rec/`, {
-                method: "GET",
-                body: JSON.stringify({
-                    weather_condition : currentWeatherCondition,
-                    temperature : currentTemperature,
-                    heart_rate : currentHeartRate,
-                    time_of_day : currentTime
-                })
-            });
-            let genreJsonResp = await genreResponse.json();
-            const songGenre = genreJsonResp['genre']
+    let genreResponse = await fetch(`http://localhost:8000/meditation_rec`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            weather_condition : currentWeatherCondition,
+            temperature : currentTemperature,
+            heart_rate : currentHeartRate,
+            time_of_day : currentTime
+        })
+    });
+    let genreJsonResp = await genreResponse.json();
+    const songGenre = genreJsonResp['genre']
 
-            console.log(genreJsonResp);
-            console.log(songGenre)
+    console.log(genreJsonResp);
+    console.log(songGenre)
 
-            let songResponse = await fetch(`http://localhost:8000/meditation_song_pick/`, {
-                method: "GET",
-                body: JSON.stringify({
-                    songs : getMeditationByTag(songGenre),
-                    heart_rate : currentHeartRate,
-                })
-            });
-            let songJsonResp = await songResponse.json();
-            let songUrl = songJsonResp['song_name']
+    const tagQ = query(collection(db, "MeditationTasks"), where("tag", "==", songGenre));
 
-            console.log(songJsonResp)
-            console.log(songUrl)
+    // Retrieve queried documents
+    const tagSnapshot = await getDocs(tagQ);
 
-            let task = [songUrl, new Date()];
+    let docsData = tagSnapshot.docs.map(doc => doc.data());
+    let jsonDocsData = JSON.stringify(docsData);
 
-            await updateDoc(value.ref, {
-                meditationTask: task
-            });
-        }
+    let songResponse = await fetch(`http://localhost:8000/meditation_song_pick`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            songs : jsonDocsData,
+            heart_rate : currentHeartRate,
+        })
+    });
+    let songJsonResp = await songResponse.json();
+    let songUrl = songJsonResp['song_name']
 
-    );
+    console.log(songJsonResp)
+    console.log(songUrl)
+
+    let task = [songUrl, new Date()];
+
+    await updateDoc(value.ref, {
+        meditationTask: task
+    });
 }
 
 
@@ -230,30 +247,31 @@ export async function getRecommendationLocation() {
         currentTime = 'night'
     }
 
-    const userDoc = getUserData.getUserDocument(auth.currentUser.email);
+    const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
+    let weather = await getWeather();
+    console.log("WEATHER", weather)
+    const currentWeatherCondition = await getWeatherCategory(weather);
+    console.log("CONDITION", currentWeatherCondition)
+    const currentTemperature = await getTemperature()
+    console.log("TEMP", currentTemperature)
 
-    userDoc.then(
-        async function (value) {
+    let locationResponse = await fetch(`http://localhost:8000/meditation_location`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            weather_condition : currentWeatherCondition,
+            temperature : currentTemperature,
+            time_of_day : currentTime
+        })
+    });
+    let locationJsonResp = await locationResponse.json();
 
-            const currentWeatherCondition = getWeatherCategory(getWeather())
-            const currentTemperature = getTemperature()
+    console.log(locationJsonResp)
 
-            let locationResponse = await fetch(`http://localhost:8000/meditation_location/`, {
-                method: "GET",
-                body: JSON.stringify({
-                    weather_condition : currentWeatherCondition,
-                    temperature : currentTemperature,
-                    time_of_day : currentTime
-                })
-            });
-            let locationJsonResp = await locationResponse.json();
+    return locationJsonResp['location']
 
-            console.log(locationJsonResp)
-
-            return locationJsonResp['location']
-        }
-
-    );
 }
 
 

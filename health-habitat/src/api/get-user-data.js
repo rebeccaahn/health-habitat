@@ -145,9 +145,13 @@ export async function getMeditationByTag(tag) {
 
     // Return the array [[url, time], ...]
     let arrayResult = [];
-    tagSnapshot.forEach((doc) => {
-        arrayResult.push([doc.get("url"), doc.get("time")])
+    tagSnapshot.forEach(async (doc) => {
+        let curUrl = await doc.get("url")
+        let curTime = await doc.get("time")
+        arrayResult.push([curUrl, curTime])
     });
+
+    console.log("ARR RESULT FROM MED", arrayResult)
 
     return arrayResult;
 
@@ -157,10 +161,14 @@ export async function getMeditationByTag(tag) {
 
 
 export async function getTrackAndArtist(songUrl) {
+    console.log("FINAL URL", songUrl)
     const songQ = query(collection(db, "MeditationTasks"), where("url", "==", songUrl));
     const songSnapshot = await getDocs(songQ);
     let songDoc = songSnapshot.docs[0];
-    return [songDoc.get("track"), songDoc.get("artist")]
+    console.log("DOC IS", songSnapshot.docs[0].data())
+    let track = await songDoc.get("track")
+    let artist = await songDoc.get("artist")
+    return [track, artist]
 }
 
 

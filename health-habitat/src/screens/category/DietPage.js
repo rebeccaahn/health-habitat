@@ -18,6 +18,7 @@ import * as recommend from "../../api/task-recommendation";
 import {incrementDietScore} from "../../api/score-categories";
 import { Linking } from 'react-native'
 import CategoriesPage from './CategoriesPage'
+import { saveCarbs } from '../../api/apple/appleHealthApi'
 
 
 export default function DietPage({navigation}) {
@@ -29,22 +30,49 @@ export default function DietPage({navigation}) {
 
     const handleDietCompletion = async () => {
         console.log('Diet Task Completed')
-        let result = await incrementDietScore()
+
         const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
 
         let value = userDoc
+
+        let recipeId = await userDoc.get("dietTask")[0]
+        fetch(`https://api.spoonacular.com/recipes/${recipeId}/nutritionWidget.json?apiKey=${env.diet_API_key}`)
+            .then((response) => response.json())
+            .then(async (responseJson) => {
+                let calorieCount = responseJson["nutrients"][0]["amount"]
+                await saveCarbs(calorieCount)
+            })
+
+        let result = await incrementDietScore()
 
         // let dietScoreToSet = await getDietScore(userDoc);
         let dietScoreToSet = userDoc.get("dietScore");
         // setDietScore(getDietScore(value))
         setDietScore(dietScoreToSet);
         // let recipeId = await getDietTask(userDoc)[0]
-        let recipeId = await userDoc.get("dietTask")[0]
+        
         fetch(`https://api.spoonacular.com/recipes/${recipeId}/card?apiKey=${env.diet_API_key}`)
-            .then((response) => {
+            .then(async (response) => {
+                console.log("made it", response);
+                let responseJson = await response.json()
                 if (response.ok) {
-                    response.json()
+                    console.log("JSON", responseJson)
+                    setRecipeUrl(responseJson["url"]);
+                    setRecipeDescription('')
+                    setRecipeLink(responseJson["url"])
                 }
+                console.log("JSON", responseJson)
+                setRecipeUrl(responseJson["url"]);
+                setRecipeDescription('')
+                setRecipeLink(responseJson["url"])
+
+                fetch(`https://api.spoonacular.com/recipes/${recipeId}/nutritionWidget.json?apiKey=${env.diet_API_key}`)
+                    .then((response) => response.json())
+                    .then(async (responseJson) => {
+                        let calorieCount = responseJson["nutrients"][0]["amount"]
+                        await saveCarbs(calorieCount)
+                    })
+
                 throw new Error('400 Bad Request')
             })
             .then((responseJson) => {
@@ -104,6 +132,14 @@ export default function DietPage({navigation}) {
                 setRecipeUrl(responseJson["url"]);
                 setRecipeDescription('')
                 setRecipeLink(responseJson["url"])
+
+                // fetch(`https://api.spoonacular.com/recipes/${recipeId}/nutritionWidget.json?apiKey=${env.diet_API_key}`)
+                //     .then((response) => response.json())
+                //     .then(async (responseJson) => {
+                //         let calorieCount = responseJson["nutrients"][0]["amount"]
+                //         await saveCarbs(calorieCount)
+                //     })
+
                 throw new Error('400 Bad Request')
             })
             .then((responseJson) => {
