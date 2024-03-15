@@ -86,7 +86,7 @@ export default function RegisterScreen({ navigation }) {
 
             <Button
                 mode="contained"
-                onPress={() => {onSignUpPressed(); navigation.replace('QuestionnaireScreen')}}
+                onPress={() => {onSignUpPressed()}}
                 style={{ marginTop: 24 }}
                 loading={loading}
             >

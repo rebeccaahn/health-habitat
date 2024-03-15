@@ -10,22 +10,24 @@ export default function AuthLoadingScreen({ navigation }) {
     console.log('user:', user);
     if (user) {
       // User is logged in
-      try {
-        getUserDocument(auth.currentUser.email).then((value) => {
+      const fetchUserDocument = async () => {
+        try {
+          const value = await getUserDocument(auth.currentUser.email);
           console.log('value', value.data());
           // user has completed questionnaire
           navigation.reset({
             index: 0,
             routes: [{ name: 'TerrariumScreen' }],
-          })
-        });
-      } catch (error) {
-        // user has not completed questionnaire yet
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'QuestionnaireScreen' }],
-        })
-      }
+          });
+        } catch (error) {
+          // user has not completed questionnaire yet
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'QuestionnaireScreen' }],
+          });
+        }
+      };
+      fetchUserDocument();
     } else {
       // User is not logged in
       navigation.reset({
