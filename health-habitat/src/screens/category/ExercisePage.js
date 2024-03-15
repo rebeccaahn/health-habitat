@@ -39,27 +39,8 @@ export default function ExercisePage({ navigation }) {
         { id: 1, name: "exercise2", description: "do more smth" },
     ];
 
-    const wMessages = [
-        "Good Morning",
-        "Good Afternoon",
-        "Good Evening",
-        "Good Night",
-    ];
-    const [welcomeMessage, setWelcomeMessage] = useState("");
-
     useEffect(() => {
         async function wrapperFunc() {
-            const curHour = new Date().getHours();
-            if (curHour < 12) {
-                setWelcomeMessage(wMessages[0]);
-            } else if (curHour < 17) {
-                setWelcomeMessage(wMessages[1]);
-            } else if (curHour < 20) {
-                setWelcomeMessage(wMessages[2]);
-            } else {
-                setWelcomeMessage(wMessages[3]);
-            }
-
             const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
 
             let exerciseScore = await userDoc.get("exerciseScore");
@@ -74,8 +55,7 @@ export default function ExercisePage({ navigation }) {
     return (
         <Background color={theme.colors.tealGradient}>
             <BackButton goBack={() => navigation.goBack()} />
-            <Header props={welcomeMessage} />
-            <Header props={"Your exercise details:"} />
+            <Header props={"Exercise Details"} />
             <View style={styles.categoryOverview}>
                 <ProgressBar
                     step={exerciseScore}
@@ -92,10 +72,10 @@ export default function ExercisePage({ navigation }) {
                 onPress={handleExerciseCompletion}
                 style={{ marginTop: 24 }}
             >
-                completed!
+                COMPLETED
             </Button>
 
-            <Text>Credits to wger API for exercise sets!</Text>
+            <Text style={styles.creditText}>Credits to wger API for exercise sets!</Text>
         </Background>
     );
 }
@@ -103,7 +83,8 @@ export default function ExercisePage({ navigation }) {
 const styles = StyleSheet.create({
     categoryOverview: {
         flexDirection: "row",
-        width: "75%",
+        width: "100%",
+        marginVertical: 5
     },
     categoryIcon: {
         width: "50",
@@ -145,4 +126,10 @@ const styles = StyleSheet.create({
         textAlign: "center",
         width: "100%",
     },
+    creditText: {
+        color: theme.smText.color,
+        fontSize: theme.smText.fontSize,
+        letterSpacing: theme.smText.letterSpacing,
+        marginTop: 10
+    }
 });

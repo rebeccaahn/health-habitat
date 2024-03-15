@@ -1,9 +1,10 @@
 
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, TouchableOpacity } from 'react-native'
-import { IconButton, Text } from 'react-native-paper'
+import { Icon, IconButton, Text } from 'react-native-paper'
 import Background from '../../components/Background'
 import BackButton from '../../components/BackButton'
+import { Button as PaperButton } from 'react-native-paper';
 import Header from '../../components/Header'
 import ProgressBar from '../../components/ProgressBar'
 import { theme } from "../../core/theme";
@@ -15,30 +16,26 @@ import { useFocusEffect } from '@react-navigation/native';
 
 
 export default function CategoriesPage({ navigation }) {
-    useFocusEffect(
-        React.useCallback(() => {
-            const fetchData = async () => {
-                const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
-                let dietScore = await userDoc.get("dietScore");
-                setDietScore(dietScore);
-                let newMeditationScore = await userDoc.get("meditationScore");
-                setMeditationScore(newMeditationScore);
-            };
+    // useFocusEffect(
+    //     React.useCallback(() => {
+    //         const fetchData = async () => {
+    //             const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
+    //             let dietScore = await userDoc.get("dietScore");
+    //             setDietScore(dietScore);
+    //             let newMeditationScore = await userDoc.get("meditationScore");
+    //             setMeditationScore(newMeditationScore);
+    //         };
 
-            fetchData(); // Immediately invoke the async function
+    //         fetchData(); // Immediately invoke the async function
 
-            return () => {
-            // Cleanup function (optional)
-            console.log('Cleanup function');
-            };
-        }, [])
-    );
+    //         return () => {
+    //         // Cleanup function (optional)
+    //         console.log('Cleanup function');
+    //         };
+    //     }, [])
+    // );
 
     const day = 1000 * 60 * 60 * 24;    // milliseconds to day
-
-    const wMessages = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"]
-    const [welcomeMessage, setWelcomeMessage] = useState('')
-
     const [dietScore, setDietScore] = useState(32)
     const [exerciseScore, setExerciseScore] = useState(50)
     const [meditationScore, setMeditationScore] = useState(50)
@@ -80,30 +77,30 @@ export default function CategoriesPage({ navigation }) {
         //     }
         // }
 
-        if (meditationTask == null) {
-            console.log("TASK NULL")
-            await recommend.recommendMeditationTask();
-            let meditationTask = await userDoc.get("meditationTask");
-            console.log("NEW GEN TASK", meditationTask)
-        }
-        else {
-            const timestamp = await userDoc.get("meditationTask");
-            if (new Date().getUTCDay() !== new Date(timestamp[1] * 1000).getUTCDay()) {
-                await decrementMeditationScore();
-                await recommend.recommendMeditationTask();
-            }
-        }
+        // if (meditationTask == null) {
+        //     console.log("TASK NULL")
+        //     await recommend.recommendMeditationTask();
+        //     let meditationTask = await userDoc.get("meditationTask");
+        //     console.log("NEW GEN TASK", meditationTask)
+        // }
+        // else {
+        //     const timestamp = await userDoc.get("meditationTask");
+        //     if (new Date().getUTCDay() !== new Date(timestamp[1] * 1000).getUTCDay()) {
+        //         await decrementMeditationScore();
+        //         await recommend.recommendMeditationTask();
+        //     }
+        // }
 
-        if (exerciseTask == null ){
-            await recommend.recommendExerciseTask();
-        }
-        else {
-            const timestamp = await userDoc.get("exerciseTask");
-            if (new Date().getUTCDay() !== new Date(timestamp[1] * 1000).getUTCDay()) {
-                await decrementExerciseScore();
-                await recommend.recommendExerciseTask();
-            }
-        }
+        // if (exerciseTask == null ){
+        //     await recommend.recommendExerciseTask();
+        // }
+        // else {
+        //     const timestamp = await userDoc.get("exerciseTask");
+        //     if (new Date().getUTCDay() !== new Date(timestamp[1] * 1000).getUTCDay()) {
+        //         await decrementExerciseScore();
+        //         await recommend.recommendExerciseTask();
+        //     }
+        // }
         
         // else {
         //     // const timestamp = await getUserData.getDietTask(value);
@@ -119,90 +116,64 @@ export default function CategoriesPage({ navigation }) {
         //         // await recommend.recommendExerciseTask();
         //     }
         // }
-
-
-
-        const curHour = new Date().getHours()
-        if (curHour < 12) {
-            setWelcomeMessage(wMessages[0])
-        } else if (curHour < 17) {
-            setWelcomeMessage(wMessages[1])
-        } else if (curHour < 20) {
-            setWelcomeMessage(wMessages[2])
-        } else {
-            setWelcomeMessage(wMessages[3])
-        }
     }
     wrapperFunc()
     }, []);
 
     return (
-        <Background color={theme.colors.darkBlueGradient}>
+        <Background color={theme.colors.tealGradient}>
             <BackButton goBack={() => navigation.goBack()} />
-            <Header props={welcomeMessage} />
-            <Header props={"Your health overview:"} />
+            <Header props={"Overview"} />
 
-            <View style={styles.dietCategory}>
+            <TouchableOpacity 
+                style={[styles.dietCategory, theme.shadow]}
+                onPress={() => navigation.navigate('DietPage')}
+                activeOpacity={.7}
+            >
                 <View style={styles.categoryLeft}>
+                    <IconButton icon="food-apple-outline" iconColor="white" size={60} />
+                </View> 
+                <View style={styles.categoryRight}>
                     <Text style={styles.catText}>Diet</Text>
                     <View style={styles.progressView}>
                         <ProgressBar step={dietScore} numberOfSteps={100} color={theme.colors.darkGreenGradient}/>
                     </View>
                 </View>
-                <View style={styles.categoryRight}>
-                    <IconButton
-                        icon="plus"
-                        iconColor="white"
-                        containerColor={theme.colors.darkestGreen}
-                        mode="contained"
-                        size={45}
-                        onPress={() => navigation.navigate('DietPage')}
-                        style={[theme.shadow, { position: 'absolute', bottom: 50, elevation: 2 }]}
-                    />
-                </View>
-            </View>
+            </TouchableOpacity>
 
 
-            <View style={styles.meditationCategory}>
+            <TouchableOpacity 
+                style={[styles.meditationCategory, theme.shadow]}
+                onPress={() => navigation.navigate('MeditationPage')}
+                activeOpacity={.7}
+            >
                 <View style={styles.categoryLeft}>
+                    <IconButton icon="heart-outline" iconColor="white" size={60} />
+                </View> 
+                <View style={styles.categoryRight}>
                     <Text style={styles.catText}>Meditation</Text>
                     <View style={styles.progressView}>
                         <ProgressBar step={meditationScore} numberOfSteps={100} color={theme.colors.blueGradient}/>
                     </View>
                 </View>
-                <View style={styles.categoryRight}>
-                    <IconButton
-                        icon="plus"
-                        iconColor="white"
-                        containerColor={theme.colors.darkestBlue}
-                        mode="contained"
-                        size={45}
-                        onPress={() => navigation.navigate('MeditationPage')}
-                        style={[theme.shadow, { position: 'absolute', bottom: 50, elevation: 2 }]}
-                    />
-                </View>
-            </View>
+            </TouchableOpacity>
 
 
-            <View style={styles.exerciseCategory}>
+            <TouchableOpacity 
+                style={[styles.exerciseCategory, theme.shadow]}
+                onPress={() => navigation.navigate('ExercisePage')}
+                activeOpacity={.7}
+            >
                 <View style={styles.categoryLeft}>
+                    <IconButton icon="run" iconColor="white" size={60} />
+                </View> 
+                <View style={styles.categoryRight}>
                     <Text style={styles.catText}>Exercise</Text>
                     <View style={styles.progressView}>
                         <ProgressBar step={exerciseScore} numberOfSteps={100} color={theme.colors.orangeGradient}/>
                     </View>
                 </View>
-                <View style={styles.categoryRight}>
-                    <IconButton
-                        icon="plus"
-                        iconColor="white"
-                        containerColor={theme.colors.darkTeal}
-                        mode="contained"
-                        size={45}
-                        onPress={() => navigation.navigate('ExercisePage')}
-                        style={[theme.shadow, { position: 'absolute', bottom: 50, elevation: 2 }]}
-                    />
-                </View>
-            </View>
+            </TouchableOpacity>
 
         </Background>
     )
@@ -214,25 +185,28 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.darkGreen,
         flexDirection: 'row',
         width: '100%',
-        height: '25%',
-        verticalMargin: 5,
-        borderRadius: 5
+        height: '20%',
+        marginVertical: 20,
+        borderRadius: 15,
+        padding: 15
     },
     meditationCategory: {
         backgroundColor: theme.colors.darkBlue,
         flexDirection: 'row',
         width: '100%',
-        height: '25%',
-        verticalMargin: 5,
-        borderRadius: 5
+        height: '20%',
+        marginVertical: 20,
+        borderRadius: 15,
+        padding: 15
     },
     exerciseCategory: {
         backgroundColor: theme.colors.darkBrown,
         flexDirection: 'row',
         width: '100%',
-        height: '25%',
-        verticalMargin: 5,
-        borderRadius: 5
+        height: '20%',
+        marginVertical: 20,
+        borderRadius: 15,
+        padding: 15
     },
     categoryOverview: {
         flexDirection: 'row',
@@ -241,7 +215,7 @@ const styles = StyleSheet.create({
     },
     categoryLeft: {
         flexDirection: 'column',
-        width: '75%',
+        width: '25%',
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -253,14 +227,17 @@ const styles = StyleSheet.create({
     },
     categoryRight: {
         flexDirection: 'column',
-        width: '25%',
+        width: '75%',
         justifyContent: 'center',
         alignItems: 'center'
     },
     catText: {
         width: '100%',
         color: 'white',
-        fontSize: 20,
-        textAlign: 'center'
+        fontSize: 23,
+        fontWeight: 'bold',
+        letterSpacing: 2,
+        textAlign: 'center',
+        margin: 15
     }
 });
