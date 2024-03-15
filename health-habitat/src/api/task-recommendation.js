@@ -140,8 +140,8 @@ export async function recommendExerciseTask() {
         });
     }
 
-    // If the user has more than 6 past muscle categories, reset the past workout categories
-    if (pastWorkoutCategories.length > 6){
+    // If the user has more than 4 past muscle categories, reset the past workout categories
+    if (pastWorkoutCategories.length > 4){
         pastWorkoutCategories = [];
         // Update the user's document in Firestore
         await updateDoc(userDoc.ref, {
