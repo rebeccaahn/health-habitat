@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Linking } from "react-native";
 import { Text } from "react-native-paper";
 import Button from "../../components/Button";
 import Background from "../../components/Background";
 import BackButton from "../../components/BackButton";
 import Header from "../../components/Header";
 import ProgressBar from "../../components/ProgressBar";
-import * as appleHealthApi from "../../api/apple/appleHealthApi";
-import { recommendExerciseTask } from "../../api/task-recommendation";
-import { getLocation } from "../../api/apple/appleLocationApi";
 import { theme } from "../../core/theme";
 import { incrementExerciseScore } from "../../api/score-categories";
 import * as getUserData from "../../api/get-user-data";
 import { auth } from "../../core/config";
-import { getExerciseScore, getExerciseTask } from "../../api/get-user-data";
-import { API_URL } from "../../core/config";
 import RenderHtml from 'react-native-render-html';
 
 export default function ExercisePage({ navigation }) {
@@ -38,7 +33,6 @@ export default function ExercisePage({ navigation }) {
     useEffect(() => {
         async function wrapperFunc() {
             const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
-
             let exerciseScore = await userDoc.get("exerciseScore");
             setExerciseScore(exerciseScore);
             let exerciseTask = await userDoc.get("exerciseTask");
@@ -62,7 +56,7 @@ export default function ExercisePage({ navigation }) {
 
             <Text style={styles.exercise}>{currentExercise}</Text>
             <View style={[styles.exerciseDescrip, theme.shadow]}>
-            <RenderHtml tagStyles={{ p: {color: '#FFFFFF'}, body: {color: '#FFFFFF'} }} source={{ html: currentExerciseDescrip }} />
+                <RenderHtml tagStyles={{ p: { color: '#FFFFFF' }, body: { color: '#FFFFFF' } }} source={{ html: currentExerciseDescrip }} />
             </View>
 
             <Button
@@ -74,6 +68,16 @@ export default function ExercisePage({ navigation }) {
             </Button>
 
             <Text style={styles.creditText}>Credits to wger API for exercise sets!</Text>
+            <Text style={styles.creditText}>Credits to Akash Joshi for the dataset on <Text
+                style={[styles.creditText, {
+                    textDecorationLine: "underline"
+                }]}
+                onPress={() =>
+                    Linking.openURL("https://www.kaggle.com/datasets/aakashjoshi123/exercise-and-fitness-metrics-dataset")
+                }
+            >
+                Kaggle!
+            </Text></Text>
         </Background>
     );
 }
@@ -83,10 +87,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         width: "100%",
         marginVertical: 5
-    },
-    categoryIcon: {
-        width: "50",
-        height: "50",
     },
     listItem: {
         alignSelf: "center",
@@ -114,7 +114,6 @@ const styles = StyleSheet.create({
         padding: 10,
         marginVertical: 10,
         marginHorizontal: 10,
-        // flexDirection: 'column',
         width: "100%",
     },
     completedButton: {
@@ -125,7 +124,7 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     exercise: {
-        color:  theme.colors.lightBlue,
+        color: theme.colors.lightBlue,
         fontSize: theme.lgText.fontSize,
         letterSpacing: theme.lgText.letterSpacing,
         width: '100%',
