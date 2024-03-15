@@ -8,7 +8,7 @@ export const theme = {
         secondary: '#414757',
         blueGradient: ['#133745', '#6CA5BE'],
         darkBlueGradient: ['#14011d', '#2a0a3a', '#182b61'],
-        tealGradient: ['#020d15', '#0a1f2e'],
+        tealGradient: ['#010c14', '#274154'],
         brownGradient: ['#41210A', '#6F5949'],
         darkGreenGradient: ['#091609', '#455945'],
         orangeGradient: ['#4c2900', '#b56507'],
@@ -17,6 +17,7 @@ export const theme = {
         darkBrown: '#41210A',
         darkestBlue: '#14011d',
         blue: '#5d8b9f',
+        lightBlue: '#6CA5BE',
         darkGreen: '#243424',
         darkestGreen: '#091609',
         fadedGrey: '#c7b6a3'
