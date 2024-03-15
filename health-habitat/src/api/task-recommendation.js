@@ -85,16 +85,39 @@ export async function recommendDietTask() {
     });
 }
 
-// TODO: Incorporate live data into recommendation factors as well
-// Combining queries of ExerciseTasks to get personalized task(s) because AND queries only work on 1 field at a time
+// Scoring function for exercise recommendation
+function calculateExerciseScore(exercise, userIntensityLevel, pastWorkoutCategories, pastExerciseTasks){
+    let score  = 0;
+
+    // Calculate intensity match bonus (higher for closer intensity)
+    // If the exercise intensity level matches the user's preference, add 10 to the score
+    // Penalize the score based on the difference between the exercise intensity level and the user's recommended intensity level
+    const intensityDiff = Math.abs(exercise.intensity_level - userIntensityLevel);
+    score += 10 - intensityDiff;  // max score is 10, min score score is 1 because the range of intensities if from 1 to 10
+
+    // Muscle group overlap penalty
+    // penalize the score if the muscle group overlaps with past workout categories
+    const muscleGroup = exercise.category;
+    if (pastWorkoutCategories.includes(muscleGroup)) {
+        score -= .5;
+    }
+
+    // Past exercise task penalty
+    // Penalize the score if the exercise has been recommended before
+    if (pastExerciseTasks.includes(exercise.task_id)) {
+        score -= 1;
+    }
+
+    return score
+}
+
+// Recommend exercise task based on user's preferences, weather, and user's past exercise tasks
 export async function recommendExerciseTask() {
-    // to be able to filter through query results
-    const _ = require("lodash");
+    const _ = require("lodash"); // To be able to filter and sort through query results
 
     // Get current user data
-    console.log("recommending exercise");
+    console.log("RECOMMENDING EXERCISE TASK");
     let equipmentsQ = null;
-    let exerciseIntersection = null;
 
     const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
     const weather = await getWeather();
@@ -105,10 +128,30 @@ export async function recommendExerciseTask() {
     let dreamWeight = await userDoc.get("goalWeight");
     dreamWeight = lbToKg(dreamWeight);
     const availEquipment = await userDoc.get("exerciseEquipments");
-    const pastWorkoutCategories = await userDoc.get("pastWorkoutCategories");
+    let pastWorkoutCategories = await userDoc.get("pastWorkoutCategories");
+    let pastExerciseTasks = await userDoc.get("completedExerciseTasks");
 
-    // use machine learning model to recommend the user an intensity level for their exercise
-    // using the user's actual weight, dream weight, age, and gender and the current weather condition
+    // If the user has more than 10 past exercise tasks, reset the past exercise tasks
+    if (pastExerciseTasks.length > 10) {
+        pastExerciseTasks = [];
+        // Update the user's document in Firestore
+        await updateDoc(userDoc.ref, {
+            completedExerciseTasks: pastExerciseTasks
+        });
+    }
+
+    // If the user has more than 6 past muscle categories, reset the past workout categories
+    if (pastWorkoutCategories.length > 6){
+        pastWorkoutCategories = [];
+        // Update the user's document in Firestore
+        await updateDoc(userDoc.ref, {
+            pastWorkoutCategories: pastWorkoutCategories
+        });
+    }
+
+
+    // Use machine learning model to recommend the user an intensity level for their exercise
+    // Using the user's actual weight, dream weight, age, and gender and the current weather condition (context)
     const response = await fetch(API_URL + "/exercise_rec", {
         method: "POST",
         headers: {
@@ -125,10 +168,10 @@ export async function recommendExerciseTask() {
     let intensityResp = await response.json();
     let intensityLevel = intensityResp["category"];
 
-    // convert response to an integer
+    // Convert response to an integer
     intensityLevel = parseInt(intensityLevel);
 
-    // filter our documents by user equipment,intensity level, and by past workout categories
+    // Filter our documents by user equipment
     // Account for n/a option and query accordingly
     if (getUserData.getEquipments(userDoc)[0].value == "n/a") {
         equipmentsQ = query(
@@ -145,88 +188,43 @@ export async function recommendExerciseTask() {
         );
     }
 
-    const intensityQ = query(
-        collection(db, "ExerciseTasks"),
-        where("intensity_level", "<=", intensityLevel)
-    );
-
-    // Retrieve queried documents
+    // Retrieve queried documents i.e. exercises that match the user's available equipment
     const equipmentsSnapshot = await getDocs(equipmentsQ);
-    const intensitySnapshot = await getDocs(intensityQ);
 
-    console.log("EQ SNAP", equipmentsSnapshot.docs);
-    console.log("INT SNAP", intensitySnapshot.docs);
+    // Apply scoring function to each exercise
+    const exercises = equipmentsSnapshot.docs.map(exercise => {
+        const score = calculateExerciseScore(exercise.data(), intensityLevel, pastWorkoutCategories, pastExerciseTasks);
+        return { ...exercise.data(), 'score': score };
+    })
 
-    // if the user has more than 5 past workout categories, reset the pastWorkoutCategories array to an empty array
-    if (pastWorkoutCategories.length > 5) {
-        await updateDoc(userDoc.ref, {
-            pastWorkoutCategories: [],
-        });
-        pastWorkoutCategories = [];
-    }
+    // RANKING: Sort by score (decreasing)
+    rankedExercises = _.sortBy(exercises, function (exercise) { return exercise.score; }).reverse();
+    console.log("INTENSITY LEVEL", intensityLevel)
+    console.log("PAST MUSCLE GROUPS", pastWorkoutCategories)
+    console.log("PAST EXERCISE TASKS", pastExerciseTasks)
+    console.log("RECOMMENDED EXERCISE # 1", rankedExercises[0])
+    console.log("RECOMMENDED EXERCISE # 2", rankedExercises[1])
+    console.log("RECOMMENDED EXERCISE # 3", rankedExercises[2])
 
-    // filter out workouts that involve muscle groups in pastWorkoutCategories if there are any
-    if (pastWorkoutCategories.length > 0) {
-        console.log("PAST WORKOUT CATEGORIES", pastWorkoutCategories);
-        const muscleGroupQ = query(
-            collection(db, "ExerciseTasks"),
-            where("category", "not-in", pastWorkoutCategories)
-        );
-        const muscleGroupSnapshot = await getDocs(muscleGroupQ);
-        const totalQ = query(collection(db, "ExerciseTasks"));
-        const totalSnapshot = await getDocs(totalQ);
-        console.log("MUSCLE SNAP", muscleGroupSnapshot.docs);
-        console.log("TOTAL SNAP", totalSnapshot.docs[0].data().task_id);
-        exerciseIntersection = _.intersectionBy(
-            intensitySnapshot.docs,
-            equipmentsSnapshot.docs,
-            muscleGroupSnapshot.docs,
-            (doc) => doc.data().task_id
-        );
-        console.log("INTERSECTION", exerciseIntersection);
-    } else {
-        exerciseIntersection = _.intersectionBy(
-            intensitySnapshot.docs,
-            equipmentsSnapshot.docs,
-            (doc) => doc.data().task_id
-        );
-    }
-
-    if (exerciseIntersection.length == 0) {
-        console.log("INVALID AMOUNT OF WORKOUTS");
-        exerciseIntersection = intensitySnapshot.docs;
-    } else {
-        console.log("VALID NUM OF WORKOUTS");
-    }
-
-    // RANKING: Sort by intensity level (decreasing)
-    exerciseIntersection = _.sortBy(exerciseIntersection, function (exercise) {
-        return exercise.intensity_level;
-    });
-
-    // Get the first task in exerciseUnion
-    let exercise = exerciseIntersection[0];
-    const task_id = await exercise.get("task_id");
-    const name = await exercise.get("name");
-    const description = await exercise.get("description");
-
+    // Get the first task in rankedExercises (the one with the highest score i.e. the best match for the user's preferences)
+    let exercise = rankedExercises[0];
+    
     let exerciseTask = {
-        date: new Date(),
-        task_id: task_id,
-        name: name,
-        description: description,
+        'date': new Date(),
+        'task_id': exercise.task_id,
+        'name': exercise.name,
+        'description': exercise.description
     };
 
     console.log("IN TASK-RECOMMENDATION EXERCISE TASK", exerciseTask);
 
     // Add recommended task to current user into Firestore
+    // Push current exercise category to pastWorkoutCategories
+    // Push current exercise task to pastExerciseTasks
     await updateDoc(userDoc.ref, {
         exerciseTask: exerciseTask,
-    });
-
-    // Push current exercise category to pastWorkoutCategories
-    await updateDoc(userDoc.ref, {
-        pastWorkoutCategories: arrayUnion(exercise.get("category")),
+        pastWorkoutCategories: arrayUnion(exercise.category),
+        completedExerciseTasks: arrayUnion(exercise.task_id)
     });
 
     return exerciseTask;

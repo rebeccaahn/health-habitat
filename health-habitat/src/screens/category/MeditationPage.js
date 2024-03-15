@@ -9,7 +9,6 @@ import ProgressBar from "../../components/ProgressBar";
 import { theme } from "../../core/theme";
 import * as getUserData from "../../api/get-user-data";
 import { auth } from "../../core/config";
-import { getMeditationScore, getMeditationTask } from "../../api/get-user-data";
 import { incrementMeditationScore } from "../../api/score-categories";
 import { getRecommendationLocation } from "../../api/task-recommendation";
 
@@ -109,7 +108,7 @@ export default function MeditationPage({ navigation }) {
                         Linking.openURL("https://openweathermap.org/")
                     }
                 >
-                    OpenWeather!
+                    {` OpenWeather!`}
                 </Text>
                 <Image source={require('../../assets/OpenWeather-Master-LogoRGB.png')} style={styles.openWeatherLogo}/>
             </Text>
@@ -187,11 +186,13 @@ const styles = StyleSheet.create({
         marginTop: 10,
         textAlign: "center",
         justifyContent: "center",
-        alignContent: "center"
+        alignContent: "center",
+        verticalAlign: "center",
+        display: 'flex'
     },
     openWeatherLogo:{
-        width: 50,
-        height: 25,
+        width: 35,
+        height: 12.5,
         alignSelf: "center",
     }
 });
