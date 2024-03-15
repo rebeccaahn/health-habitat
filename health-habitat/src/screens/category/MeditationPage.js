@@ -16,7 +16,6 @@ import { getRecommendationLocation } from '../../api/task-recommendation'
 
 
 export default function MeditationPage({navigation}) {
-
     const [meditationScore, setMeditationScore] = useState(0)
     const [trackUrl, setTrackUrl] = useState('')
     const [meditationLocation, setMeditationLocation] = useState('')
@@ -37,22 +36,8 @@ export default function MeditationPage({navigation}) {
         setTrackArtist(await getUserData.getTrackAndArtist(trackUrl)[1])
     }
 
-    const wMessages = ["Good Morning", "Good Afternoon", "Good Evening", "Good Night"]
-    const [welcomeMessage, setWelcomeMessage] = useState('')
-
     useEffect(() => {
         async function wrapperFunc() {
-        const curHour = new Date().getHours()
-        if (curHour < 12) {
-            setWelcomeMessage(wMessages[0])
-        } else if (curHour < 17) {
-            setWelcomeMessage(wMessages[1])
-        } else if (curHour < 20) {
-            setWelcomeMessage(wMessages[2])
-        } else {
-            setWelcomeMessage(wMessages[3])
-        }
-
         const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
 
         let meditationScore = await userDoc.get("meditationScore");
@@ -76,24 +61,21 @@ export default function MeditationPage({navigation}) {
     return (
         <Background color={theme.colors.tealGradient}>
             <BackButton goBack={() => navigation.goBack()}/>
-            <Header props={welcomeMessage}/>
-            <Header props={'Your meditation details:'}/>
+            <Header props={'Meditation Details'}/>
             <View style={styles.categoryOverview}>
-                <ProgressBar step={meditationScore} numberOfSteps={100} color={theme.colors.orangeGradient}/>
+                <ProgressBar step={meditationScore} numberOfSteps={100} color={theme.colors.blueGradient}/>
             </View>
 
             <Text
-                style={{
-                    color: "white"
-                }}
+                style={styles.meditationText}
             >
-                {`Let's go meditate in a ${meditationLocation}!\nWhile you are meditating, we recommend listening to the following song:`}
+                {`Let's go meditate in a` }
+                <Text style={styles.song}>{meditationLocation}</Text> 
+                {`\nWhile you are meditating, we recommend listening to the following song:`}
             </Text>
             <Text
                 onPress={() => Linking.openURL(trackUrl)}
-                style={{
-                    color: "white"
-                }}
+                style={styles.song}
             >
                 {`${trackName} by ${trackArtist}`}
             </Text>
@@ -103,10 +85,10 @@ export default function MeditationPage({navigation}) {
                 onPress={handleMeditationCompletion}
                 style={{ marginTop: 24 }}
             >
-                completed!
+                COMPLETED
             </Button>
 
-            <Text>
+            <Text style={styles.creditText}>
                 Credits to Last.fm API for song track information!
             </Text>
         </Background>
@@ -116,7 +98,8 @@ export default function MeditationPage({navigation}) {
 const styles = StyleSheet.create({
     categoryOverview: {
         flexDirection: 'row',
-        width: '75%'
+        width: '100%',
+        marginVertical: 5
     },
     categoryIcon: {
         width: '50',
@@ -157,5 +140,29 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
         textAlign: 'center',
         width: '100%',
+    },
+    meditationText: {
+        color: theme.lgText.color,
+        fontSize: theme.lgText.fontSize,
+        letterSpacing: theme.lgText.letterSpacing,
+        width: '100%',
+        textAlign: 'center'
+    },
+    song: {
+        color: theme.colors.lightBlue,
+        fontSize: theme.lgText.fontSize,
+        letterSpacing: theme.lgText.letterSpacing,
+        width: '100%',
+        textAlign: 'center',
+        textDecorationLine: 'underline',
+        marginTop: 10,
+        fontWeight: 'bold'
+    
+    },
+    creditText: {
+        color: theme.smText.color,
+        fontSize: theme.smText.fontSize,
+        letterSpacing: theme.smText.letterSpacing,
+        marginTop: 10
     }
 });
