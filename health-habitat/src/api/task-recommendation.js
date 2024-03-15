@@ -85,6 +85,26 @@ export async function recommendDietTask() {
     });
 }
 
+// scoring function for exercise recommendation
+function calculateExerciseScore(exercise, userIntensityLevel, pastWorkoutCategories){
+    let score  = 0;
+
+    // Calculate intensity match bonus (higher for closer intensity)
+    // If the exercise intensity level matches the user's preference, add 10 to the score
+    // Penalize the score based on the difference between the exercise intensity level and the user's recommended intensity level
+    const intensityDiff = Math.abs(exercise.intensity_level - userIntensityLevel);
+    score += 10 - intensityDiff;  // max score is 10, min score score is 1 because the range of intensities if from 1 to 10
+
+    // Muscle group overlap penalty
+    // penalize the score if the muscle group overlaps with past workout categories
+    const muscleGroup = exercise.category;
+    if (pastWorkoutCategories.includes(muscleGroup)) {
+        score -= .5;
+    }
+
+    return score
+}
+
 // TODO: Incorporate live data into recommendation factors as well
 // Combining queries of ExerciseTasks to get personalized task(s) because AND queries only work on 1 field at a time
 export async function recommendExerciseTask() {
@@ -145,76 +165,32 @@ export async function recommendExerciseTask() {
         );
     }
 
-    const intensityQ = query(
-        collection(db, "ExerciseTasks"),
-        where("intensity_level", "<=", intensityLevel)
-    );
-
-    // Retrieve queried documents
+    // Retrieve queried documents i.e. exercises that match the user's available equipment
     const equipmentsSnapshot = await getDocs(equipmentsQ);
-    const intensitySnapshot = await getDocs(intensityQ);
 
-    console.log("EQ SNAP", equipmentsSnapshot.docs);
-    console.log("INT SNAP", intensitySnapshot.docs);
+    // Apply scoring function to each exercise
+    const exercises = equipmentsSnapshot.docs.map(exercise => {
+        const score = calculateExerciseScore(exercise.data(), intensityLevel, pastWorkoutCategories);
+        return { ...exercise.data(), 'score': score };
+    })
 
-    // if the user has more than 5 past workout categories, reset the pastWorkoutCategories array to an empty array
-    if (pastWorkoutCategories.length > 5) {
-        await updateDoc(userDoc.ref, {
-            pastWorkoutCategories: [],
-        });
-        pastWorkoutCategories = [];
-    }
+    // RANKING: Sort by score (decreasing)
+    rankedExercises = _.sortBy(exercises, function (exercise) { return exercise.score; }).reverse();
+    console.log("INTENSITY LEVEL", intensityLevel)
+    console.log("PAST MUSCLE GROUPS", pastWorkoutCategories)
+    console.log("RECOMMENDED EXERCISE # 1", rankedExercises[0])
+    console.log("RECOMMENDED EXERCISE # 2", rankedExercises[1])
+    console.log("RECOMMENDED EXERCISE # 3", rankedExercises[2])
+    console.log("RECOMMENDED EXERCISE # 4", rankedExercises[3])
 
-    // filter out workouts that involve muscle groups in pastWorkoutCategories if there are any
-    if (pastWorkoutCategories.length > 0) {
-        console.log("PAST WORKOUT CATEGORIES", pastWorkoutCategories);
-        const muscleGroupQ = query(
-            collection(db, "ExerciseTasks"),
-            where("category", "not-in", pastWorkoutCategories)
-        );
-        const muscleGroupSnapshot = await getDocs(muscleGroupQ);
-        const totalQ = query(collection(db, "ExerciseTasks"));
-        const totalSnapshot = await getDocs(totalQ);
-        console.log("MUSCLE SNAP", muscleGroupSnapshot.docs);
-        console.log("TOTAL SNAP", totalSnapshot.docs[0].data().task_id);
-        exerciseIntersection = _.intersectionBy(
-            intensitySnapshot.docs,
-            equipmentsSnapshot.docs,
-            muscleGroupSnapshot.docs,
-            (doc) => doc.data().task_id
-        );
-        console.log("INTERSECTION", exerciseIntersection);
-    } else {
-        exerciseIntersection = _.intersectionBy(
-            intensitySnapshot.docs,
-            equipmentsSnapshot.docs,
-            (doc) => doc.data().task_id
-        );
-    }
-
-    if (exerciseIntersection.length == 0) {
-        console.log("INVALID AMOUNT OF WORKOUTS");
-        exerciseIntersection = intensitySnapshot.docs;
-    } else {
-        console.log("VALID NUM OF WORKOUTS");
-    }
-
-    // RANKING: Sort by intensity level (decreasing)
-    exerciseIntersection = _.sortBy(exerciseIntersection, function (exercise) {
-        return exercise.intensity_level;
-    });
-
-    // Get the first task in exerciseUnion
-    let exercise = exerciseIntersection[0];
-    const task_id = await exercise.get("task_id");
-    const name = await exercise.get("name");
-    const description = await exercise.get("description");
-
+    // Get the first task in rankedExercises
+    let exercise = rankedExercises[0];
+    
     let exerciseTask = {
-        date: new Date(),
-        task_id: task_id,
-        name: name,
-        description: description,
+        'date': new Date(),
+        'task_id': exercise.task_id,
+        'name': exercise.name,
+        'description': exercise.description
     };
 
     console.log("IN TASK-RECOMMENDATION EXERCISE TASK", exerciseTask);
@@ -226,7 +202,7 @@ export async function recommendExerciseTask() {
 
     // Push current exercise category to pastWorkoutCategories
     await updateDoc(userDoc.ref, {
-        pastWorkoutCategories: arrayUnion(exercise.get("category")),
+        pastWorkoutCategories: arrayUnion(exercise.category)
     });
 
     return exerciseTask;
