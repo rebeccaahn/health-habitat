@@ -85,7 +85,7 @@ export async function recommendDietTask() {
     });
 }
 
-// scoring function for exercise recommendation
+// Scoring function for exercise recommendation
 function calculateExerciseScore(exercise, userIntensityLevel, pastWorkoutCategories, pastExerciseTasks){
     let score  = 0;
 
@@ -113,13 +113,11 @@ function calculateExerciseScore(exercise, userIntensityLevel, pastWorkoutCategor
 
 // Recommend exercise task based on user's preferences, weather, and user's past exercise tasks
 export async function recommendExerciseTask() {
-    // to be able to filter through query results
-    const _ = require("lodash");
+    const _ = require("lodash"); // To be able to filter and sort through query results
 
     // Get current user data
-    console.log("recommending exercise");
+    console.log("RECOMMENDING EXERCISE TASK");
     let equipmentsQ = null;
-    let exerciseIntersection = null;
 
     const userDoc = await getUserData.getUserDocument(auth.currentUser.email);
     const weather = await getWeather();
@@ -133,27 +131,27 @@ export async function recommendExerciseTask() {
     let pastWorkoutCategories = await userDoc.get("pastWorkoutCategories");
     let pastExerciseTasks = await userDoc.get("completedExerciseTasks");
 
-    // if the user has more than 10 past exercise tasks, reset the past exercise tasks
+    // If the user has more than 10 past exercise tasks, reset the past exercise tasks
     if (pastExerciseTasks.length > 10) {
         pastExerciseTasks = [];
-        // update the user's document in Firestore
+        // Update the user's document in Firestore
         await updateDoc(userDoc.ref, {
             completedExerciseTasks: pastExerciseTasks
         });
     }
 
-    // if the user has more than 6 past muscle categories, reset the past workout categories
+    // If the user has more than 6 past muscle categories, reset the past workout categories
     if (pastWorkoutCategories.length > 6){
         pastWorkoutCategories = [];
-        // update the user's document in Firestore
+        // Update the user's document in Firestore
         await updateDoc(userDoc.ref, {
             pastWorkoutCategories: pastWorkoutCategories
         });
     }
 
 
-    // use machine learning model to recommend the user an intensity level for their exercise
-    // using the user's actual weight, dream weight, age, and gender and the current weather condition
+    // Use machine learning model to recommend the user an intensity level for their exercise
+    // Using the user's actual weight, dream weight, age, and gender and the current weather condition (context)
     const response = await fetch(API_URL + "/exercise_rec", {
         method: "POST",
         headers: {
@@ -170,10 +168,10 @@ export async function recommendExerciseTask() {
     let intensityResp = await response.json();
     let intensityLevel = intensityResp["category"];
 
-    // convert response to an integer
+    // Convert response to an integer
     intensityLevel = parseInt(intensityLevel);
 
-    // filter our documents by user equipment,intensity level, and by past workout categories
+    // Filter our documents by user equipment
     // Account for n/a option and query accordingly
     if (getUserData.getEquipments(userDoc)[0].value == "n/a") {
         equipmentsQ = query(
