@@ -28,4 +28,10 @@
 - Account Creation/Login Workflow: https://github.com/venits/react-native-firebase-login-screen
 
 ## Nathan
-- 
+- SciKit Learn: https://www.linkedin.com/pulse/harnessing-power-machine-learning-python-fitness-austin-stewart-u5kgc/?trk=article-ssr-frontend-pulse_more-articles_related-content-card
+- Meditation ML: https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
+- React Navigation Core resolution error on build: https://stackoverflow.com/questions/69634735/cant-resolve-react-navigation-core
+- React Navigation Native resolution error on build: https://stackoverflow.com/questions/60975287/unable-to-resolve-react-navigation-native-from-app-js-react-native-how
+- Unable to install Pods to build IOS app: https://stackoverflow.com/questions/36902497/cannot-install-cocoapods-no-podfile-found-in-the-project-directory
+- React-native-health integration: https://www.npmjs.com/package/react-native-health
+- Expo-location integration: https://docs.expo.dev/versions/latest/sdk/location/
