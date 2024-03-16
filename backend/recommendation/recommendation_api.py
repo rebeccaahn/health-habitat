@@ -42,12 +42,22 @@ class MeditationRec(Resource):
 class MeditationLocation(Resource):
     def post(self):
         try:
+            print("-"*80)
+            print("POST to /meditation_location")
             data = request.get_json()
             weather_condition = data['weather_condition']
             temperature = data['temperature']
             time_of_day = data['time_of_day']
+            print(
+                f"""Incoming:
+                Weather Condition: {weather_condition}
+                Temperature      : {temperature}
+                Time Of Day      : {time_of_day}"""
+            )
 
             location = meditation_model.choose_location(weather_condition, temperature, time_of_day)
+            print(f"Outgoing: {location}")
+            print("-"*80)
         except (KeyError, ValueError) as exc:
             print(exc)
             return jsonify({'location': 'Invalid input'})
@@ -58,11 +68,21 @@ class MeditationLocation(Resource):
 class MeditationSongPick(Resource):
     def post(self):
         try:
+            print("-"*80)
+            print("POST to /meditation_song_pick")
             data = request.get_json()
             songs = json.loads(data['songs'])
             heart_rate = data['heart_rate']
 
+            print(
+                f"""Incoming:
+                Songs            : {songs}
+                Heart Rate       : {heart_rate}"""
+            )
+
             song = meditation_model.choose_song_by_duration(songs, heart_rate)
+            print(f"Outgoing: {song}")
+            print("-"*80)
         except (KeyError, ValueError) as exc:
             print(exc)
             return jsonify({'song_name': 'Invalid input'})
@@ -72,6 +92,8 @@ class MeditationSongPick(Resource):
 class ExerciseRec(Resource):
     def post(self):
         try:
+            print("-"*80)
+            print("POST to /exercise_rec")
             data = request.get_json()
             dream_weight = data['dream_weight']
             actual_weight = data['actual_weight']
@@ -79,7 +101,18 @@ class ExerciseRec(Resource):
             gender = data['gender']
             weather_condition = data['weather_condition']
 
+            print(
+                f"""Incoming:
+                Dream Weight      : {dream_weight}
+                Actual Weight     : {actual_weight}
+                Age               : {age}
+                Gender            : {gender}
+                Weather Condition : {weather_condition}"""
+            )
+
             prediction = exercise_model.predict_category(dream_weight, actual_weight, age, gender, weather_condition)
+            print(f"Outgoing: {prediction}")
+            print("-"*80)
         except (KeyError, ValueError) as exc:
             print(exc)
             return jsonify({'category': 'Invalid input'})
@@ -89,12 +122,23 @@ class ExerciseRec(Resource):
 class ExerciseLocation(Resource):
     def post(self):
         try:
+            print("-"*80)
+            print("POST to /exercise_location")
             data = request.get_json()
             weather_condition = data['weather_condition']
             temperature = data['temperature']
             time_of_day = data['time_of_day']
 
+            print(
+                f"""Incoming:
+                Weather Condition : {weather_condition}
+                Temperature       : {temperature}
+                Time of Day       : {time_of_day}"""
+            )
+
             location = exercise_model.choose_location(weather_condition, temperature, time_of_day)
+            print(f"Outgoing: {location}")
+            print("-"*80)
         except (KeyError, ValueError) as exc:
             print(exc)
             return jsonify({'location': 'Invalid input'})
