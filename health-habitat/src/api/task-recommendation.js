@@ -41,7 +41,7 @@ export async function recommendDietTask() {
     // Account for n/a options and call endpoint accordingly
     if (restrictionField == "n/a" && allergyField == "n/a") {
         response = await fetch(
-            `https://api.spoonacular.com/recipes/complexSearch?apiKey=${
+            `https://api.spoonacular.com/recipes/complexSearch?sort=calories&apiKey=${
                 env.diet_API_key
             }&maxCarbs=${calorieField}&cuisine=${cuisineField}&type=${_.sample(
                 getUserData.getMealType()
@@ -49,7 +49,7 @@ export async function recommendDietTask() {
         );
     } else if (restrictionField == "n/a") {
         response = await fetch(
-            `https://api.spoonacular.com/recipes/complexSearch?apiKey=${
+            `https://api.spoonacular.com/recipes/complexSearch?sort=calories&apiKey=${
                 env.diet_API_key
             }&maxCarbs=${calorieField}&cuisine=${cuisineField}&intolerances=${allergyField}&type=${_.sample(
                 getUserData.getMealType()
@@ -57,7 +57,7 @@ export async function recommendDietTask() {
         );
     } else if (allergyField == "n/a") {
         response = await fetch(
-            `https://api.spoonacular.com/recipes/complexSearch?apiKey=${
+            `https://api.spoonacular.com/recipes/complexSearch?sort=calories&apiKey=${
                 env.diet_API_key
             }&maxCarbs=${calorieField}&cuisine=${cuisineField}&diet=${restrictionField}&type=${_.sample(
                 getUserData.getMealType()
@@ -65,7 +65,7 @@ export async function recommendDietTask() {
         );
     } else {
         response = await fetch(
-            `https://api.spoonacular.com/recipes/complexSearch?apiKey=${
+            `https://api.spoonacular.com/recipes/complexSearch?sort=calories&apiKey=${
                 env.diet_API_key
             }&maxCarbs=${calorieField}&cuisine=${cuisineField}&diet=${restrictionField}&intolerances=${allergyField}&type=${_.sample(
                 getUserData.getMealType()
@@ -76,8 +76,42 @@ export async function recommendDietTask() {
 
     console.log(jsonResp);
 
+    let recipeIdsString = '';
+    for (let recipeResult in jsonResp["results"]) {
+        recipeIdsString += recipeResult["id"].toString()
+        recipeIdsString += ','
+    }
+    recipeIdsString = recipeIdsString.slice(0, -1);
+    console.log(recipeIdsString)
+
+    let rankingResponse = await fetch(
+        `https://api.spoonacular.com/recipes/informationBulk?ids=${recipeIdsString}&apiKey=${env.diet_API_key}`
+    );
+
+    let scoresTmp = [];
+    let totalScore = 0;
+    let lowestId = 0;
+    let lowestScore = 10000;
+
+    for (let recipeInfo in rankingResponse) {
+        let currentScore = recipeInfo["readyInMinutes"] + recipeInfo["pricePerServing"]
+        scoresTmp.push([recipeInfo["id"], currentScore])
+        totalScore += currentScore
+    }
+    for (let recipeTmp in scoresTmp) {
+        let currentScore = (1-(recipeTmp[1]/totalScore))*100;
+        console.log("Calculating Diet Rank", recipeTmp[0], currentScore)
+        if (currentScore < lowestScore) {
+            lowestScore = currentScore;
+            lowestId = recipeTmp[0];
+        }
+    }
+
+    console.log(`Highest Diet Score: ${lowestScore}, recipeId: ${lowestId}`)
+    let recipeID = lowestId
+
     // Add recommended task to current user into Firestore
-    let recipeID = _.sample(jsonResp["results"])["id"];
+    // let recipeID = _.sample(jsonResp["results"])["id"];
     let task = [recipeID, new Date()];
 
     await updateDoc(value.ref, {
