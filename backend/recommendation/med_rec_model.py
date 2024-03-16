@@ -216,16 +216,18 @@ class MeditationRecommender:
             # Choose 20 random songs to add some variety
             if min <= int(choice['time']) <= max:
                 # Append possible choices which match the time constraints
-                possible_choices.append((int(choice['time']), choice))
+                possible_choices.append((int(choice['time']), choice['url']))
             count += 1
 
         if (len(possible_choices) == 0):
             # No songs picked matched the duration reuqirements
             return random.choice(songs)['url']
         
+        print(possible_choices)
+        
         ranked_songs = sorted(possible_choices)
         # Rank possible choices by duration, we want to maximize meditation time
-        return ranked_songs[-1][1]['url']
+        return ranked_songs[-1][1]
 
     def choose_song_by_duration(self, songs: list, heart_rate: int | float):
         """
