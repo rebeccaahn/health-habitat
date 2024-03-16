@@ -78,7 +78,8 @@ export async function recommendDietTask() {
 
     let recipeIdsString = '';
     for (let recipeResult in jsonResp["results"]) {
-        recipeIdsString += recipeResult["id"].toString()
+        // console.log("RESULT", jsonResp["results"][recipeResult]["id"]);  
+        recipeIdsString += jsonResp["results"][recipeResult]["id"].toString()
         recipeIdsString += ','
     }
     recipeIdsString = recipeIdsString.slice(0, -1);
@@ -87,23 +88,26 @@ export async function recommendDietTask() {
     let rankingResponse = await fetch(
         `https://api.spoonacular.com/recipes/informationBulk?ids=${recipeIdsString}&apiKey=${env.diet_API_key}`
     );
+    let rankingResponseJson = await rankingResponse.json();
 
     let scoresTmp = [];
     let totalScore = 0;
     let lowestId = 0;
     let lowestScore = 10000;
 
-    for (let recipeInfo in rankingResponse) {
-        let currentScore = recipeInfo["readyInMinutes"] + recipeInfo["pricePerServing"]
-        scoresTmp.push([recipeInfo["id"], currentScore])
+    for (let recipeInfo in rankingResponseJson) {
+        let currentScore = rankingResponseJson[recipeInfo]["readyInMinutes"] + rankingResponseJson[recipeInfo]["pricePerServing"]
+        scoresTmp.push([rankingResponseJson[recipeInfo]["id"], currentScore])
         totalScore += currentScore
     }
+
     for (let recipeTmp in scoresTmp) {
-        let currentScore = (1-(recipeTmp[1]/totalScore))*100;
-        console.log("Calculating Diet Rank", recipeTmp[0], currentScore)
+        let recipeIDTmp = scoresTmp[recipeTmp]
+        let currentScore = (1-(recipeIDTmp[1]/totalScore))*100;
+        console.log("Calculating Diet Rank", recipeIDTmp[0], currentScore)
         if (currentScore < lowestScore) {
             lowestScore = currentScore;
-            lowestId = recipeTmp[0];
+            lowestId = recipeIDTmp[0];
         }
     }
 
