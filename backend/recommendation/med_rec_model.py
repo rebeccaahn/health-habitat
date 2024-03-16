@@ -207,15 +207,25 @@ class MeditationRecommender:
         Returns:
             str: The song name to listen to
         """
+        possible_choices = []
         choice = None
         count = 0
         attempts = 20
         while count <= attempts:
             choice = random.choice(songs)
+            # Choose 20 random songs to add some variety
             if min <= int(choice['time']) <= max:
-                return choice['url']
+                # Append possible choices which match the time constraints
+                possible_choices.append((int(choice['time']), choice))
             count += 1
-        return random.choice(songs)['url']
+
+        if (len(possible_choices) == 0):
+            # No songs picked matched the duration reuqirements
+            return random.choice(songs)['url']
+        
+        ranked_songs = sorted(possible_choices)
+        # Rank possible choices by duration, we want to maximize meditation time
+        return ranked_songs[-1][1]['url']
 
     def choose_song_by_duration(self, songs: list, heart_rate: int | float):
         """
@@ -234,11 +244,11 @@ class MeditationRecommender:
         heart_rate = float(heart_rate)
 
         if heart_rate < 70:
-            return self._pick_song_with_valid_duration(songs, 10, 100)
+            return self._pick_song_with_valid_duration(songs, 10, 175)
         elif heart_rate >= 70 and heart_rate <= 90:
-            return self._pick_song_with_valid_duration(songs, 100, 150)
+            return self._pick_song_with_valid_duration(songs, 175, 300)
         else:
-            return self._pick_song_with_valid_duration(songs, 150, 1000)
+            return self._pick_song_with_valid_duration(songs, 300, 1000)
 
 
 if __name__ == "__main__":
