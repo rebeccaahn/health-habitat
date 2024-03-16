@@ -92,8 +92,8 @@ export async function recommendDietTask() {
 
     let scoresTmp = [];
     let totalScore = 0;
-    let lowestId = 0;
-    let lowestScore = 10000;
+    let highestId = 0;
+    let highestScore = 0;
 
     for (let recipeInfo in rankingResponseJson) {
         let currentScore = rankingResponseJson[recipeInfo]["readyInMinutes"] + rankingResponseJson[recipeInfo]["pricePerServing"]
@@ -105,14 +105,14 @@ export async function recommendDietTask() {
         let recipeIDTmp = scoresTmp[recipeTmp]
         let currentScore = (1-(recipeIDTmp[1]/totalScore))*100;
         console.log("Calculating Diet Rank", recipeIDTmp[0], currentScore)
-        if (currentScore < lowestScore) {
-            lowestScore = currentScore;
-            lowestId = recipeIDTmp[0];
+        if (currentScore > highestScore) {
+            highestScore = currentScore;
+            highestId = recipeIDTmp[0];
         }
     }
 
-    console.log(`Highest Diet Score: ${lowestScore}, recipeId: ${lowestId}`)
-    let recipeID = lowestId
+    console.log(`Highest Diet Score: ${highestScore}, recipeId: ${highestId}`)
+    let recipeID = highestId
 
     // Add recommended task to current user into Firestore
     // let recipeID = _.sample(jsonResp["results"])["id"];
