@@ -207,6 +207,7 @@ class MeditationRecommender:
         Returns:
             str: The song name to listen to
         """
+        print("Songs Input", len(songs))
         possible_choices = []
         choice = None
         count = 0
@@ -223,10 +224,10 @@ class MeditationRecommender:
             # No songs picked matched the duration reuqirements
             return random.choice(songs)['url']
         
-        print(possible_choices)
-        
         ranked_songs = sorted(possible_choices)
         # Rank possible choices by duration, we want to maximize meditation time
+        print("Possible Outputs:", len(ranked_songs))
+        print("Percent Possible", ((len(ranked_songs) / len(songs)) * 100))
         return ranked_songs[-1][1]
 
     def choose_song_by_duration(self, songs: list, heart_rate: int | float):
