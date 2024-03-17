@@ -13,6 +13,14 @@ export default function AuthLoadingScreen({ navigation }) {
       try {
         async function wrapperFunc() {
         const userDoc = await getUserDocument(auth.currentUser.email);
+        if (userDoc == undefined) {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'QuestionnaireScreen' }],
+          })
+          // throw Error("User must complete questionnaire");
+          return;
+        }
         console.log('value', userDoc.data());
         // user has completed questionnaire
         navigation.reset({

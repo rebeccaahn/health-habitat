@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import { theme } from '../core/theme';
+import { initHealthApi } from '../api/apple/appleHealthApi';
+import { getLocation } from '../api/apple/appleLocationApi';
 
 export default function TerrariumImage({ state }) {
     const [imageURL, setImageURL] = useState(require('../assets/terrarium/terrarium_critical.png'));
@@ -14,6 +16,9 @@ export default function TerrariumImage({ state }) {
         } else if (state == "Best") {
             setImageURL(require('../assets/terrarium/terrarium_best.png'));
         }
+
+        initHealthApi();
+        getLocation();
     }, [state]);
 
     return <View style={theme.shadow}><Image source={imageURL} style={styles.image} /></View>

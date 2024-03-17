@@ -18,6 +18,7 @@ import {incrementDietScore} from "../../api/score-categories";
 import { Linking } from 'react-native'
 import CategoriesPage from './CategoriesPage'
 import { saveCarbs } from '../../api/apple/appleHealthApi'
+import { useNavigationBuilder } from '@react-navigation/native'
 
 
 export default function DietPage({navigation}) {
@@ -39,6 +40,9 @@ export default function DietPage({navigation}) {
             .then((response) => response.json())
             .then(async (responseJson) => {
                 let calorieCount = responseJson["nutrients"][0]["amount"]
+                if (calorieCount == undefined) {
+                    calorieCount = 0;
+                }
                 await saveCarbs(calorieCount)
             })
 

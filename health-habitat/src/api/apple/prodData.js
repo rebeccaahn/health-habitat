@@ -192,6 +192,9 @@ function getAppleCarbs() {
         if (err) {
             reject(err);
         } else {
+            if (result[result.length - 1] == undefined) {
+              return 0;
+            }
             resolve(result[result.length - 1]["value"]);
         }
       });
