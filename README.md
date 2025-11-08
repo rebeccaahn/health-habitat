@@ -1,6 +1,25 @@
 # Health Habitat
 By: Rebecca Ahn, Angeline Hui, Teresa Liang, Nathan Pietrantonio
 
+## Project Functionality
+   * Terrarium
+      * After logging in, users are presented with a "terrarium" which slowly "dies" over time if they do not keep their health score above pre-determined values
+   * Health Score
+      * The health score is a rounded value reprsented by ((Diet Score + Meditation Score + Exercise Score) / 3)
+      * This score represents the user's "overall" scoring and it slowly decreases over time as the scores in each category decrease
+      * The user can complete tasks in each category to increase this score, but doing tasks in one category can only get, at most, 1/3 of this overall score
+   * Recommendation Categories
+      * Each of these categories has a score which decreases with time. This score can be increased throughout the day by completing the recommended tasks in each.
+      * Diet Recommendations
+         * Diet recommednations use the [Spoonacular](https://spoonacular.com/food-api/console#Dashboard) API to recommend a recipe to make
+      * Meditation Recommendations
+         * Meditation uses a Random Forest Classifier to recommend a music genre to meditate to. This cateogry then filters down to one song, and recommends a location to meditate at based off of user context
+      * Exercise Recommendations
+         * Exercise uses a Gradient Boosting Regressor to recommend an intensity level of exercise to complete. A final exercise recommendation is then made based off of user context and a user model. This user model incorporates data about the user's previous exercise behavior, the equipment they have, and their access to a gym
+
+<details>
+   <summary>Project Setup</summary>
+   
 ## Setting up the app
 1. Download or Clone the repo
 
@@ -47,19 +66,4 @@ By: Rebecca Ahn, Angeline Hui, Teresa Liang, Nathan Pietrantonio
 14. Start development server: `npx expo start`
 15. Press `i` to open IOS simulator, allow Health Habitat to install
 16. Enjoy!
-
-## Project Functionality
-   * Terrarium
-      * After logging in, users are presented with a "terrarium" which slowly "dies" over time if they do not keep their health score above pre-determined values
-   * Health Score
-      * The health score is a rounded value reprsented by ((Diet Score + Meditation Score + Exercise Score) / 3)
-      * This score represents the user's "overall" scoring and it slowly decreases over time as the scores in each category decrease
-      * The user can complete tasks in each category to increase this score, but doing tasks in one category can only get, at most, 1/3 of this overall score
-   * Recommendation Categories
-      * Each of these categories has a score which decreases with time. This score can be increased throughout the day by completing the recommended tasks in each.
-      * Diet Recommendations
-         * Diet recommednations use the [Spoonacular](https://spoonacular.com/food-api/console#Dashboard) API to recommend a recipe to make
-      * Meditation Recommendations
-         * Meditation uses a Random Forest Classifier to recommend a music genre to meditate to. This cateogry then filters down to one song, and recommends a location to meditate at based off of user context
-      * Exercise Recommendations
-         * Exercise uses a Gradient Boosting Regressor to recommend an intensity level of exercise to complete. A final exercise recommendation is then made based off of user context and a user model. This user model incorporates data about the user's previous exercise behavior, the equipment they have, and their access to a gym
+</details>
